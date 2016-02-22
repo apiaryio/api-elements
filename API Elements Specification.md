@@ -2,29 +2,26 @@
 
 **Version**: 1.0.0-rc1
 
-<!-- TOC depthFrom:1 depthTo:3 withLinks:1 updateOnSave:1 orderedList:0 -->
+<!--
+  The TOC Atom lib doesn't like Markdown headings, so you have to remove items
+  that are pulled from API Blueprint examples on accident.
+-->
 
 - [API Elements Specification](#api-elements-specification)
 	- [About this Document](#about-this-document)
 	- [Structure of Elements](#structure-of-elements)
-	- [Basic Elements](#basic-elements)
+	- [I. Basic Elements](#i-basic-elements)
 		- [Href (string)](#href-string)
 		- [Templated Href (string)](#templated-href-string)
 		- [Href Variables (Object Type)](#href-variables-object-type)
 		- [Data Structure (Element)](#data-structure-element)
 		- [Asset (Element)](#asset-element)
-	- [API Description Elements](#api-description-elements)
 		- [Resource (Element)](#resource-element)
 		- [Transition (Element)](#transition-element)
 		- [Category (Element)](#category-element)
 		- [Copy (Element)](#copy-element)
-	- [Protocol-specific Elements](#protocol-specific-elements)
-		- [HTTP Transaction (Element)](#http-transaction-element)
-		- [HTTP Headers (Array Type)](#http-headers-array-type)
-		- [HTTP Message Payload (Element)](#http-message-payload-element)
-		- [HTTP Request Message (HTTP Message Payload)](#http-request-message-http-message-payload)
-		- [HTTP Response Message (HTTP Message Payload)](#http-response-message-http-message-payload)
-	- [Data Structure Elements](#data-structure-elements)
+		- [Protocol-specific Elements](#protocol-specific-elements)
+	- [II. Data Structure Elements](#ii-data-structure-elements)
 		- [Inheritance and Expanded Element](#inheritance-and-expanded-element)
 		- [Base Element](#base-element)
 		- [Data Structure Element (Element)](#data-structure-element-element)
@@ -36,18 +33,11 @@
 		- [Object Type (Object Element)](#object-type-object-element)
 		- [Enum Type (Data Structure Element)](#enum-type-data-structure-element)
 		- [Examples](#examples)
-- [User (object)](#user-object)
-- [Address (object)](#address-object)
-	- [Properties](#properties)
-- [User (object)](#user-object)
-- [Customer (User)](#customer-user)
-	- [Parse Result Elements](#parse-result-elements)
+	- [III. Parse Result Elements](#iii-parse-result-elements)
 		- [Parse Result (Element)](#parse-result-element)
 		- [Annotation (Element)](#annotation-element)
 		- [Source Map (Element)](#source-map-element)
 		- [Link Relations](#link-relations)
-
-<!-- /TOC -->
 
 ## About this Document
 
@@ -77,7 +67,7 @@ As a summary of the elements described in this document, this shows how these el
         - HTTP Response
           - Asset
 
-## Basic Elements
+## I. Basic Elements
 
 ### Href (string)
 
@@ -123,8 +113,6 @@ Arbitrary data asset.
     - `contentType` (string) - Optional media type of the asset. When this is unset, the content type SHOULD be inherited from the `Content-Type` header of a parent HTTP Message Payload
     - `href` (Href) - Link to the asset
 - `content` (string) - A textual representation of the asset
-
-## API Description Elements
 
 ### Resource (Element)
 
@@ -379,14 +367,14 @@ Given an API description with following layout:
 }
 ```
 
-## Protocol-specific Elements
+### Protocol-specific Elements
 
-### HTTP Transaction (Element)
+#### HTTP Transaction (Element)
 
 Example of an HTTP Transaction. The example's content consist of a request-response
 message pair. A transaction example MUST contain exactly one HTTP request and one HTTP response message.
 
-#### Properties
+##### Properties
 
 - `element`: httpTransaction (string, fixed)
 - `content` (array) - Request and response message pair (tuple).
@@ -399,7 +387,7 @@ message pair. A transaction example MUST contain exactly one HTTP request and on
 
         The `content` MUST include exactly one `HTTP Response Message` element.
 
-#### Example
+##### Example
 
 ```json
 {
@@ -449,16 +437,16 @@ message pair. A transaction example MUST contain exactly one HTTP request and on
 }
 ```
 
-### HTTP Headers (Array Type)
+#### HTTP Headers (Array Type)
 
 Ordered array of HTTP header-fields.
 
-#### Properties
+##### Properties
 
 - `element`: `httpHeaders`
 - `content` (array[Member Element])
 
-#### Example
+##### Example
 
 ```json
 {
@@ -481,12 +469,12 @@ Ordered array of HTTP header-fields.
 }
 ```
 
-### HTTP Message Payload (Element)
+#### HTTP Message Payload (Element)
 
 Payload of an HTTP message. Its metadata in the form of headers and data in form
 of Data structure or assets.
 
-#### Properties
+##### Properties
 
 - `attributes`
     - `headers` (HTTP Headers)
@@ -502,11 +490,11 @@ of Data structure or assets.
 
         The `content` SHOULD NOT contain more than one asset of its respective type.
 
-### HTTP Request Message (HTTP Message Payload)
+#### HTTP Request Message (HTTP Message Payload)
 
 HTTP request message.
 
-#### Properties
+##### Properties
 
 - `element`: httpRequest (string, fixed)
 - `attributes`
@@ -529,17 +517,17 @@ HTTP request message.
         be used to resolve the http request input parameters.
 
 
-### HTTP Response Message (HTTP Message Payload)
+#### HTTP Response Message (HTTP Message Payload)
 
 HTTP response message.
 
-#### Properties
+##### Properties
 
 - `element`: httpResponse (string, fixed)
 - `attributes`
     - `statusCode` (number) - HTTP response status code.
 
-## Data Structure Elements
+## II. Data Structure Elements
 
 ### Inheritance and Expanded Element
 
@@ -1222,7 +1210,7 @@ Note this needs an introduction of a new Data Structure element for any type - `
   }]
 ]]
 ```
-## Parse Result Elements
+## III. Parse Result Elements
 
 ### Parse Result (Element)
 
