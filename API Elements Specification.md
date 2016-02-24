@@ -47,17 +47,20 @@ This document conforms to [RFC 2119][], which says:
 
 [MSON][] is used throughout this document.
 
-## Structure of Elements
+## Relationship of Elements
 
-As a summary of the elements described in this document, this shows how these elements are structured. This entire structure can be wrapped in a `Parse` that provides parsing information.
+One purpose of the API Elements specification is to allow consumers to decouple their implementations from the structure of the document. Because of this, when consuming documents of API Elements, it is recommended to write code that queries the tree rather than looking for defined paths.
+
+It is also helpful to know the relationship between elements. The list below shows the relationship between the elements in this specification, but does not specify how the structure must be built.
 
 - Category (API)
   - Copy
   - Data Structure
-  - Category (Group of Resources)
+  - Category (Group of Resource Elements)
   - Resource
     - Copy
     - Data Structure
+		- Category (Group of Transition Elements)
     - Transition
       - Copy
       - Transaction
@@ -66,6 +69,8 @@ As a summary of the elements described in this document, this shows how these el
           - Asset
         - HTTP Response
           - Asset
+
+This main API Category element MAY also be wrapped in a Parse element for conveying parsing information, such as source maps, warnings, and errors.
 
 ## I. Basic Elements
 
