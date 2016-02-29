@@ -1,4 +1,4 @@
-# API Elements Specification
+# API Elements Reference
 
 **Version**: 1.0.0-rc1
 
@@ -7,7 +7,7 @@
   that are pulled from API Blueprint examples on accident.
 -->
 
-- [API Elements Specification](#api-elements-specification)
+- [API Elements Reference](#api-elements-reference)
   - [About this Document](#about-this-document)
   - [Structure of Elements](#structure-of-elements)
   - [I. Basic Elements](#i-basic-elements)
@@ -49,9 +49,9 @@ This document conforms to [RFC 2119][], which says:
 
 ## Relationship of Elements
 
-One purpose of the API Elements specification is to allow consumers to decouple their implementations from the structure of the document. Because of this, when consuming documents of API Elements, it is recommended to write code that queries the tree rather than looking for defined paths.
+One purpose of the API Elements reference is to allow consumers to decouple their implementations from the structure of the document. Because of this, when consuming documents of API Elements, it is recommended to write code that queries the tree rather than looking for defined paths.
 
-It is also helpful to know the relationship between elements. The list below shows the relationship between the elements in this specification, but does not specify how the structure must be built.
+It is also helpful to know the relationship between elements. The list below shows the relationship between the elements in this reference, but does not specify how the structure must be built.
 
 - Category (API)
   - Copy
@@ -221,7 +221,7 @@ Note: At the moment only the HTTP protocol is supported.
         Transaction examples are protocol-specific examples of a REST transaction
         that was initialized by exercising a transition.
 
-        For the time being this specification defines only HTTP-specific transaction
+        For the time being this reference document defines only HTTP-specific transaction
         data structures.
 
 #### Example
@@ -536,7 +536,7 @@ HTTP response message.
 
 ### Inheritance and Expanded Element
 
-This specification is built around the idea of defining recursive data structures. To provide abstraction, for convenience reasons and to not repeat ourselves, these structures can be named (using an _identifier_) and reused. In this specification, the reusable data structures are called _Named Types_.
+This reference document is built around the idea of defining recursive data structures. To provide abstraction, for convenience reasons and to not repeat ourselves, these structures can be named (using an _identifier_) and reused. In this reference document, the reusable data structures are called _Named Types_.
 
 By default, Refract does not enforce inheritance of data, though element definitions are inherited from the defined element types. To inherit data in Refract, the `extend` element is used to merge one or more elements into a final element. In the Data Structure elements, however, when the data is defined, it inherits data from the element definition. Data Structure itself uses inheritance this way, and the Data Structure Refract elements mimics the behavior to provide simplicity and consistency across Data Structure representations.
 
@@ -622,7 +622,7 @@ the references from the example above we get:
 
 ### Base Element
 
-In this specification, every data structure is a sub-type of another data structure, and, therefore, it is directly or indirectly derived from one of the Data Structure _Base Types_. This is expressed as an inheritance of elements in Data Structure Refract, where the predecessor of an element is referred to as element's _Base Element_.
+In this reference document, every data structure is a sub-type of another data structure, and, therefore, it is directly or indirectly derived from one of the Data Structure _Base Types_. This is expressed as an inheritance of elements in Data Structure Refract, where the predecessor of an element is referred to as element's _Base Element_.
 
 Note: Not every Data Structure _Base Type_ is presented in Refract primitive types and vice versa – see the table below.
 
@@ -1360,7 +1360,7 @@ explanation on how and why it was inferred.
 
 
 [MSON]: https://github.com/apiaryio/mson
-[MSON Specification]: https://github.com/apiaryio/mson/blob/master/MSON%20Specification.md
+[MSON Reference]: https://github.com/apiaryio/mson/blob/master/MSON%20Reference.md
 [Refract]: https://github.com/refractproject/refract-spec/blob/master/refract-spec.md
 
 [API Description Elements]: definitions/api-description-elements.md
