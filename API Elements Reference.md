@@ -77,9 +77,11 @@ This main API Category element MAY also be wrapped in a Parse Result element for
 
 ## I. Base API Element Definition
 
+The API Elements reference relies on [Refract][] for its definition and structure. To make this reference document more understandable, this base element has been included and used throughout.
+
 ### Base API Element (object)
 
-The Refract Element contains four properties: `element`, `meta`, `attributes`, and `content`, as defined below. This Element MAY be used recursively throughout the document, even as a value for each of its own meta or attributes.
+The Base API Element contains four properties: `element`, `meta`, `attributes`, and `content`, as defined below. This Element MAY be used recursively throughout the document, even as a value for each of its own meta or attributes.
 
 #### Properties
 
