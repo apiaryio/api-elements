@@ -2,7 +2,7 @@
 API Elements is a structure for describing APIs and the complex data structures used within them. It also provides structures for defining parsing results for parsing API definitions from formats like API Blueprint and Swagger/OpenAPI Format.
 
 ## Specification
-[API Elements Specification](./API Elements Specification.md)
+[API Elements Reference](./API Elements Reference.md)
 
 The specification is built upon the [Refract][] format and is written using [MSON][].
 

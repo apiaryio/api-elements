@@ -9,22 +9,24 @@
 
 - [API Elements Reference](#api-elements-reference)
   - [About this Document](#about-this-document)
-  - [Structure of Elements](#structure-of-elements)
-  - [I. Basic Elements](#i-basic-elements)
+  - [Relationship of Elements](#relationship-of-elements)
+  - [I. Base API Element Definition](#i-base-api-element-definition)
+    - [Base API Element (object)](#base-api-element-object)
+  - [II. Core API Elements](#ii-core-api-elements)
     - [Href (string)](#href-string)
     - [Templated Href (string)](#templated-href-string)
     - [Href Variables (Object Type)](#href-variables-object-type)
-    - [Data Structure (Element)](#data-structure-element)
-    - [Asset (Element)](#asset-element)
-    - [Resource (Element)](#resource-element)
-    - [Transition (Element)](#transition-element)
-    - [Category (Element)](#category-element)
-    - [Copy (Element)](#copy-element)
+    - [Data Structure (Base API Element)](#data-structure-base-api-element)
+    - [Asset (Base API Element)](#asset-base-api-element)
+    - [Resource (Base API Element)](#resource-base-api-element)
+    - [Transition (Base API Element)](#transition-base-api-element)
+    - [Category (Base API Element)](#category-base-api-element)
+    - [Copy (Base API Element)](#copy-base-api-element)
     - [Protocol-specific Elements](#protocol-specific-elements)
-  - [II. Data Structure Elements](#ii-data-structure-elements)
+  - [III. Data Structure Elements](#iii-data-structure-elements)
     - [Inheritance and Expanded Element](#inheritance-and-expanded-element)
-    - [Base Element](#base-element)
-    - [Data Structure Element (Element)](#data-structure-element-element)
+    - [Base Data Structure Element](#base-data-structure-element)
+    - [Data Structure Element (Base API Element)](#data-structure-element-base-api-element)
     - [Type Reference (Ref Element)](#type-reference-ref-element)
     - [Boolean Type (Boolean Element)](#boolean-type-boolean-element)
     - [String Type (String Element)](#string-type-string-element)
@@ -34,10 +36,11 @@
     - [Enum Type (Data Structure Element)](#enum-type-data-structure-element)
     - [Examples](#examples)
   - [III. Parse Result Elements](#iii-parse-result-elements)
-    - [Parse Result (Element)](#parse-result-element)
-    - [Annotation (Element)](#annotation-element)
-    - [Source Map (Element)](#source-map-element)
+    - [Parse Result (Base API Element)](#parse-result-base-api-element)
+    - [Annotation (Base API Element)](#annotation-base-api-element)
+    - [Source Map (Base API Element)](#source-map-base-api-element)
     - [Link Relations](#link-relations)
+  - [IV. Refract Elements](#iv-refract-elements)
 
 ## About this Document
 
@@ -72,7 +75,70 @@ It is also helpful to know the relationship between elements. The list below sho
 
 This main API Category element MAY also be wrapped in a Parse Result element for conveying parsing information, such as source maps, warnings, and errors.
 
-## I. Basic Elements
+## I. Base API Element Definition
+
+### Base API Element (object)
+
+The Refract Element contains four properties: `element`, `meta`, `attributes`, and `content`, as defined below. This Element MAY be used recursively throughout the document, even as a value for each of its own meta or attributes.
+
+#### Properties
+
+- `element` (string, required)
+
+    The `element` property defines the name of element. It MUST be a string that references an element, which SHOULD be defined.
+
+- `meta` (enum)
+
+    The `meta` property is a reserved object for Refract-specific values. When `meta` is an object, it MAY contain elements itself. The element definition SHOULD be used when interacting with `meta` and its properties and values.
+
+    - Members
+        - (object)
+            - `id` - Unique Identifier, MUST be unique throughout the document
+            - `ref` (Element Pointer) - Pointer to referenced element or type
+            - `classes` (array[string]) - Array of classifications for given element
+            - `title` (string) - Human-readable title of element
+            - `description` (string) - Human-readable description of element
+            - `links` (array[Link Element]) - Meta links for a given element
+        - (array[Member Element])
+
+- `attributes` (enum)
+
+    The `attributes` property defines attributes about the given instance of the element, as specified by the `element` property. When `attributes` is an object, it MAY contain elements itself. The element definition SHOULD be used when interacting with `attributes` and its properties and values.
+
+    The `attributes` are used later in this document for representing data structures.
+
+    - Members
+        - (object)
+        - (array[Member Element])
+
+- `content` (enum)
+
+    The `content` property defines the content of the instance of the specified element. The value MAY be any of the Refract primitive types.
+
+    - Members
+        - (null)
+        - (string)
+        - (number)
+        - (boolean)
+        - (array)
+        - (object)
+        - (Base API Element)
+
+#### Example
+
+An element MAY look like this, where `foo` is the element name, `id` is a meta attribute for the `foo` element, and `content` is a string with a value of `bar`. Here, the `id` is `baz` and MAY be used for referencing.
+
+```json
+{
+  "element": "foo",
+  "meta": {
+    "id": "baz"
+  },
+  "content": "bar"
+}
+```
+
+## II. Core API Elements
 
 ### Href (string)
 
@@ -93,7 +159,7 @@ The definition is a Data Structure element `Object Type` where keys are respecti
 
 - `element`: hrefVariables (string, fixed)
 
-### Data Structure (Element)
+### Data Structure (Base API Element)
 
 Data structure definition using Data Structure elements.
 
@@ -102,7 +168,7 @@ Data structure definition using Data Structure elements.
 - `element`: dataStructure (string, fixed)
 - `content` (Data Structure Element)
 
-### Asset (Element)
+### Asset (Base API Element)
 
 Arbitrary data asset.
 
@@ -119,7 +185,7 @@ Arbitrary data asset.
     - `href` (Href) - Link to the asset
 - `content` (string) - A textual representation of the asset
 
-### Resource (Element)
+### Resource (Base API Element)
 
 The Resource representation with its available transitions and its data.
 
@@ -174,7 +240,7 @@ The Resource representation with its available transitions and its data.
 }
 ```
 
-### Transition (Element)
+### Transition (Base API Element)
 
 A transition is an available progression from one state to another state.
 Exercising a transition initiates a transaction.
@@ -237,7 +303,7 @@ Note: At the moment only the HTTP protocol is supported.
 }
 ```
 
-### Category (Element)
+### Category (Base API Element)
 
 Grouping element – a set of elements forming a logical unit of an API such as
 group of related resources or data structures.
@@ -271,7 +337,7 @@ transitions.
         - Class `user` - User-specific metadata. Metadata written in the source.
         - Class `adapter` - Serialization-specific metadata. Metadata provided by adapter.
 
-- `content` (array[Element])
+- `content` (array[Base API Element])
 
 #### Example
 
@@ -324,7 +390,7 @@ transitions.
 }
 ```
 
-### Copy (Element)
+### Copy (Base API Element)
 
 Copy element represents a copy text—a textual information in API description.
 Its content is a string and it MAY include information about the media type
@@ -375,7 +441,7 @@ Given an API description with following layout:
 
 ### Protocol-specific Elements
 
-#### HTTP Transaction (Element)
+#### HTTP Transaction (Base API Element)
 
 Example of an HTTP Transaction. The example's content consist of a request-response
 message pair. A transaction example MUST contain exactly one HTTP request and one HTTP response message.
@@ -475,7 +541,7 @@ Ordered array of HTTP header-fields.
 }
 ```
 
-#### HTTP Message Payload (Element)
+#### HTTP Message Payload (Base API Element)
 
 Payload of an HTTP message including headers, data structures, or assets.
 
@@ -532,7 +598,7 @@ HTTP response message.
 - `attributes`
     - `statusCode` (number) - HTTP response status code.
 
-## II. Data Structure Elements
+## III. Data Structure Elements
 
 ### Inheritance and Expanded Element
 
@@ -620,7 +686,7 @@ the references from the example above we get:
 }
 ```
 
-### Base Element
+### Base Data Structure Element
 
 In this reference document, every data structure is a sub-type of another data structure, and, therefore, it is directly or indirectly derived from one of the Data Structure _Base Types_. This is expressed as an inheritance of elements in Data Structure Refract, where the predecessor of an element is referred to as element's _Base Element_.
 
@@ -638,7 +704,7 @@ Note: Not every Data Structure _Base Type_ is presented in Refract primitive typ
 |     object     |  Object Element  |     object     |   Object Type  |
 |      null      |   Null Element   |        -       |        -       |
 
-### Data Structure Element (Element)
+### Data Structure Element (Base API Element)
 
 Base element for every Data Structure element.
 
@@ -1217,7 +1283,7 @@ Note this needs an introduction of a new Data Structure element for any type - `
 ```
 ## III. Parse Result Elements
 
-### Parse Result (Element)
+### Parse Result (Base API Element)
 
 A result of parsing of an API description document.
 
@@ -1246,7 +1312,7 @@ The parse result is (using null in `category` content for simplicity):
 ]
 ```
 
-### Annotation (Element)
+### Annotation (Base API Element)
 
 Annotation for a source file. Usually generated by a parser or adapter.
 
@@ -1290,7 +1356,7 @@ Annotation for a source file. Usually generated by a parser or adapter.
 }
 ```
 
-### Source Map (Element)
+### Source Map (Base API Element)
 
 Source map of an Element.
 
@@ -1356,6 +1422,19 @@ the `inferred` link tells the user that the element was created based on some
 varying assumptions, and the URL to which the link points MAY provide an
 explanation on how and why it was inferred.
 
+## IV. Refract Elements
+
+These elements and definitions are referenced as part of the base Refract specification for the purpose of identifying, referencing, and pointing to elements and their respective meta, attributes, or content.
+
+* [String Element][]
+* [Number Element][]
+* [Boolean Element][]
+* [Array Element][]
+* [Object Element][]
+* [Ref Element][]
+* [Element Pointer][]
+* [Link Element][]
+
 ---
 
 
@@ -1368,6 +1447,15 @@ explanation on how and why it was inferred.
 [Parse Result Elements]: definitions/parse-result-elements.md
 
 [Data Structure Element]: #data-structure-element-element
+
+[String Element]: https://github.com/refractproject/refract-spec/blob/master/refract-spec.md#string-element-element
+[Number Element]: https://github.com/refractproject/refract-spec/blob/master/refract-spec.md#number-element-element
+[Boolean Element]: https://github.com/refractproject/refract-spec/blob/master/refract-spec.md#boolean-element-element
+[Array Element]: https://github.com/refractproject/refract-spec/blob/master/refract-spec.md#array-element-element
+[Object Element]: https://github.com/refractproject/refract-spec/blob/master/refract-spec.md#object-element-element
+[Ref Element]: https://github.com/refractproject/refract-spec/blob/master/refract-spec.md#ref-element-element
+[Element Pointer]: https://github.com/refractproject/refract-spec/blob/master/refract-spec.md#element-pointer-enum
+[Link Element]: https://github.com/refractproject/refract-spec/blob/master/refract-spec.md#link-element-element
 
 [RFC 2119]: https://datatracker.ietf.org/doc/rfc2119/
 [RFC 3986]: https://datatracker.ietf.org/doc/rfc3986/
