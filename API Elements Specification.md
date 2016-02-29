@@ -8,36 +8,36 @@
 -->
 
 - [API Elements Specification](#api-elements-specification)
-	- [About this Document](#about-this-document)
-	- [Structure of Elements](#structure-of-elements)
-	- [I. Basic Elements](#i-basic-elements)
-		- [Href (string)](#href-string)
-		- [Templated Href (string)](#templated-href-string)
-		- [Href Variables (Object Type)](#href-variables-object-type)
-		- [Data Structure (Element)](#data-structure-element)
-		- [Asset (Element)](#asset-element)
-		- [Resource (Element)](#resource-element)
-		- [Transition (Element)](#transition-element)
-		- [Category (Element)](#category-element)
-		- [Copy (Element)](#copy-element)
-		- [Protocol-specific Elements](#protocol-specific-elements)
-	- [II. Data Structure Elements](#ii-data-structure-elements)
-		- [Inheritance and Expanded Element](#inheritance-and-expanded-element)
-		- [Base Element](#base-element)
-		- [Data Structure Element (Element)](#data-structure-element-element)
-		- [Type Reference (Ref Element)](#type-reference-ref-element)
-		- [Boolean Type (Boolean Element)](#boolean-type-boolean-element)
-		- [String Type (String Element)](#string-type-string-element)
-		- [Number Type (Number Element)](#number-type-number-element)
-		- [Array Type (Array Element)](#array-type-array-element)
-		- [Object Type (Object Element)](#object-type-object-element)
-		- [Enum Type (Data Structure Element)](#enum-type-data-structure-element)
-		- [Examples](#examples)
-	- [III. Parse Result Elements](#iii-parse-result-elements)
-		- [Parse Result (Element)](#parse-result-element)
-		- [Annotation (Element)](#annotation-element)
-		- [Source Map (Element)](#source-map-element)
-		- [Link Relations](#link-relations)
+  - [About this Document](#about-this-document)
+  - [Structure of Elements](#structure-of-elements)
+  - [I. Basic Elements](#i-basic-elements)
+    - [Href (string)](#href-string)
+    - [Templated Href (string)](#templated-href-string)
+    - [Href Variables (Object Type)](#href-variables-object-type)
+    - [Data Structure (Element)](#data-structure-element)
+    - [Asset (Element)](#asset-element)
+    - [Resource (Element)](#resource-element)
+    - [Transition (Element)](#transition-element)
+    - [Category (Element)](#category-element)
+    - [Copy (Element)](#copy-element)
+    - [Protocol-specific Elements](#protocol-specific-elements)
+  - [II. Data Structure Elements](#ii-data-structure-elements)
+    - [Inheritance and Expanded Element](#inheritance-and-expanded-element)
+    - [Base Element](#base-element)
+    - [Data Structure Element (Element)](#data-structure-element-element)
+    - [Type Reference (Ref Element)](#type-reference-ref-element)
+    - [Boolean Type (Boolean Element)](#boolean-type-boolean-element)
+    - [String Type (String Element)](#string-type-string-element)
+    - [Number Type (Number Element)](#number-type-number-element)
+    - [Array Type (Array Element)](#array-type-array-element)
+    - [Object Type (Object Element)](#object-type-object-element)
+    - [Enum Type (Data Structure Element)](#enum-type-data-structure-element)
+    - [Examples](#examples)
+  - [III. Parse Result Elements](#iii-parse-result-elements)
+    - [Parse Result (Element)](#parse-result-element)
+    - [Annotation (Element)](#annotation-element)
+    - [Source Map (Element)](#source-map-element)
+    - [Link Relations](#link-relations)
 
 ## About this Document
 
@@ -60,7 +60,7 @@ It is also helpful to know the relationship between elements. The list below sho
   - Resource
     - Copy
     - Data Structure
-		- Category (Group of Transition Elements)
+    - Category (Group of Transition Elements)
     - Transition
       - Copy
       - Transaction
@@ -70,7 +70,7 @@ It is also helpful to know the relationship between elements. The list below sho
         - HTTP Response
           - Asset
 
-This main API Category element MAY also be wrapped in a Parse element for conveying parsing information, such as source maps, warnings, and errors.
+This main API Category element MAY also be wrapped in a Parse Result element for conveying parsing information, such as source maps, warnings, and errors.
 
 ## I. Basic Elements
 
@@ -131,6 +131,7 @@ The Resource representation with its available transitions and its data.
     - `hrefVariables` (Href Variables) - Definition of URI Template variables used in the `href` property.
 - `content` (array)
     - (Copy) - Resource description's copy text.
+    - (Category) - A group of Transition elements
     - (Transition) - State transition available for this resource.
 
         The `content` MAY include multiple `Transition` elements.
@@ -325,12 +326,12 @@ transitions.
 
 ### Copy (Element)
 
-Copy element represents a copy text. A textual information in API description.
+Copy element represents a copy text—a textual information in API description.
 Its content is a string and it MAY include information about the media type
 of the copy's content.
 
 Unless specified otherwise, a copy element's content represents the
-description of it's parent element and SHOULD be used instead of parent
+description of its parent element and SHOULD be used instead of parent
 element's description metadata.
 
 #### Properties
@@ -476,8 +477,7 @@ Ordered array of HTTP header-fields.
 
 #### HTTP Message Payload (Element)
 
-Payload of an HTTP message. Its metadata in the form of headers and data in form
-of Data structure or assets.
+Payload of an HTTP message including headers, data structures, or assets.
 
 ##### Properties
 
@@ -622,7 +622,7 @@ the references from the example above we get:
 
 ### Base Element
 
-In this specification, every data structure is a sub-type of another data structure, and, therefore, it is directly or indirectly derived from one of the Data Structure _Base Types_. This is expressed as an inheritance of elements in Data Structure Refract. Where the predecessor of an element is referred to as element's _Base Element_.
+In this specification, every data structure is a sub-type of another data structure, and, therefore, it is directly or indirectly derived from one of the Data Structure _Base Types_. This is expressed as an inheritance of elements in Data Structure Refract, where the predecessor of an element is referred to as element's _Base Element_.
 
 Note: Not every Data Structure _Base Type_ is presented in Refract primitive types and vice versa – see the table below.
 
@@ -1335,13 +1335,12 @@ series of characters.
 ```
 
 This reads, "The location starts at the 5th character of the source file. It
-includes the 12 consequent characters including the starting one. Then it
+includes the 12 subsequent characters including the starting one. Then it
 continues at the 21st character for another 12 characters."
 
 ### Link Relations
 
-In addition to conforming to [RFC 5988][] for link relations per the [base
-specification](../refract-spec.md), there are also additional link relations
+In addition to conforming to [RFC 5988][] for link relations per the [base specification](https://github.com/refractproject/refract-spec/blob/master/refract-spec.md), there are also additional link relations
 available for parse results.
 
 #### Origin Link Relation
