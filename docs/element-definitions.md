@@ -1,83 +1,12 @@
-# API Elements Reference
+# Element Definitions
 
-**Version**: 1.0.0-rc1
+This defines all of the elements for use within API Elements documents.
 
-<!--
-  The TOC Atom lib doesn't like Markdown headings, so you have to remove items
-  that are pulled from API Blueprint examples on accident.
--->
-
-- [API Elements Reference](#api-elements-reference)
-  - [About this Document](#about-this-document)
-  - [Relationship of Elements](#relationship-of-elements)
-  - [I. Base API Element Definition](#i-base-api-element-definition)
-    - [Base API Element (object)](#base-api-element-object)
-  - [II. Core API Elements](#ii-core-api-elements)
-    - [Href (string)](#href-string)
-    - [Templated Href (string)](#templated-href-string)
-    - [Href Variables (Object Type)](#href-variables-object-type)
-    - [Data Structure (Base API Element)](#data-structure-base-api-element)
-    - [Asset (Base API Element)](#asset-base-api-element)
-    - [Resource (Base API Element)](#resource-base-api-element)
-    - [Transition (Base API Element)](#transition-base-api-element)
-    - [Category (Base API Element)](#category-base-api-element)
-    - [Copy (Base API Element)](#copy-base-api-element)
-    - [Protocol-specific Elements](#protocol-specific-elements)
-  - [III. Data Structure Elements](#iii-data-structure-elements)
-    - [Inheritance and Expanded Element](#inheritance-and-expanded-element)
-    - [Base Data Structure Element](#base-data-structure-element)
-    - [Data Structure Element (Base API Element)](#data-structure-element-base-api-element)
-    - [Type Reference (Ref Element)](#type-reference-ref-element)
-    - [Boolean Type (Boolean Element)](#boolean-type-boolean-element)
-    - [String Type (String Element)](#string-type-string-element)
-    - [Number Type (Number Element)](#number-type-number-element)
-    - [Array Type (Array Element)](#array-type-array-element)
-    - [Object Type (Object Element)](#object-type-object-element)
-    - [Enum Type (Data Structure Element)](#enum-type-data-structure-element)
-    - [Examples](#examples)
-  - [III. Parse Result Elements](#iii-parse-result-elements)
-    - [Parse Result (Base API Element)](#parse-result-base-api-element)
-    - [Annotation (Base API Element)](#annotation-base-api-element)
-    - [Source Map (Base API Element)](#source-map-base-api-element)
-    - [Link Relations](#link-relations)
-  - [IV. Refract Elements](#iv-refract-elements)
-
-## About this Document
-
-This document conforms to [RFC 2119][], which says:
-
-> The key words “MUST”, “MUST NOT”, “REQUIRED”, “SHALL”, “SHALL NOT”, “SHOULD”, “SHOULD NOT”, “RECOMMENDED”, “MAY”, and “OPTIONAL” in this document are to be interpreted as described in RFC 2119.
-
-[MSON][] is used throughout this document.
-
-## Relationship of Elements
-
-One purpose of the API Elements reference is to allow consumers to decouple their implementations from the structure of the document. Because of this, when consuming documents of API Elements, it is recommended to write code that queries the tree rather than looking for defined paths.
-
-It is also helpful to know the relationship between elements. The list below shows the relationship between the elements in this reference, but does not specify how the structure must be built.
-
-- Category (API)
-  - Copy
-  - Data Structure
-  - Category (Group of Resource Elements)
-  - Resource
-    - Copy
-    - Data Structure
-    - Category (Group of Transition Elements)
-    - Transition
-      - Copy
-      - Transaction
-        - Copy
-        - HTTP Request
-          - Asset
-        - HTTP Response
-          - Asset
-
-This main API Category element MAY also be wrapped in a Parse Result element for conveying parsing information, such as source maps, warnings, and errors.
-
-## I. Base API Element Definition
+## Defining the Base API Element
 
 The API Elements reference relies on [Refract][] for its definition and structure. To make this reference document more understandable, this base element has been included and used throughout.
+
+This base element defines the structure of each element in this reference. Elements then extend upon this structure in their own definitions throughout.
 
 ### Base API Element (object)
 
@@ -140,7 +69,7 @@ An element MAY look like this, where `foo` is the element name, `id` is a meta a
 }
 ```
 
-## II. Core API Elements
+## Core API Elements
 
 ### Href (string)
 
@@ -600,7 +529,7 @@ HTTP response message.
 - `attributes`
     - `statusCode` (number) - HTTP response status code.
 
-## III. Data Structure Elements
+## Data Structure Elements
 
 ### Inheritance and Expanded Element
 
@@ -1283,7 +1212,7 @@ Note this needs an introduction of a new Data Structure element for any type - `
   }]
 ]]
 ```
-## III. Parse Result Elements
+## Parse Result Elements
 
 ### Parse Result (Base API Element)
 
@@ -1424,7 +1353,7 @@ the `inferred` link tells the user that the element was created based on some
 varying assumptions, and the URL to which the link points MAY provide an
 explanation on how and why it was inferred.
 
-## IV. Refract Elements
+## Refract Elements
 
 These elements and definitions are referenced as part of the base Refract specification for the purpose of identifying, referencing, and pointing to elements and their respective meta, attributes, or content.
 
