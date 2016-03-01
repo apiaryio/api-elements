@@ -1,43 +1,12 @@
-# API Elements Reference
+# Element Definitions
 
-**Version**: 1.0.0-rc1
+This defines all of the elements for use within API Elements documents.
 
-## About this Document
-
-This document conforms to [RFC 2119][], which says:
-
-> The key words “MUST”, “MUST NOT”, “REQUIRED”, “SHALL”, “SHALL NOT”, “SHOULD”, “SHOULD NOT”, “RECOMMENDED”, “MAY”, and “OPTIONAL” in this document are to be interpreted as described in RFC 2119.
-
-[MSON][] is used throughout this document.
-
-## Relationship of Elements
-
-One purpose of the API Elements reference is to allow consumers to decouple their implementations from the structure of the document. Because of this, when consuming documents of API Elements, it is recommended to write code that queries the tree rather than looking for defined paths.
-
-It is also helpful to know the relationship between elements. The list below shows the relationship between the elements in this reference, but does not specify how the structure must be built.
-
-- Category (API)
-    - Copy
-    - Data Structure
-    - Category (Group of Resource Elements)
-    - Resource
-        - Copy
-        - Data Structure
-        - Category (Group of Transition Elements)
-        - Transition
-            - Copy
-            - Transaction
-                - Copy
-                - HTTP Request
-                    - Asset
-                - HTTP Response
-                    - Asset
-
-This main API Category element MAY also be wrapped in a Parse Result element for conveying parsing information, such as source maps, warnings, and errors.
-
-## Base API Element Definition
+## Defining the Base API Element
 
 The API Elements reference relies on [Refract][] for its definition and structure. To make this reference document more understandable, this base element has been included and used throughout.
+
+This base element defines the structure of each element in this reference. Elements then extend upon this structure in their own definitions throughout.
 
 ### Base API Element (object)
 

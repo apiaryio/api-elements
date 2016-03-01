@@ -1,1 +1,8 @@
 site_name: API Elements
+pages:
+  - Home: 'index.md'
+  - Reference:
+    - Overview: 'overview.md'
+    - 'Element Definitions': 'element-definitions.md'
+    - 'Additional Information': 'additional-information.md'
+  - Tools: 'tools.md'
