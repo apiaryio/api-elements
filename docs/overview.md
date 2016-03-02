@@ -78,6 +78,21 @@ Additional examples are provided throughout this documentation for specific API 
 
 As mentioned, for consumers, it is important to not couple code to the specific structure of an API Elements document. The common pitfall is to reference elements by specifying a specific and strict path to those elements, but it is recommended to try to avoid this for sake of evolvability and safety.
 
+For example, to get the first HTTP Transaction element from an API Elements tree. 
+
+Relying on a fixed tree structure:
+
+```js
+const transaction = apielements.content[0].content[0].content[0].content[0].content[0]
+```
+
+Querying the tree in a way that does not use a strict path:
+
+```js
+import query from 'refract-query';
+const transaction = query(apielements, {element: 'httpTransaction'})[0];
+```
+
 Given that API Elements use [Refract][], the structure of the document is recursive by nature. When looking for specific elements, it is best then to walk the tree to look for a match. Querying the tree means that your code will be decoupled not only from specific API description documents, but it will also be decoupled from the structure of those documents.
 
 [Refract]: https://github.com/refractproject/refract-spec/blob/master/refract-spec.md
