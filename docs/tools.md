@@ -6,7 +6,7 @@ Fury is a library for parsing API description documents and return API Elements.
 
 ## [API Description Parsing Service](http://docs.apiblueprintapi.apiary.io/#reference)
 
-API Description Parsing Serice (formerly API Bluerpint API) is a hosted service that takes API Blueprint as an input and return API Element.s 
+API Description Parsing Serice (formerly API Bluerpint API) is a hosted service that takes API Blueprint as an input and return API Elements.
 
 ## [Drafter](https://github.com/apiaryio/drafter)
 
