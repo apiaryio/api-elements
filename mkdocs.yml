@@ -6,3 +6,4 @@ pages:
     - 'Element Definitions': 'element-definitions.md'
     - 'Additional Information': 'additional-information.md'
   - Tools: 'tools.md'
+repo_url: 'https://github.com/apiaryio/api-elements'
