@@ -2,6 +2,8 @@
 
 **Version**: 1.0.0-rc1
 
+**Mime Type**: TBD
+
 ## About API Elements
 
 API Elements exist to provide a standard and canonical way to interact with the elements of an API. These elements are usually found in description formats, such as API Blueprint and Swagger/OpenAPI Format, and are used in various contexts. The idea is that consumers of API Elements can use this single format while providing support for the other formats.
@@ -70,13 +72,13 @@ Here is an example of what an element MAY look like.
 }
 ```
 
-Additional examples are provided throughout this documentation. As this shows, though, it allows for API Elements to only define data, but also metadata as well. This is especially important when providing source maps and adding human readable titles to values.
+Additional examples are provided throughout this documentation for specific API Elements. As this shows, though, it allows for API Elements to not only define data, but also metadata as well. This is especially important when providing source maps and adding human readable titles to values.
 
 ## Consuming Documents
 
-As mentioned, for consumers, it is important to not couple code to the specific structure of an API Elements document. The common pattern is to reference elements by specifying a specific and strict path to those elements, but it is recommended to try to avoid this for sake of evolvability and safety.
+As mentioned, for consumers, it is important to not couple code to the specific structure of an API Elements document. The common pitfall is to reference elements by specifying a specific and strict path to those elements, but it is recommended to try to avoid this for sake of evolvability and safety.
 
-Given that API Elements use [Refract][], the structure of the document is recursive by nature. When looking for specific elements, it is best then to walk the tree to look for a match. Querying the tree means that your code will be decoupled from not only from specific API description documents, but it will also be decoupled from the structure of those documents.
+Given that API Elements use [Refract][], the structure of the document is recursive by nature. When looking for specific elements, it is best then to walk the tree to look for a match. Querying the tree means that your code will be decoupled not only from specific API description documents, but it will also be decoupled from the structure of those documents.
 
 [Refract]: https://github.com/refractproject/refract-spec/blob/master/refract-spec.md
 [MSON]: https://github.com/apiaryio/mson

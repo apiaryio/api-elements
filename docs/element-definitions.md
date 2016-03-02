@@ -1,6 +1,6 @@
 # Element Definitions
 
-This defines all of the elements for use within API Elements documents.
+This document defines all of the elements for use within API Elements.
 
 ## Defining the Base API Element
 
