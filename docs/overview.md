@@ -6,7 +6,9 @@
 
 ## About API Elements
 
-The purpose of API Elements is to provide a single, unifying structure for describing APIs across all API description formats and serialization formats. There currently exists several formats one can choose when defining an API, from API Blueprint to Swagger—which now known as the OpenAPI Format. There are also many serialization formats such as XML or JSON. Without a way to parse these formats to the same structure, developers are required to handle each format one-by-one, each in a different way and each translating to their internal domain model.
+The purpose of API Elements is to provide a single, unifying structure for describing APIs across all API description formats and serialization formats. There currently exists several formats one can choose when defining an API, from API Blueprint to Swagger—which is now known as the OpenAPI Format. There are also many serialization formats such as XML or JSON. Without a way to parse these formats to the same structure, developers are required to handle each format one-by-one, each in a different way and each translating to their internal domain model. This is tedious, time-consuming, and requires each maintainer to stay in step with every format they support.
+
+API Elements solves this complex problem in a simple way. It allows parsers to parse to a single structure and allows tool builders to consume one structure for all formats.
 
 If there is one thing API description formats have taught us, it is that a single contract provides the best and fastest way to design and iterate on an API. Developers building the API can move independently as they progress towards the defined contract found in the API Blueprint or Swagger document. Conversely, API consumers can build tools for consuming the API based on the API definition document.
 
