@@ -7,3 +7,8 @@ pages:
     - 'Additional Information': 'additional-information.md'
   - Tools: 'tools.md'
 repo_url: 'https://github.com/apiaryio/api-elements'
+theme: readthedocs
+markdown_extensions:
+    - toc:
+        permalink: true
+    - admonition:
