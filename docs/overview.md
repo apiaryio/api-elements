@@ -6,9 +6,15 @@
 
 ## About API Elements
 
-API Elements exist to provide a standard and canonical way to interact with the elements of an API. These elements are usually found in description formats, such as API Blueprint and Swagger/OpenAPI Format, and are used in various contexts. The idea is that consumers of API Elements can use this single format while providing support for the other formats.
+The purpose of API Elements is to provide a single, unifying structure for describing APIs across all API description formats and serialization formats. There currently exists several formats one can choose when defining an API, from API Blueprint to Swagger—which now known as the OpenAPI Format. There are also many serialization formats such as XML or JSON. Without a way to parse these formats to the same structure, developers are required to handle each format one-by-one, each in a different way and each translating to their internal domain model.
 
-An element is an individual piece that makes up an API. These can range from defining a resource or an HTTP request.
+If there is one thing API description formats have taught us, it is that a single contract provides the best and fastest way to design and iterate on an API. Developers building the API can move independently as they progress towards the defined contract found in the API Blueprint or Swagger document. Conversely, API consumers can build tools for consuming the API based on the API definition document.
+
+This same pattern has proven to be just as valuable for building API description formats and tooling. API Elements is the contract for producing and consuming the many description and serialization formats and allows everyone to move quickly and independently.
+
+## What is an Element?
+
+API Elements is made up of many small elements that have a rich semantic meaning given their value and context. An element is an individual piece that makes up an API, and can range from defining a resource to providing an example of an HTTP request.
 
 The API Elements project defines elements used for:
 
@@ -56,7 +62,7 @@ Every element defined with API Elements has four primary pieces of data.
 - `attributes` (object) - user-specified attributes for a given element
 - `content` - value of the element based on its type
 
-This structure is based on [Refract][], and is expanded and defined better in the [element definition](./element.definitions.md) file.
+This structure is based on [Refract][], and is expanded and defined better in the [element definition](./element-definitions.md) file.
 
 Here is an example of what an element MAY look like.
 
@@ -78,7 +84,7 @@ Additional examples are provided throughout this documentation for specific API 
 
 As mentioned, for consumers, it is important to not couple code to the specific structure of an API Elements document. The common pitfall is to reference elements by specifying a specific and strict path to those elements, but it is recommended to try to avoid this for sake of evolvability and safety.
 
-For example, to get the first HTTP Transaction element from an API Elements tree. 
+For example, to get the first HTTP Transaction element from an API Elements tree.
 
 Relying on a fixed tree structure:
 

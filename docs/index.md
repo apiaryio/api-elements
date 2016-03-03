@@ -2,10 +2,14 @@
 
 API Elements is a structure for describing APIs and the complex data structures used within them. It also provides structures for defining parsing results for parsing API definitions from formats like API Blueprint and Swagger/OpenAPI Format.
 
+## Getting Started
+
+To start learning about and using API Elements, please check out the [overview](./overview.md), which includes explanations and examples. If you are interested in finding libraries and tools for building and consuming API Elements, you will find this information on the [tools](./tools.md) page.
+
 ## Contributing
 
 Feel free report problems or propose new ideas using the API Elements GitHub
-[issues][].
+[issues][]. We are always interested in Pull Requests as well for changes.
 
 ## About this Documentation
 
