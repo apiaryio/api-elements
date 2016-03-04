@@ -4,14 +4,14 @@
 
 ### API Blueprint Example
 
-Given an API Blueprint like this:
+This shows an example of the parse results of an API Blueprint. Here is a very minimal example API Blueprint.
 
 ```markdown
 # My API
 ## Foo [/foo]
 ```
 
-When the document is parsed, then it returns a serialization of API Elements that looks like:
+When this document is parsed, it returns a serialization of API Elements that looks like the following.
 
 ```json
 {
@@ -47,7 +47,7 @@ When the document is parsed, then it returns a serialization of API Elements tha
 
 ### Swagger / OpenAPI Format Example
 
-Given a Swagger document like this:
+This shows an example of the parse results of a Swagger document.
 
 ```json
 {
@@ -62,7 +62,7 @@ Given a Swagger document like this:
 }
 ```
 
-When the document is parsed, then it returns a serialization of API Elements that looks like:
+When this document is parsed, it returns a serialization of API Elements that looks like:
 
 ```json
 {
@@ -94,7 +94,7 @@ As you can see, Swagger and API Blueprint both convey the same information resul
 
 This section shows what individual and specific data structures look like when converted to API Elements. In the context of an API description or parse results, these structures will be nested within the document.
 
-Given an [MSON][] definition like:
+If you have an [MSON][] definition like the one below.
 
 ```markdown
 # My List (array)
@@ -103,7 +103,7 @@ Given an [MSON][] definition like:
 - 3 (number)
 ```
 
-When the structure is parsed, then it returns a serialization of API Elements that looks like:
+When the structure is parsed, it returns a serialization of API Elements that looks like:
 
 ```json
 {
