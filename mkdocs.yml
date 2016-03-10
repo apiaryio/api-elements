@@ -5,6 +5,7 @@ pages:
     - Overview: 'overview.md'
     - 'Element Definitions': 'element-definitions.md'
     - 'Additional Information': 'additional-information.md'
+  - Examples: 'examples.md'
   - Tools: 'tools.md'
 repo_url: 'https://github.com/apiaryio/api-elements'
 theme: readthedocs
