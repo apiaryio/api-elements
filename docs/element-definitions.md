@@ -1375,27 +1375,31 @@ For changes that need to make unsafe changes, a custom media type or profile SHO
 
 ## Example
 
-This `extension` element has a custom content, and the meaning and handling instructions for this content
+This `extension` element has a custom content, and the meaning and handling instructions for this content.
 
 ```json
 {
-    "element": "extention",
+    "element": "extension",
     "meta": {
         "links": [
             {
                 "element": "link",
                 "attributes": {
                   "relation": "profile",
-                  "href": "http://example.com/my/extension/"
+                  "href": "http://example.com/extensions/info/"
                 }
             }
         ]
     },
     "content": {
-      "foo": "bar"
+      "version": "1.0"
     }
 }
 ```
+
+This specific extension adds an object for including information about an API that may be specific to an implementation—in this case, a version number of the API. The URL `http://example.com/extensions/info/` would then provide instructions on the meaning and structure of the `content`.
+
+As a tool comes across this extension element, it would look at the profile URL to see if it understands this particular element. If not, it can ignore it safely, but if so, it can use it as it sees fit.
 
 ## Refract Elements
 
