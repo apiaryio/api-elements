@@ -1353,6 +1353,54 @@ the `inferred` link tells the user that the element was created based on some
 varying assumptions, and the URL to which the link points MAY provide an
 explanation on how and why it was inferred.
 
+## Extending API Elements
+
+An API Elements document MAY be extended by providing a [profile link](https://www.ietf.org/rfc/rfc6906.txt) that describes how non-specification elements should be handled.
+
+Additionally, an `extension` element is provided as a way to extend API Elements documents to include additional data not expressed by the elements in this specification.
+
+When the `extension` element is used, it SHOULD include a profile link that provides information on how the content and attributes SHOULD be handled. Additionally, the presence of an `extension` element MUST NOT change the meaning of the rest of the API Elements document in which it is found. In other words, a tool SHOULD be able to safely ignore an `extension` element.
+
+For changes that need to make unsafe changes, a custom media type or profile SHOULD be used.
+
+### Extension (Base API Element)
+
+- `element`: extension (string, fixed)
+- `content` (enum) - Custom content of extension element
+    - (string)
+    - (number)
+    - (boolean)
+    - (array)
+    - (object)
+
+## Example
+
+This `extension` element has a custom content, and the meaning and handling instructions for this content.
+
+```json
+{
+    "element": "extension",
+    "meta": {
+        "links": [
+            {
+                "element": "link",
+                "attributes": {
+                  "relation": "profile",
+                  "href": "http://example.com/extensions/info/"
+                }
+            }
+        ]
+    },
+    "content": {
+      "version": "1.0"
+    }
+}
+```
+
+This specific extension adds an object for including information about an API that may be specific to an implementation—in this case, a version number of the API. The URL `http://example.com/extensions/info/` would then provide instructions on the meaning and structure of the `content`.
+
+As a tool comes across this extension element, it would look at the profile URL to see if it understands this particular element. If not, it can ignore it safely, but if so, it can use it as it sees fit.
+
 ## Refract Elements
 
 These elements and definitions are referenced as part of the base Refract specification for the purpose of identifying, referencing, and pointing to elements and their respective meta, attributes, or content.
