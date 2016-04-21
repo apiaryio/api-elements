@@ -259,6 +259,7 @@ transitions.
             - dataStructures - Category is a set of data structures.
             - scenario - Category is set of steps.
             - transitions - Category is a group of transitions.
+            - authenticationSchemes - Category is a group of authentication schemes
 - `attributes`
     - `meta` (array[Member Element]) - Arbitrary metadata
 
@@ -380,6 +381,9 @@ message pair. A transaction example MUST contain exactly one HTTP request and on
 ##### Properties
 
 - `element`: httpTransaction (string, fixed)
+- `attributes`
+    - `authenticationSchemes` (array[Base Authentication Scheme])
+    - `scopes` (array[Oauth2 Scope])
 - `content` (array) - Request and response message pair (tuple).
     - (Copy) - HTTP Transaction description's copy text.
     - (HTTP Request Message)
@@ -1352,6 +1356,50 @@ inferred or whether it was found in the originating document. The presence of
 the `inferred` link tells the user that the element was created based on some
 varying assumptions, and the URL to which the link points MAY provide an
 explanation on how and why it was inferred.
+
+## Authentication
+
+### Base Authentication Scheme (Base API Element)
+
+This defines the base for all authentication schemes.
+
+### Basic Authentication (Base Authentication Scheme)
+
+#### Properties
+- `element`: Basic Authentication (string, fixed)
+- `attributes`
+    - `username` (string)
+    - `password` (string)
+
+### API Key Authentication (Base Authentication Scheme)
+
+Note: Instead of `name` and `in` I did header name and query param name
+
+#### Properties
+- `element`: API Key Authentication (string, fixed)
+- `attributes`
+    - `httpHeaderName` (string)
+    - `queryParameterName` (string)
+
+### Oauth 2 (Base Authentication Scheme)
+
+Note: I called this `grantType` instead of `flow` and used words verbatim from spec.
+
+#### Properties
+- `element`: Oauth 2 Authorization (string, fixed)
+- `attributes`
+    - `scopes` (array[Oauth 2 Scope])
+    - `grantType` (enum)
+        - authorization code
+        - implicit
+        - resource owner password credentials
+        - client credentials
+
+### Oauth 2 Scope (Base API Element)
+
+#### Properties
+- `element`: Oauth 2 Scope (string, fixed)
+- `content` (string)
 
 ## Extending API Elements
 
