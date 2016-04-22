@@ -259,7 +259,7 @@ transitions.
             - dataStructures - Category is a set of data structures.
             - scenario - Category is set of steps.
             - transitions - Category is a group of transitions.
-            - authenticationSchemes - Category is a group of authentication schemes
+            - authSchemes - Category is a group of authentication schemes
 - `attributes`
     - `meta` (array[Member Element]) - Arbitrary metadata
 
@@ -382,7 +382,7 @@ message pair. A transaction example MUST contain exactly one HTTP request and on
 
 - `element`: httpTransaction (string, fixed)
 - `attributes`
-    - `authenticationSchemes` (array[Base Authentication Scheme])
+    - `authSchemes` (array[Base Authentication Scheme])
 - `content` (array) - Request and response message pair (tuple).
     - (Copy) - HTTP Transaction description's copy text.
     - (HTTP Request Message)
@@ -1356,7 +1356,7 @@ the `inferred` link tells the user that the element was created based on some
 varying assumptions, and the URL to which the link points MAY provide an
 explanation on how and why it was inferred.
 
-## Authentication
+## Authentication and Authorization Schemes
 
 Example:
 
@@ -1370,11 +1370,11 @@ Example:
     {
       "element": "category",
       "meta": {
-        "classes": ["authenticationSchemes"]
+        "classes": ["authSchemes"]
       },
       "content": [
         {
-          "element": "auth:basic",
+          "element": "Basic Authentication Scheme",
           "meta": {
             "id": "Custom Basic Auth 1"
           },
@@ -1387,29 +1387,48 @@ Example:
           }
         },
         {
-          "element": "auth:basic",
+          "element": "Basic Authentication Scheme",
           "meta": {
             "id": "Custom Basic Auth 2",
             "description": "Username/password not required?"
           }
         },
         {
-          "element": "auth:oath2",
+          "element": "Oauth2 Scheme",
           "meta": {
             "id": "My Oauth2"
           },
-          "attributes": {
-            "scopes": [
-              {
-                "element": "auth:oauth2Scope",
-                "content": "scope1"
-              },
-              {
-                "element": "auth:oauth2Scope",
-                "content": "scope2"
+          "content": [
+            {
+              "element": "member",
+              "content": {
+                "key": "scopes",
+                "value": {
+                  "element": "array",
+                  "content": [
+                    {
+                      "element": "string",
+                      "content": "scope1"
+                    },
+                    {
+                      "element": "string",
+                      "meta": {
+                        "description": "My descrption of scope 2"
+                      },
+                      "content": "scope2"
+                    }
+                  ]
+                }
               }
-            ]
-          }
+            },
+            {
+              "element": "transition",
+              "attributes": {
+                "relation": "oauth2-authorize",
+                "href": "http://example.com"
+              }
+            }
+          ]
         }
       ]
     },
@@ -1423,17 +1442,17 @@ Example:
           "element": "transition",
           "content": [
             {
-              "element": "transaction",
+              "element": "httpTransaction",
               "meta": {
                 "description": "Two schemes used here"
               },
               "attributes": {
-                "authenticationSchemes": [
+                "authSchems": [
                   {
                     "element": "Custom Basic Auth 2",
                   },
                   {
-                    "element": "auth:basic",
+                    "element": "Basic Authentication Scheme",
                     "meta": {
                       "description": "Just showing you could use it here"
                     }
@@ -1449,20 +1468,29 @@ Example:
             {
               "element": "transaction",
               "attributes": {
-                "authenticationSchemes": [
+                "authSchemes": [
                   {
                     "element": "My Oauth2",
                     "meta": {
                       "description": "Only uses one scope"
                     },
-                    "attributes": {
-                      "scopes": [
-                        {
-                          "element": "auth:oauth2Scope",
-                          "content": "scope2"
+                    "content": [
+                      {
+                        "element": "member",
+                        "content": {
+                          "key": "scopes",
+                          "value": {
+                            "element": "array",
+                            "content": [
+                              {
+                                "element": "string",
+                                "content": "scope1"
+                              }
+                            ]
+                          }
                         }
-                      ]
-                    }
+                      }
+                    ]
                   }
                 ]
               }
@@ -1475,48 +1503,46 @@ Example:
 }
 ```
 
-### Base Authentication Scheme (Base API Element)
+### Basic Authentication Scheme (Base API Element)
 
-This defines the base for all authentication schemes.
-
-### Basic Authentication (Base Authentication Scheme)
-
-#### Properties
-- `element`: auth:basic (string, fixed)
-- `attributes`
-    - `username` (string)
-    - `password` (string)
-
-### API Key Authentication (Base Authentication Scheme)
-
-Note: Instead of `name` and `in` I did header name and query param name
+- `username` (string)
+- `password` (string)
 
 #### Properties
-- `element`: auth:apiKey (string, fixed)
-- `attributes`
-    - One of
-        - `httpHeaderName` (string)
-        - `queryParameterName` (string)
+- `element`: Basic Authentication Scheme (string, fixed)
+- `content` (array[Member Element])
 
-### Oauth 2 (Base Authentication Scheme)
+### Token Authentication Scheme (Base API Element)
+
+Note: Instead of `name` and `in` I did header name and query param name.
+
+- One of
+    - `httpHeaderName` (string)
+    - `queryParameterName` (string)
+
+#### Properties
+- `element`: Token Authentication Scheme (string, fixed)
+- `content` (array[Member Element])
+
+### Oauth2 Scheme (Base API Element)
 
 Note: I called this `grantType` instead of `flow` and used words verbatim from spec.
 
-#### Properties
-- `element`: auth:oath2 (string, fixed)
-- `attributes`
-    - `scopes` (array[Oauth 2 Scope])
-    - `grantType` (enum)
-        - authorization code
-        - implicit
-        - resource owner password credentials
-        - client credentials
+- `scopes` (array[String Type])
+- `grantType` (enum)
+    - `authorization code`
+    - `implicit`
+    - `resource owner password credentials`
+    - `client credentials`
 
-### Oauth 2 Scope (Base API Element)
+Two link relations:
+
+- `oauth2-authorize`
+- `oauth2-token`
 
 #### Properties
-- `element`: auth:oauth2Scope (string, fixed)
-- `content` (string)
+- `element`: Oauth2 Scheme (string, fixed)
+- `content` (array[Member Element, Transition])
 
 ## Extending API Elements
 
