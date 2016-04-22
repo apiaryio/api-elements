@@ -1365,7 +1365,7 @@ This defines the base for all authentication schemes.
 ### Basic Authentication (Base Authentication Scheme)
 
 #### Properties
-- `element`: Basic Authentication (string, fixed)
+- `element`: auth:basic (string, fixed)
 - `attributes`
     - `username` (string)
     - `password` (string)
@@ -1375,7 +1375,7 @@ This defines the base for all authentication schemes.
 Note: Instead of `name` and `in` I did header name and query param name
 
 #### Properties
-- `element`: API Key Authentication (string, fixed)
+- `element`: auth:apiKey (string, fixed)
 - `attributes`
     - One of
         - `httpHeaderName` (string)
@@ -1386,7 +1386,7 @@ Note: Instead of `name` and `in` I did header name and query param name
 Note: I called this `grantType` instead of `flow` and used words verbatim from spec.
 
 #### Properties
-- `element`: Oauth 2 Authorization (string, fixed)
+- `element`: auth:oath2 (string, fixed)
 - `attributes`
     - `scopes` (array[Oauth 2 Scope])
     - `grantType` (enum)
@@ -1398,7 +1398,7 @@ Note: I called this `grantType` instead of `flow` and used words verbatim from s
 ### Oauth 2 Scope (Base API Element)
 
 #### Properties
-- `element`: Oauth 2 Scope (string, fixed)
+- `element`: auth:oauth2Scope (string, fixed)
 - `content` (string)
 
 ## Extending API Elements
