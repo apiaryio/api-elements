@@ -1377,8 +1377,9 @@ Note: Instead of `name` and `in` I did header name and query param name
 #### Properties
 - `element`: API Key Authentication (string, fixed)
 - `attributes`
-    - `httpHeaderName` (string)
-    - `queryParameterName` (string)
+    - One of
+        - `httpHeaderName` (string)
+        - `queryParameterName` (string)
 
 ### Oauth 2 (Base Authentication Scheme)
 
