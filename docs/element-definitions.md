@@ -1358,6 +1358,123 @@ explanation on how and why it was inferred.
 
 ## Authentication
 
+Example:
+
+```json
+{
+  "element": "category",
+  "meta": {
+    "classes": ["api"]
+  },
+  "content": [
+    {
+      "element": "category",
+      "meta": {
+        "classes": ["authenticationSchemes"]
+      },
+      "content": [
+        {
+          "element": "auth:basic",
+          "meta": {
+            "id": "Custom Basic Auth 1"
+          },
+          "attributes": {
+            "username": "john",
+            "password": {
+              "element": "string",
+              "content": "p455w0rd"
+            }
+          }
+        },
+        {
+          "element": "auth:basic",
+          "meta": {
+            "id": "Custom Basic Auth 2",
+            "description": "Username/password not required?"
+          }
+        },
+        {
+          "element": "auth:oath2",
+          "meta": {
+            "id": "My Oauth2"
+          },
+          "attributes": {
+            "scopes": [
+              {
+                "element": "auth:oauth2Scope",
+                "content": "scope1"
+              },
+              {
+                "element": "auth:oauth2Scope",
+                "content": "scope2"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "element": "resource",
+      "meta": {
+        "description": "Incomplete example. Just for showing auth schemes."
+      },
+      "content": [
+        {
+          "element": "transition",
+          "content": [
+            {
+              "element": "transaction",
+              "meta": {
+                "description": "Two schemes used here"
+              },
+              "attributes": {
+                "authenticationSchemes": [
+                  {
+                    "element": "Custom Basic Auth 2",
+                  },
+                  {
+                    "element": "auth:basic",
+                    "meta": {
+                      "description": "Just showing you could use it here"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "element": "transition",
+          "content": [
+            {
+              "element": "transaction",
+              "attributes": {
+                "authenticationSchemes": [
+                  {
+                    "element": "My Oauth2",
+                    "meta": {
+                      "description": "Only uses one scope"
+                    },
+                    "attributes": {
+                      "scopes": [
+                        {
+                          "element": "auth:oauth2Scope",
+                          "content": "scope2"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+```
+
 ### Base Authentication Scheme (Base API Element)
 
 This defines the base for all authentication schemes.
