@@ -383,7 +383,6 @@ message pair. A transaction example MUST contain exactly one HTTP request and on
 - `element`: httpTransaction (string, fixed)
 - `attributes`
     - `authenticationSchemes` (array[Base Authentication Scheme])
-    - `scopes` (array[Oauth2 Scope])
 - `content` (array) - Request and response message pair (tuple).
     - (Copy) - HTTP Transaction description's copy text.
     - (HTTP Request Message)
