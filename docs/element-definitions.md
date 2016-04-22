@@ -1378,20 +1378,34 @@ Example:
           "meta": {
             "id": "Custom Basic Auth 1"
           },
-          "attributes": {
-            "username": "john",
-            "password": {
-              "element": "string",
-              "content": "p455w0rd"
+          "content": [
+            {
+              "element": "member",
+              "content": {
+                "key": {
+                  "element": "string",
+                  "content": "username"
+                },
+                "value": {
+                  "element": "string",
+                  "content": "john"
+                }
+              }
+            },
+            {
+              "element": "member",
+              "content": {
+                "key": {
+                  "element": "string",
+                  "content": "password"
+                },
+                "value": {
+                  "element": "string",
+                  "content": "p455w0rd"
+                }
+              }
             }
-          }
-        },
-        {
-          "element": "Basic Authentication Scheme",
-          "meta": {
-            "id": "Custom Basic Auth 2",
-            "description": "Username/password not required?"
-          }
+          ]
         },
         {
           "element": "Oauth2 Scheme",
@@ -1449,7 +1463,7 @@ Example:
               "attributes": {
                 "authSchems": [
                   {
-                    "element": "Custom Basic Auth 2",
+                    "element": "Custom Basic Auth 1",
                   },
                   {
                     "element": "Basic Authentication Scheme",
