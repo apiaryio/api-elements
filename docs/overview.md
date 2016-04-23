@@ -36,6 +36,7 @@ It is also helpful to know the relationship between elements. The list below sho
     - Copy
     - Data Structure
     - Category (Group of Resource Elements)
+    - Category (Group of Authentication and Authorization Scheme Definitions)
     - Resource
         - Copy
         - Data Structure
