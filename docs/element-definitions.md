@@ -1362,7 +1362,7 @@ Authentication and authorization schemes MAY be defined within an API Elements d
 
 ### Basic Authentication Scheme (Base API Element)
 
-This defines the element to use to define a basic authentication scheme implementation for an API. It it for Basic Authentication as defined in [RFC 2617](https://tools.ietf.org/html/rfc2617).
+This defines the element to use to define a basic authentication scheme implementation for an API. This is for Basic Authentication as defined in [RFC 2617](https://tools.ietf.org/html/rfc2617).
 
 The element MAY have a username and password defined as member elements within the scheme, but these are not required.
 
