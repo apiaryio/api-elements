@@ -259,6 +259,7 @@ transitions.
             - dataStructures - Category is a set of data structures.
             - scenario - Category is set of steps.
             - transitions - Category is a group of transitions.
+            - authSchemes - Category is a group of authentication and authorization scheme definitions
 - `attributes`
     - `meta` (array[Member Element]) - Arbitrary metadata
 
@@ -380,6 +381,8 @@ message pair. A transaction example MUST contain exactly one HTTP request and on
 ##### Properties
 
 - `element`: httpTransaction (string, fixed)
+- `attributes`
+    - `authSchemes` (array[Base API Element]) - An array of authentication and authorization schemes that apply to the transaction
 - `content` (array) - Request and response message pair (tuple).
     - (Copy) - HTTP Transaction description's copy text.
     - (HTTP Request Message)
@@ -1352,6 +1355,339 @@ inferred or whether it was found in the originating document. The presence of
 the `inferred` link tells the user that the element was created based on some
 varying assumptions, and the URL to which the link points MAY provide an
 explanation on how and why it was inferred.
+
+## Authentication and Authorization Schemes
+
+Authentication and authorization schemes MAY be defined within an API Elements document. These schemes are then used within the context of a resource to define which schemes to apply when making a transaction.
+
+### Basic Authentication Scheme (Base API Element)
+
+This element may be used to define a basic authentication scheme implementation for an API as described in [RFC 2617](https://tools.ietf.org/html/rfc2617).
+
+The element MAY have a username and password defined as member elements within the scheme, but these are not required.
+
+- `username` (string, optional)
+- `password` (string, optional)
+
+#### Properties
+
+- `element`: Basic Authentication Scheme (string, fixed)
+- `content` (array[Member Element])
+
+#### Example
+
+This example shows a custom basic authentication scheme being defined as `Custom Basic Auth`. This scheme is then used on an HTTP transaction within a resource. Please note this example is incomplete for the sake of keeping it short.
+
+```json
+{
+  "element": "category",
+  "meta": {
+    "classes": ["api"]
+  },
+  "content": [
+    {
+      "element": "category",
+      "meta": {
+        "classes": ["authSchemes"]
+      },
+      "content": [
+        {
+          "element": "Basic Authentication Scheme",
+          "meta": {
+            "id": "Custom Basic Auth"
+          },
+          "content": [
+            {
+              "element": "member",
+              "content": {
+                "key": {
+                  "element": "string",
+                  "content": "username"
+                },
+                "value": {
+                  "element": "string",
+                  "content": "john.doe"
+                }
+              }
+            },
+            {
+              "element": "member",
+              "content": {
+                "key": {
+                  "element": "string",
+                  "content": "password"
+                },
+                "value": {
+                  "element": "string",
+                  "content": "1234password"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "element": "resource",
+      "attributes": {
+        "href": "/users"
+      },
+      "content": [
+        {
+          "element": "transition",
+          "content": [
+            {
+              "element": "httpTransaction",
+              "attributes": {
+                "authSchemes": [
+                  {
+                    "element": "Custom Basic Auth"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+```
+
+### Token Authentication Scheme (Base API Element)
+
+This describes an authentication scheme that uses a token as a way to authenticate and authorize. The token MAY exist as an HTTP header field or a query parameter.
+
+- One of
+    - `httpHeaderName` (string)
+    - `queryParameterName` (string)
+
+When used as a query parameter, an HREF Variable is not required to be defined within the scope of the resource or transition, but is rather infered from the used token authentications scheme.
+
+#### Properties
+
+- `element`: Token Authentication Scheme (string, fixed)
+- `content` (array[Member Element])
+
+#### Example
+
+This example shows a custom token authentication scheme being defined as `Custom Token Auth` that uses a query parameter for the token. This scheme is then used on an HTTP transaction within a resource. Please note this example is incomplete for the sake of keeping it short.
+
+```json
+{
+  "element": "category",
+  "meta": {
+    "classes": ["api"]
+  },
+  "content": [
+    {
+      "element": "category",
+      "meta": {
+        "classes": ["authSchemes"]
+      },
+      "content": [
+        {
+          "element": "Token Authentication Scheme",
+          "meta": {
+            "id": "Custom Token Auth"
+          },
+          "content": [
+            {
+              "element": "member",
+              "content": {
+                "key": {
+                  "element": "string",
+                  "content": "queryParameterName"
+                },
+                "value": {
+                  "element": "string",
+                  "content": "api_key"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "element": "resource",
+      "attributes": {
+        "href": "/users"
+      },
+      "content": [
+        {
+          "element": "transition",
+          "content": [
+            {
+              "element": "httpTransaction",
+              "attributes": {
+                "authSchemes": [
+                  {
+                    "element": "Custom Token Auth"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+```
+
+### Oauth2 Scheme (Base API Element)
+
+This describes an authentication scheme that uses Oauth2 as defined in [RFC 6749](https://tools.ietf.org/html/rfc6749).
+
+The element MAY have the following members to define additional information about the Oauth2 implementation.
+
+- `scopes` (array[string])
+- `grantType` (enum)
+    - `authorization code`
+    - `implicit`
+    - `resource owner password credentials`
+    - `client credentials`
+
+Transition elements are used to define the URLs for the authorize and token endpoints for the Oauth2 schemes. When including these endpoints, the following link relations SHOULD be used.
+
+- `authorize` - URL for the authorization endpoint
+- `token` - URL for the token endpoint
+
+The HREF values for these transitions MAY be either relative or absolute URLs.
+
+#### Properties
+
+- `element`: Oauth2 Scheme (string, fixed)
+- `content` (array[Member Element, Transition])
+
+#### Example
+
+This example shows a custom Oauth2 scheme being defined as `Custom Oauth2`. This scheme is then used on an HTTP transaction within a resource. There are a couple of things to note about this example:
+
+1. There are two scopes defined within the scheme, but only one is used within the context of the transaction.
+1. Transitions are used to define the authorize and token endpoints.
+
+Also, please note this example is incomplete for the sake of keeping it short.
+
+```json
+{
+  "element": "category",
+  "meta": {
+    "classes": ["api"]
+  },
+  "content": [
+    {
+      "element": "category",
+      "meta": {
+        "classes": ["authSchemes"]
+      },
+      "content": [
+        {
+          "element": "Oauth2 Scheme",
+          "meta": {
+            "id": "Custom Oauth2"
+          },
+          "content": [
+            {
+              "element": "member",
+              "content": {
+                "key": {
+                  "element": "string",
+                  "content": "scopes"
+                },
+                "value": {
+                  "element": "array",
+                  "content": [
+                    {
+                      "element": "string",
+                      "content": "scope1"
+                    },
+                    {
+                      "element": "string",
+                      "content": "scope2"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "element": "member",
+              "content": {
+                "key": {
+                  "element": "string",
+                  "content": "grantType"
+                },
+                "value": {
+                  "element": "string",
+                  "content": "implicit"
+                }
+              }
+            },
+            {
+              "element": "transition",
+              "attributes": {
+                "relation": "authorize",
+                "href": "/authorize"
+              }
+            },
+            {
+              "element": "transition",
+              "attributes": {
+                "relation": "token",
+                "href": "/token"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "element": "resource",
+      "attributes": {
+        "href": "/users"
+      },
+      "content": [
+        {
+          "element": "transition",
+          "content": [
+            {
+              "element": "httpTransaction",
+              "attributes": {
+                "authSchemes": [
+                  {
+                    "element": "Custom Oauth2",
+                    "content": [
+                      {
+                        "element": "member",
+                        "content": {
+                          "key": {
+                            "element": "string",
+                            "content": "scopes"
+                          },
+                          "value": {
+                            "element": "array",
+                            "content": [
+                              {
+                                "element": "string",
+                                "content": "scope1"
+                              }
+                            ]
+                          }
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+```
 
 ## Extending API Elements
 
