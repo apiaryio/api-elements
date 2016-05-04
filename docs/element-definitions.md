@@ -1536,11 +1536,11 @@ This example shows a custom token authentication scheme being defined as `Custom
 }
 ```
 
-### Oauth2 Scheme (Base API Element)
+### OAuth2 Scheme (Base API Element)
 
-This describes an authentication scheme that uses Oauth2 as defined in [RFC 6749](https://tools.ietf.org/html/rfc6749).
+This describes an authentication scheme that uses OAuth2 as defined in [RFC 6749](https://tools.ietf.org/html/rfc6749).
 
-The element MAY have the following members to define additional information about the Oauth2 implementation.
+The element MAY have the following members to define additional information about the OAuth2 implementation.
 
 - `scopes` (array[string])
 - `grantType` (enum)
@@ -1549,7 +1549,7 @@ The element MAY have the following members to define additional information abou
     - `resource owner password credentials`
     - `client credentials`
 
-Transition elements are used to define the URLs for the authorize and token endpoints for the Oauth2 schemes. When including these endpoints, the following link relations SHOULD be used.
+Transition elements are used to define the URLs for the authorize and token endpoints for the OAuth2 schemes. When including these endpoints, the following link relations SHOULD be used.
 
 - `authorize` - URL for the authorization endpoint
 - `token` - URL for the token endpoint
@@ -1558,12 +1558,12 @@ The HREF values for these transitions MAY be either relative or absolute URLs.
 
 #### Properties
 
-- `element`: Oauth2 Scheme (string, fixed)
+- `element`: OAuth2 Scheme (string, fixed)
 - `content` (array[Member Element, Transition])
 
 #### Example
 
-This example shows a custom Oauth2 scheme being defined as `Custom Oauth2`. This scheme is then used on an HTTP transaction within a resource. There are a couple of things to note about this example:
+This example shows a custom OAuth2 scheme being defined as `Custom OAuth2`. This scheme is then used on an HTTP transaction within a resource. There are a couple of things to note about this example:
 
 1. There are two scopes defined within the scheme, but only one is used within the context of the transaction.
 1. Transitions are used to define the authorize and token endpoints.
@@ -1584,9 +1584,9 @@ Also, please note this example is incomplete for the sake of keeping it short.
       },
       "content": [
         {
-          "element": "Oauth2 Scheme",
+          "element": "OAuth2 Scheme",
           "meta": {
-            "id": "Custom Oauth2"
+            "id": "Custom OAuth2"
           },
           "content": [
             {
@@ -1656,7 +1656,7 @@ Also, please note this example is incomplete for the sake of keeping it short.
               "attributes": {
                 "authSchemes": [
                   {
-                    "element": "Custom Oauth2",
+                    "element": "Custom OAuth2",
                     "content": [
                       {
                         "element": "member",
