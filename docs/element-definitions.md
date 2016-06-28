@@ -40,6 +40,7 @@ The Base API Element contains four properties: `element`, `meta`, `attributes`, 
 
     - Members
         - (object)
+            - `extensions` (array[Extension]) - Extensions for the given element
         - (array[Member Element])
 
 - `content` (enum)
@@ -1693,7 +1694,7 @@ Also, please note this example is incomplete for the sake of keeping it short.
 
 An API Elements document MAY be extended by providing a [profile link](https://www.ietf.org/rfc/rfc6906.txt) that describes how non-specification elements should be handled.
 
-Additionally, an `extension` element is provided as a way to extend API Elements documents to include additional data not expressed by the elements in this specification.
+Additionally, an `extension` element is provided as a way to extend API Elements documents to include additional data not expressed by the elements in this specification. `extension` elements should be placed within an elements attributes under the key `extensions`.
 
 When the `extension` element is used, it SHOULD include a profile link that provides information on how the content and attributes SHOULD be handled. Additionally, the presence of an `extension` element MUST NOT change the meaning of the rest of the API Elements document in which it is found. In other words, a tool SHOULD be able to safely ignore an `extension` element.
 
