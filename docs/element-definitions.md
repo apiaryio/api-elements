@@ -189,6 +189,10 @@ Note: At the moment only the HTTP protocol is supported.
         The value of `relation` attribute SHOULD be interpreted as a link relation
         between transition's parent resource and the transition's target resource
         as specified in the `href` attribute.
+        
+        If a custom relation is being used, it SHOULD be defined using an
+        Affordance Element, and the value of the `relation` property SHOULD be
+        the `id` of the defined affordance.
 
     - `href` (Templated Href) - The URI template for this transition.
 
@@ -211,6 +215,7 @@ Note: At the moment only the HTTP protocol is supported.
         Definition of any input message-body attribute for this transition.
 
     - `contentTypes` (array[String]) - A collection of content types that MAY be used for the transition.
+
 - `content` (array)
     - (Copy) - Transition description's copy text.
     - (HTTP Transaction) - An instance of transaction example.
@@ -229,6 +234,49 @@ Note: At the moment only the HTTP protocol is supported.
     "attributes": {
         "relation": "update",
         "href": "https://polls.apiblueprint.org/questions/{question_id}"
+    },
+    "content": []
+}
+```
+
+### Affordance (Base API Element)
+
+An affordance element provides a way to provide affordance definitions for the
+API. These definitions can describe link relations used in a Transition Element,
+along with defining unsafe and idempotent transitions.
+
+While data structures are used for defining semantics around data models,
+affrodances are used for defining semantics around hypermedia state transitions.
+
+The control types used here are based on the types used in [ALPS][]. The meta
+property `id` SHOULD be used to define the machine-usable name of the
+affordance.
+
+#### Properties
+
+- `element`: affordance
+- `attributes`
+    - `controlType` (enum)
+        - safe - A hypermedia control that triggers a safe, idempotent state
+          transition (e.g. HTTP.GET or HTTP.HEAD).
+        - unsafe - A hypermedia control that triggers an unsafe, non-idempotent
+          state transition (e.g. HTTP.POST).
+        - idempotent - A hypermedia control that triggers an unsafe, idempotent
+          state transition (e.g. HTTP.PUT or HTTP.DELETE).
+- `content` (array)
+    - (Copy)
+    
+#### Example
+
+```json
+{
+    "element": "affordance",
+    "meta": {
+        "id": "self",
+        "title": "Self"
+    },
+    "attributes": {
+        "controlType": "safe"
     },
     "content": []
 }
@@ -260,6 +308,7 @@ transitions.
             - scenario - Category is set of steps.
             - transitions - Category is a group of transitions.
             - authSchemes - Category is a group of authentication and authorization scheme definitions
+            - affordances - Category is a group of affordances
 - `attributes`
     - `meta` (array[Member Element]) - Arbitrary metadata
 
@@ -531,6 +580,11 @@ HTTP response message.
 - `element`: httpResponse (string, fixed)
 - `attributes`
     - `statusCode` (number) - HTTP response status code.
+- `content` (array)
+    - (Affordance) - Expected affordance for the given payload
+    
+        The Ref Element MAY be used to reference existing affordances defined
+        elsewhere.
 
 ## Data Structure Elements
 
@@ -1756,6 +1810,7 @@ These elements and definitions are referenced as part of the base Refract specif
 [MSON]: https://github.com/apiaryio/mson
 [MSON Reference]: https://github.com/apiaryio/mson/blob/master/MSON%20Reference.md
 [Refract]: https://github.com/refractproject/refract-spec/blob/master/refract-spec.md
+[ALPS]: https://tools.ietf.org/html/draft-amundsen-richardson-foster-alps-01#section-2.2.12
 
 [API Description Elements]: definitions/api-description-elements.md
 [Data Structure Elements]: definitions/data-structure-elements.md

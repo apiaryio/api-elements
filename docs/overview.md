@@ -1,6 +1,6 @@
 # API Elements Overview
 
-**Version**: 1.0.0-rc1
+**Version**: 1.1.0
 
 **Mime Type**: TBD
 
@@ -37,6 +37,7 @@ It is also helpful to know the relationship between elements. The list below sho
     - Data Structure
     - Category (Group of Resource Elements)
     - Category (Group of Authentication and Authorization Scheme Definitions)
+    - Category (Group of Affordance Elements)
     - Resource
         - Copy
         - Data Structure
@@ -52,6 +53,7 @@ It is also helpful to know the relationship between elements. The list below sho
                 - HTTP Response
                     - Copy
                     - Data Structure
+                    - Affordance
                     - Asset
 
 This main API Category element MAY also be wrapped in a Parse Result element for conveying parsing information, such as source maps, warnings, and errors.
@@ -103,6 +105,10 @@ const transaction = query(apielements, {element: 'httpTransaction'})[0];
 ```
 
 Given that API Elements use [Refract][], the structure of the document is recursive by nature. When looking for specific elements, it is best then to walk the tree to look for a match. Querying the tree means that your code will be decoupled not only from specific API description documents, but it will also be decoupled from the structure of those documents.
+
+## Managing Compatibility
+
+When parsing an API Elements document, parsers should safely ignore any elements that were not in the API Elements specification at the time of implementation. This allows for the specification to evolve using semantic versioning and introduce non-breaking changes. 
 
 [Refract]: https://github.com/refractproject/refract-spec/blob/master/refract-spec.md
 [MSON]: https://github.com/apiaryio/mson
