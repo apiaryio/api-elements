@@ -86,9 +86,41 @@ The value of the `Templated Href` type SHOULD be resolved as a URI-Reference per
 
 The definition is a Data Structure element `Object Type` where keys are respective URI Template variables.
 
+**NOTE:** *A href variable may include an attribute `type` which may
+contain a label for the variable type.*
+
 #### Properties
 
 - `element`: hrefVariables (string, fixed)
+
+#### Example
+
+```json
+{
+  "element": "hrefVariables",
+  "content": [
+    {
+      "element": "member",
+      "meta": {
+        "description": "Filter users only showing admins"
+      },
+      "attributes": {
+        "type": "boolean"
+      },
+      "content": {
+        "key": {
+          "element": "string",
+          "content": "is_admin"
+        },
+        "value": {
+          "element": "string",
+          "content": "1"
+        }
+      }
+    }
+  ]
+}
+```
 
 ### Data Structure (Base API Element)
 
