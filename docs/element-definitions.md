@@ -246,7 +246,7 @@ API. These definitions can describe link relations used in a Transition Element,
 along with defining unsafe and idempotent transitions.
 
 While data structures are used for defining semantics around data models,
-affrodances are used for defining semantics around hypermedia state transitions.
+affordances are used for defining semantics around hypermedia state transitions.
 
 The control types used here are based on the types used in [ALPS][]. The meta
 property `id` SHOULD be used to define the machine-usable name of the

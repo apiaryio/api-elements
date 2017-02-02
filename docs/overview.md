@@ -1,6 +1,6 @@
 # API Elements Overview
 
-**Version**: 1.1.0
+**Version**: 1.0.0-rc1
 
 **Mime Type**: TBD
 
