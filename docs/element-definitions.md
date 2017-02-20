@@ -18,29 +18,22 @@ The Base API Element contains four properties: `element`, `meta`, `attributes`, 
 
     The `element` property defines the name of element. It MUST be a string that references an element, which SHOULD be defined.
 
-- `meta` (enum)
+- `meta`
 
-    The `meta` property is a reserved object for Refract-specific values. When `meta` is an object, it MAY contain elements itself. The element definition SHOULD be used when interacting with `meta` and its properties and values.
+    The `meta` property is a reserved object for Refract-specific values that MAY contain elements itself. The element definition SHOULD be used when interacting with `meta` and its properties and values.
 
-    - Members
-        - (object)
-            - `id` - Unique Identifier, MUST be unique throughout the document
-            - `ref` (Element Pointer) - Pointer to referenced element or type
-            - `classes` (array[string]) - Array of classifications for given element
-            - `title` (string) - Human-readable title of element
-            - `description` (string) - Human-readable description of element
-            - `links` (array[Link Element]) - Meta links for a given element
-        - (array[Member Element])
+    - `id` ([String Element][]) - Unique Identifier, MUST be unique throughout the document
+    - `ref` ([Ref Element][]) - Pointer to referenced element or type
+    - `classes` (Array Element[[String Element][]]) - Array of classifications for given element
+    - `title` ([String Element][]) - Human-readable title of element
+    - `description` ([String Element][]) - Human-readable description of element
+    - `links` (Array Element[[Link Element][]]) - Meta links for a given element
 
-- `attributes` (enum)
+- `attributes`
 
     The `attributes` property defines attributes about the given instance of the element, as specified by the `element` property. When `attributes` is an object, it MAY contain elements itself. The element definition SHOULD be used when interacting with `attributes` and its properties and values.
 
     The `attributes` are used later in this document for representing data structures.
-
-    - Members
-        - (object)
-        - (array[Member Element])
 
 - `content` (enum)
 
@@ -63,7 +56,10 @@ An element MAY look like this, where `foo` is the element name, `id` is a meta a
 {
   "element": "foo",
   "meta": {
-    "id": "baz"
+    "id": {
+      "element": "string",
+      "content": "baz"
+    }
   },
   "content": "bar"
 }
@@ -71,12 +67,12 @@ An element MAY look like this, where `foo` is the element name, `id` is a meta a
 
 ## Core API Elements
 
-### Href (string)
+### Href ([String Element][])
 
 The value of the `Href` type  SHOULD be resolved as a URI-Reference per [RFC 3986][] and MAY be a relative reference to a URI.
 The value of the `Href` type MUST NOT be a URI Template.
 
-### Templated Href (string)
+### Templated Href ([String Element][])
 
 The value of `Templated Href` type is to be used as a URI Template, as defined in [RFC 6570][].
 The value of the `Templated Href` type is a template used to determine the target URI of the related resource or transition.
@@ -107,12 +103,15 @@ Arbitrary data asset.
 
 - `element`: asset (string, fixed)
 - `meta`
-    - `classes` (array, fixed)
-        - (enum[string])
-            - messageBody - Asset is an example of message-body
-            - messageBodySchema - Asset is an schema for message-body
-- `attributes` (object)
-    - `contentType` (string) - Optional media type of the asset. When this is unset, the content type SHOULD be inherited from the `Content-Type` header of a parent HTTP Message Payload
+    - `classes` (Array Element)
+        - `content` (array, fixed-type)
+            - One Of
+                - ([String Element][])
+                    - `content`: messageBody (string, fixed) - Asset is an example of message-body
+                - ([String Element][])
+                    - `content`: messageBodySchema (string, fixed) - Asset is an schema for message-body
+- `attributes`
+    - `contentType` ([String Element][]) - Optional media type of the asset. When this is unset, the content type SHOULD be inherited from the `Content-Type` header of a parent HTTP Message Payload
     - `href` (Href) - Link to the asset
 - `content` (string) - A textual representation of the asset
 
@@ -123,10 +122,10 @@ The Resource representation with its available transitions and its data.
 #### Properties
 
 - `element`: resource (string, fixed)
-- `attributes` (object)
+- `attributes`
     - `href` (Templated Href) - URI Template of this resource.
     - `hrefVariables` (Href Variables) - Definition of URI Template variables used in the `href` property.
-- `content` (array)
+- `content` (array, fixed-type)
     - (Copy) - Resource description's copy text.
     - (Category) - A group of Transition elements
     - (Transition) - State transition available for this resource.
@@ -141,33 +140,42 @@ The Resource representation with its available transitions and its data.
 
 ```json
 {
-    "element": "resource",
-    "meta": {
-        "title": "Question",
-        "description": "A Question object has the following attributes."
+  "element": "resource",
+  "meta": {
+    "title": {
+      "element": "string",
+      "content": "Question"
     },
-    "attributes": {
-        "href": "/questions/{question_id}",
-        "hrefVariables": {
-            "element": "hrefVariables",
-            "content": [
-                {
-                    "element": "member",
-                    "content": {
-                        "key": {
-                            "element": "string",
-                            "content": "question_id"
-                        }
-                    }
-                }
-            ]
-        }
+    "description": {
+      "element": "string",
+      "content": "A Question object has the following attributes."
     },
-    "content": [
+  },
+  "attributes": {
+    "href": {
+      "element": "string",
+      "content": "/questions/{question_id}"
+    },
+    "hrefVariables": {
+      "element": "hrefVariables",
+      "content": [
         {
-            "element": "dataStructure"
+          "element": "member",
+          "content": {
+            "key": {
+              "element": "string",
+              "content": "question_id"
+            }
+          }
         }
-    ]
+      ]
+    }
+  },
+  "content": [
+    {
+      "element": "dataStructure"
+    }
+  ]
 }
 ```
 
@@ -183,8 +191,8 @@ Note: At the moment only the HTTP protocol is supported.
 #### Properties
 
 - `element`: transition (string, fixed)
-- `attributes` (object)
-    - `relation` - (string) - Link relation type as specified in [RFC 5988][].
+- `attributes`
+    - `relation` - ([String Element][]) - Link relation type as specified in [RFC 5988][].
 
         The value of `relation` attribute SHOULD be interpreted as a link relation
         between transition's parent resource and the transition's target resource
@@ -210,8 +218,8 @@ Note: At the moment only the HTTP protocol is supported.
 
         Definition of any input message-body attribute for this transition.
 
-    - `contentTypes` (array[String]) - A collection of content types that MAY be used for the transition.
-- `content` (array)
+    - `contentTypes` (Array Element[[String Element][]]) - A collection of content types that MAY be used for the transition.
+- `content` (array, fixed-type)
     - (Copy) - Transition description's copy text.
     - (HTTP Transaction) - An instance of transaction example.
 
@@ -225,14 +233,33 @@ Note: At the moment only the HTTP protocol is supported.
 
 ```json
 {
-    "element": "transition",
-    "attributes": {
-        "relation": "update",
-        "href": "https://polls.apiblueprint.org/questions/{question_id}"
+  "element": "transition",
+  "attributes": {
+    "relation": {
+      "element": "string",
+      "content": "update"
     },
-    "content": []
+    "href": {
+      "element": "string",
+      "content": "https://polls.apiblueprint.org/questions/{question_id}"
+    }
+  },
+  "content": []
 }
 ```
+
+### API Metadata (Member Element)
+
+#### Properties
+
+- `meta`
+    - `classes` (Array Element)
+        - `content` (array, fixed-type)
+            - One Of
+                - ([String Element][])
+                    - `content`: user (string, fixed) - User-specific metadata. Metadata written in the source.
+                - ([String Element][])
+                    - `content`: adapter (string, fixed) - Serialization-specific metadata. Metadata provided by adapter.
 
 ### Category (Base API Element)
 
@@ -252,73 +279,102 @@ transitions.
 
 - `element`: category (string, fixed)
 - `meta`
-    - `classes` (array, fixed)
-        - (enum[string])
-            - api - Category is a API top-level group.
-            - resourceGroup - Category is a set of resource.
-            - dataStructures - Category is a set of data structures.
-            - scenario - Category is set of steps.
-            - transitions - Category is a group of transitions.
-            - authSchemes - Category is a group of authentication and authorization scheme definitions
+    - `classes` (Array Element)
+        - `content` (array, fixed-type)
+            - One Of
+                - ([String Element][])
+                    - `content`: api (string, fixed) - Category is a API top-level group.
+                - ([String Element][])
+                    - `content`: resourceGroup (string, fixed) - Category is a set of resource.
+                - ([String Element][])
+                    - `content`: dataStructures (string, fixed) - Category is a set of data structures.
+                - ([String Element][])
+                    - `content`: scenario (string, fixed) - Category is set of steps.
+                - ([String Element][])
+                    - `content`: transitions (string, fixed) - Category is a group of transitions.
+                - ([String Element][])
+                    - `content`: authSchemes (string, fixed) - Category is a group of authentication and authorization scheme definitions
 - `attributes`
-    - `meta` (array[Member Element]) - Arbitrary metadata
-
-        Note the "classes" of the Member Element can be used to distinguish the
-        source of metadata as follows:
-
-        - Class `user` - User-specific metadata. Metadata written in the source.
-        - Class `adapter` - Serialization-specific metadata. Metadata provided by adapter.
-
-- `content` (array[Base API Element])
+    - `metadata` (Array Element[API Metadata]) - Arbitrary metadata
+- `content` (array[Base API Element], fixed-type)
 
 #### Example
 
 ```json
 {
-    "element": "category",
-    "meta": {
-        "classes": [
-            "api"
-        ],
-        "title": "Polls API"
-    },
-    "attributes": {
-        "meta": [
-            {
-              "element": "member",
-              "meta": {
-                  "classes": ["user"]
-              },
-              "content": {
-                  "key": {
-                      "element": "string",
-                      "content": "HOST",
-                  },
-                  "value": {
-                      "element": "string",
-                      "content": "http://polls.apiblueprint.org/"
-                  }
-              }
-            }
-        ]
-    },
-    "content": [
+  "element": "category",
+  "meta": {
+    "classes": {
+      "element": "array",
+      "content": [
         {
-            "element": "category",
-            "meta": {
-                "classes": [
-                    "resourceGroup"
-                ],
-                "title": "Question"
-            },
-            "content": [
-                {
-                    "element": "copy",
-                    "content": "Resources related to questions in the API."
-                }
-            ]
+          "element": "string",
+          "content": "api"
         }
-    ]
+      ]
+    },
+    "title": {
+      "element": "string",
+      "content": "Polls API"
+    }
+  },
+  "attributes": {
+    "metadata": {
+      "element": "array",
+      "content": [
+        {
+          "element": "member",
+          "meta": {
+            "classes": {
+              "element": "array",
+              "content": [
+                {
+                  "element": "string",
+                  "content": "user"
+                }
+              ]
+            }
+          },
+          "content": {
+            "key": {
+              "element": "string",
+              "content": "HOST",
+            },
+            "value": {
+              "element": "string",
+              "content": "http://polls.apiblueprint.org/"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "content": [
+    {
+      "element": "category",
+      "meta": {
+        "classes": {
+          "element": "array",
+          "content": [
+            {
+              "element": "string",
+              "content": "resourceGroup"
+            }
+          ]
+        },
+        "title": {
+          "element": "string",
+          "content": "Question"
+        }
+      },
+      "content": [
+        {
+          "element": "copy",
+          "content": "Resources related to questions in the API."
+        }
+      ]
+    }
+  ]
 }
 ```
 
@@ -335,8 +391,8 @@ element's description metadata.
 #### Properties
 
 - `element`: copy (string, fixed)
-- `attributes` (object)
-    - `contentType`: *text/plain* (string) - Optional media type of the content.
+- `attributes`
+    - `contentType` ([String Element][]) - Optional media type of the content.
 - `content` (string)
 
 #### Example
@@ -351,23 +407,23 @@ Given an API description with following layout:
 
 ```json
 {
-    "element": "category",
-    "content": [
-        {
-            "element": "copy",
-            "content": "Lorem Ipsum"
-        },
-        {
-            "element": "resource"
-        },
-        {
-            "element": "resource"
-        },
-        {
-            "element": "copy",
-            "content": "Dolor Sit Amet"
-        }
-    ]
+  "element": "category",
+  "content": [
+    {
+      "element": "copy",
+      "content": "Lorem Ipsum"
+    },
+    {
+      "element": "resource"
+    },
+    {
+      "element": "resource"
+    },
+    {
+      "element": "copy",
+      "content": "Dolor Sit Amet"
+    }
+  ]
 }
 ```
 
@@ -382,8 +438,8 @@ message pair. A transaction example MUST contain exactly one HTTP request and on
 
 - `element`: httpTransaction (string, fixed)
 - `attributes`
-    - `authSchemes` (array[Base API Element]) - An array of authentication and authorization schemes that apply to the transaction
-- `content` (array) - Request and response message pair (tuple).
+    - `authSchemes` (Array Element[Base API Element]) - An array of authentication and authorization schemes that apply to the transaction
+- `content` (array, fixed-type) - Request and response message pair (tuple).
     - (Copy) - HTTP Transaction description's copy text.
     - (HTTP Request Message)
 
@@ -397,81 +453,100 @@ message pair. A transaction example MUST contain exactly one HTTP request and on
 
 ```json
 {
-    "element": "httpTransaction",
-    "content": [
-        {
-            "element": "httpRequest",
-            "attributes": {
-                "method": "GET",
-                "href": "/questions/{question_id}",
-                "hrefVariables": {
-                    "element": "hrefVariables",
-                    "content": [
-                        {
-                            "element": "member",
-                            "content": {
-                                "key": {
-                                    "element": "string",
-                                    "content": "question_id"
-                                }
-                            }
-                        }
-                    ]
-                }
-            },
-            "content": []
+  "element": "httpTransaction",
+  "content": [
+    {
+      "element": "httpRequest",
+      "attributes": {
+        "method": {
+          "element": "string",
+          "content": "GET"
         },
-        {
-            "element": "httpResponse",
-            "attributes": {
-                "statusCode": 200
-            },
-            "content": [
-                {
-                    "element": "asset",
-                    "meta": {
-                        "classes": ["messageBody"]
-                    },
-                    "attributes": {
-                      "contentType": "application/json"
-                    },
-                    "content": "{\"name\": \"John\"}"
+        "href": {
+          "element": "string",
+          "content": "/questions/{question_id}"
+        },
+        "hrefVariables": {
+          "element": "hrefVariables",
+          "content": [
+            {
+              "element": "member",
+              "content": {
+                "key": {
+                  "element": "string",
+                  "content": "question_id"
                 }
-            ]
+              }
+            }
+          ]
         }
-    ]
+      },
+      "content": []
+    },
+    {
+      "element": "httpResponse",
+      "attributes": {
+        "statusCode": {
+          "element": "number",
+          "content": 200
+        }
+      },
+      "content": [
+        {
+          "element": "asset",
+          "meta": {
+            "classes": {
+              "element": "array",
+              "content": [
+                {
+                  "element": "string",
+                  "content": "messageBody"
+                }
+              ]
+            }
+          },
+          "attributes": {
+            "contentType": {
+              "element": "string",
+              "content": "application/json"
+            }
+          },
+          "content": "{\"name\": \"John\"}"
+        }
+      ]
+    }
+  ]
 }
 ```
 
-#### HTTP Headers (Array Type)
+#### HTTP Headers (Array Element[Member Element])
 
 Ordered array of HTTP header-fields.
 
 ##### Properties
 
-- `element`: `httpHeaders`
-- `content` (array[Member Element])
+- `element`: httpHeaders (string, fixed)
 
 ##### Example
 
 ```json
 {
-    "element": "httpHeaders",
-    "content": [
-        {
-            "element": "member",
-            "content": {
-                "key": {
-                    "element": "string",
-                    "content": "Content-Type"
-                },
-                "value": {
-                    "element": "string",
-                    "content": "application/json"
-                }
-            }
+  "element": "httpHeaders",
+  "content": [
+    {
+      "element": "member",
+      "content": {
+        "key": {
+          "element": "string",
+          "content": "Content-Type"
+        },
+        "value": {
+          "element": "string",
+          "content": "application/json"
         }
-    ]
+      }
+    }
+  ]
 }
 ```
 
@@ -483,7 +558,7 @@ Payload of an HTTP message including headers, data structures, or assets.
 
 - `attributes`
     - `headers` (HTTP Headers)
-- `content` (array)
+- `content` (array, fixed-type)
     - (Copy) - Payload description's copy text.
     - (Data Structure) - Data structure describing the payload.
 
@@ -503,7 +578,7 @@ HTTP request message.
 
 - `element`: httpRequest (string, fixed)
 - `attributes`
-    - `method` (string) - HTTP request method. The method value SHOULD be inherited from a parent transition if it is unset.
+    - `method` ([String Element][]) - HTTP request method. The method value SHOULD be inherited from a parent transition if it is unset.
     - `href` (Templated Href) - URI Template for this HTTP request.
 
         If present, the value of the `href` attribute SHOULD be used to resolve
@@ -530,7 +605,7 @@ HTTP response message.
 
 - `element`: httpResponse (string, fixed)
 - `attributes`
-    - `statusCode` (number) - HTTP response status code.
+    - `statusCode` (Number Element) - HTTP response status code.
 
 ## Data Structure Elements
 
@@ -554,13 +629,19 @@ Extending the element "A" to form new element "B":
 {
   "element": "extend",
   "meta": {
-    "id": "B"
+    "id": {
+      "element": "string",
+      "content": "B"
+    }
   },
   "content": [
     {
       "element": "string",
       "meta": {
-        "id": "A"
+        "id": {
+          "element": "string",
+          "content": "A"
+        }
       },
       "content": "base element content"
     },
@@ -579,7 +660,10 @@ example above can be written as follows:
 {
   "element": "string",
   "meta": {
-    "id": "A"
+    "id": {
+      "element": "string",
+      "content": "A"
+    }
   },
   "content": "base element content"
 }
@@ -589,7 +673,10 @@ example above can be written as follows:
 {
   "element": "A",
   "meta": {
-    "id": "B"
+    "id": {
+      "element": "string",
+      "content": "B"
+    }
   },
   "content": "derived content"
 }
@@ -602,13 +689,19 @@ the references from the example above we get:
 {
   "element": "extend",
   "meta": {
-    "id": "B"
+    "id": {
+      "element": "string",
+      "content": "B"
+    }
   },
   "content": [
     {
       "element": "string",
       "meta": {
-        "ref": "A"
+        "ref": {
+          "element": "string",
+          "content": "A"
+        }
       },
       "content": "base element content"
     },
@@ -630,9 +723,9 @@ Note: Not every Data Structure _Base Type_ is presented in Refract primitive typ
 
 | JSON primitive |      Refract     | [MSON][] Base Type | Data Structure Elements |
 |:--------------:|:----------------:|:------------------:|:------------------------:|
-|     boolean    |  Boolean Element |     boolean    |  Boolean Type  |
-|     string     |  String Element  |     string     |   String Type  |
-|     number     |  Number Element  |     number     |   Number Type  |
+|     boolean    |  [Boolean Element][] |     boolean    |  Boolean Type  |
+|     string     |  [String Element][]  |     string     |   String Type  |
+|     number     |  [Number Element][]  |     number     |   Number Type  |
 |      array     |   Array Element  |      array     |   Array Type   |
 |        -       |         -        |      enum      |    Enum Type   |
 |     object     |  Object Element  |     object     |   Object Type  |
@@ -649,54 +742,61 @@ Note: In Data Structure Refract _Nested Member Types_ _Type Section_ is the `con
 #### Properties
 
 - `attributes`
-    - `typeAttributes` (array) - _Type Definition_ attributes list, see _Type Attribute_  
+    - `typeAttributes` (Array Element) - _Type Definition_ attributes list, see _Type Attribute_  
 
-      Type attributes of a type definition.
+        - `content` (array, fixed-type)
 
-      Note, if `sample` (or `default`) attribute is specified the value SHOULD be stored in the `samples` (or `default`) property instead of the element's `content`.
+            Type attributes of a type definition.
 
-      - Items
-          - (enum[string])
-              - required - This element is required in parent's content
-              - optional - This element is optional in parent's content
-              - fixed - The `content` value is immutable.
+            Note, if `sample` (or `default`) attribute is specified the value SHOULD be stored in the `samples` (or `default`) property instead of the element's `content`.
 
-    - `variable` (boolean)
+            - Items
+                - One Of
+                    - ([String Element][])
+                        - `content`: required (fixed) - This element is required in parent's content
+                    - ([String Element][])
+                        - `content`: optional (fixed) - This element is optional in parent's content
+                    - ([String Element][])
+                        - `content`: fixed (fixed) - The `content` value is immutable.
+                    - ([String Element][])
+                        - `content`: fixedType (fixed) - The type of `content` value is immutable.
+
+    - `variable` ([Boolean Element][])
 
       The `content` value is either a _Variable Type Name_, or _Variable Property Name_.
 
       Note, if the `content` is a _Variable Value_ the `sample` type attribute
       should be used instead (see `typeAttributes`).
 
-    - `samples` (array) - Array of alternative sample values for _Member Types_
+    - `samples` (Array Element) - Array of alternative sample values for _Member Types_
 
           The type of items in `samples` array attribute MUST match the type of element's `content`.
 
-    - `default` - Default value for _Member Types_
+    - `default` ([Element][]) - Default value for _Member Types_
 
           The type of of `default` attribute MUST match the type of element's `content`.
 
     - `validation` - Not used, reserved for a future use
 
-### Type Reference (Ref Element)
+### Type Reference ([Ref Element][])
 
 This elements extends refract `Ref Element` to include optional referenced element.
 
 #### Properties
 
-- `element` ref (string, fixed)
+- `element`: ref (string, fixed)
 - `attributes`
-    -  `resolved` (Element, optional) - Resolved element being referenced.
+    -  `resolved` ([Element][], optional) - Resolved element being referenced.
 
-### Boolean Type (Boolean Element)
-
-- Include [Data Structure Element][]
-
-### String Type (String Element)
+### Boolean Type ([Boolean Element][])
 
 - Include [Data Structure Element][]
 
-### Number Type (Number Element)
+### String Type ([String Element][])
+
+- Include [Data Structure Element][]
+
+### Number Type ([Number Element][])
 
 - Include [Data Structure Element][]
 
@@ -731,33 +831,32 @@ Enumeration type. Exclusive list of possible elements. The elements in content's
 
 ```json
 {
-    "element": "object",
-    "content": [
-        {
-            "element": "member",
-            "content": {
-                "key": {
-                    "element": "string",
-                    "content": "tag"
-                },
-                "value": {
-                    "element": "enum",
-                    "content": [
-                        {
-                            "element": "string",
-                            "content": "red"
-                        },
-                        {
-                            "element": "string",
-                            "content": "green"
-                        }
-                    ]
-                }
+  "element": "object",
+  "content": [
+    {
+      "element": "member",
+      "content": {
+        "key": {
+          "element": "string",
+          "content": "tag"
+        },
+        "value": {
+          "element": "enum",
+          "content": [
+            {
+              "element": "string",
+              "content": "red"
+            },
+            {
+              "element": "string",
+              "content": "green"
             }
+          ]
         }
-    ]
-}
-```
+      }
+    }
+  ]
+}```
 
 ### Examples
 
@@ -773,22 +872,22 @@ Enumeration type. Exclusive list of possible elements. The elements in content's
 
 ```json
 {
-    "element": "object",
-    "content": [
-        {
-            "element": "member",
-            "content": {
-                "key": {
-                    "element": "string",
-                    "content": "id"
-                },
-                "value": {
-                    "element": "string",
-                    "content": "42"
-                }
-            }
+  "element": "object",
+  "content": [
+    {
+      "element": "member",
+      "content": {
+        "key": {
+          "element": "string",
+          "content": "id"
+        },
+        "value": {
+          "element": "string",
+          "content": "42"
         }
-    ]
+      }
+    }
+  ]
 }
 ```
 
@@ -804,28 +903,37 @@ Enumeration type. Exclusive list of possible elements. The elements in content's
 
 ```json
 {
-    "element": "object",
-    "content": [
-        {
-            "element": "member",
-            "attributes": {
-                "typeAttributes": [
-                    "required",
-                    "fixed"
-                ]
+  "element": "object",
+  "content": [
+    {
+      "element": "member",
+      "attributes": {
+        "typeAttributes": {
+          "element": "array",
+          "content": [
+            {
+              "element": "string",
+              "content": "required"
             },
-            "content": {
-                "key": {
-                    "element": "string",
-                    "content": "id"
-                },
-                "value": {
-                    "element": "string",
-                    "content": "42"
-                }
+            {
+              "element": "string",
+              "content": "fixed"
             }
+          ]
         }
-    ]
+      },
+      "content": {
+        "key": {
+          "element": "string",
+          "content": "id"
+        },
+        "value": {
+          "element": "string",
+          "content": "42"
+        }
+      }
+    }
+  ]
 }
 ```
 
@@ -842,24 +950,27 @@ Enumeration type. Exclusive list of possible elements. The elements in content's
 
 ```json
 {
-    "element": "object",
-    "content": [
-        {
-            "element": "member",
-            "content": {
-                "key": {
-                    "element": "string",
-                    "content": "id"
-                },
-                "value": {
-                    "element": "number",
-                    "attributes": {
-                        "default": 0
-                    }
-                }
+  "element": "object",
+  "content": [
+    {
+      "element": "member",
+      "content": {
+        "key": {
+          "element": "string",
+          "content": "id"
+        },
+        "value": {
+          "element": "number",
+          "attributes": {
+            "default": {
+              "element": "number",
+              "content": 0
             }
+          }
         }
-    ]
+      }
+    }
+  ]
 }
 ```
 
@@ -878,51 +989,51 @@ Enumeration type. Exclusive list of possible elements. The elements in content's
 
 ```json
 {
-    "element": "object",
-    "content": [
+  "element": "object",
+  "content": [
+    {
+      "element": "member",
+      "content": {
+        "key": {
+          "element": "string",
+          "content": "city"
+        }
+      }
+    },
+    {
+      "element": "select",
+      "content": [
         {
-            "element": "member",
-            "content": {
+          "element": "option",
+          "content": [
+            {
+              "element": "member",
+              "content": {
                 "key": {
-                    "element": "string",
-                    "content": "city"
+                  "element": "string",
+                  "content": "state"
                 }
+              }
             }
+          ]
         },
         {
-            "element": "select",
-            "content": [
-                {
-                    "element": "option",
-                    "content": [
-                        {
-                            "element": "member",
-                            "content": {
-                                "key": {
-                                    "element": "string",
-                                    "content": "state"
-                                }
-                            }
-                        }
-                    ]
-                },
-                {
-                    "element": "option",
-                    "content": [
-                        {
-                            "element": "member",
-                            "content": {
-                                "key": {
-                                    "element": "string",
-                                    "content": "province"
-                                }
-                            }
-                        }
-                    ]
+          "element": "option",
+          "content": [
+            {
+              "element": "member",
+              "content": {
+                "key": {
+                  "element": "string",
+                  "content": "province"
                 }
-            ]
+              }
+            }
+          ]
         }
-    ]
+      ]
+    }
+  ]
 }
 ```
 
@@ -946,25 +1057,31 @@ Using the `ref` element to reference an the content of an element.
 
 ```json
 {
-    "element": "object",
-    "content": [
-        {
-            "element": "member",
-            "content": {
-                "key": {
-                    "element": "string",
-                    "content": "id"
-                }
-            }
-        },
-        {
-            "element": "ref",
-            "content": {
-                "href": "User",
-                "path": "content"
-            }
+  "element": "object",
+  "content": [
+    {
+      "element": "member",
+      "content": {
+        "key": {
+          "element": "string",
+          "content": "id"
         }
-    ]
+      }
+    },
+    {
+      "element": "ref",
+      "content": {
+        "href": {
+          "element": "string",
+          "content": "User"
+        },
+        "path": {
+          "element": "string",
+          "content": "content"
+        }
+      }
+    }
+  ]
 }
 ```
 
@@ -972,48 +1089,57 @@ Using "Type Reference" (`ref`) element with the `resolved` attribute:
 
 ```json
 {
-    "element": "object",
-    "content": [
-        {
-            "element": "member",
-            "content": {
-                "key": {
-                    "element": "string",
-                    "content": "id"
-                }
-            }
-        },
-        {
-            "element": "ref",
-            "attributes": {
-                "resolved": {
-                    "element": "object",
-                    "meta": {
-                        "ref": "User"
-                    },
-                    "content": [
-                        {
-                            "element": "member",
-                            "content": {
-                                "key": {
-                                    "element": "string",
-                                    "content": "name"
-                                },
-                                "value": {
-                                    "element": "string",
-                                    "content": "John"
-                                }
-                            }
-                        }
-                    ]
-                }
-            },
-            "content": {
-                "href": "User",
-                "path": "content"
-            }
+  "element": "object",
+  "content": [
+    {
+      "element": "member",
+      "content": {
+        "key": {
+          "element": "string",
+          "content": "id"
         }
-    ]
+      }
+    },
+    {
+      "element": "ref",
+      "attributes": {
+        "resolved": {
+          "element": "object",
+          "meta": {
+            "ref": {
+              "element": "string",
+              "content": "User"
+            }
+          },
+          "content": [
+            {
+              "element": "member",
+              "content": {
+                "key": {
+                  "element": "string",
+                  "content": "name"
+                },
+                "value": {
+                  "element": "string",
+                  "content": "John"
+                }
+              }
+            }
+          ]
+        }
+      },
+      "content": {
+        "href": {
+          "element": "string",
+          "content": "User"
+        },
+        "path": {
+          "element": "string",
+          "content": "content"
+        }
+      }
+    }
+  ]
 }
 ```
 
@@ -1035,23 +1161,32 @@ Description is here! Properties to follow.
 
 ```json
 {
-    "element": "object",
-    "meta": {
-        "id": "Address",
-        "title": "Address",
-        "description": "Description is here! Properties to follow."
+  "element": "object",
+  "meta": {
+    "id": {
+      "element": "string",
+      "content": "Address"
     },
-    "content": [
-        {
-            "element": "member",
-            "content": {
-                "key": {
-                    "element": "string",
-                    "content": "street"
-                }
-            }
+    "title": {
+      "element": "string",
+      "content": "Address"
+    },
+    "description": {
+      "element": "string",
+      "content": "Description is here! Properties to follow."
+    }
+  },
+  "content": [
+    {
+      "element": "member",
+      "content": {
+        "key": {
+          "element": "string",
+          "content": "street"
         }
-    ]
+      }
+    }
+  ]
 }
 ```
 
@@ -1071,41 +1206,47 @@ Description is here! Properties to follow.
 
 ```json
 {
-    "element": "object",
-    "meta": {
-        "id": "User"
-    },
-    "content": [
-        {
-            "element": "member",
-            "content": {
-                "key": {
-                    "element": "string",
-                    "content": "name"
-                }
-            }
+  "element": "object",
+  "meta": {
+    "id": {
+      "element": "string",
+      "content": "User"
+    }
+  },
+  "content": [
+    {
+      "element": "member",
+      "content": {
+        "key": {
+          "element": "string",
+          "content": "name"
         }
-    ]
+      }
+    }
+  ]
 }
 ```
 
 ```json
 {
-    "element": "User",
-    "meta": {
-        "id": "Customer"
-    },
-    "content": [
-        {
-            "element": "member",
-            "content": {
-                "key": {
-                    "element": "string",
-                    "content": "id"
-                }
-            }
+  "element": "User",
+  "meta": {
+    "id": {
+      "element": "string",
+      "content": "Customer"
+    }
+  },
+  "content": [
+    {
+      "element": "member",
+      "content": {
+        "key": {
+          "element": "string",
+          "content": "id"
         }
-    ]
+      }
+    }
+  ]
 }
 ```
 
@@ -1113,43 +1254,49 @@ Description is here! Properties to follow.
 
 ```json
 {
-    "element": "extend",
-    "meta": {
-        "id": "Customer"
-    },
-    "content": [
-        {
-            "element": "object",
-            "meta": {
-                "ref": "User"
-            },
-            "content": [
-                {
-                    "element": "member",
-                    "content": {
-                        "key": {
-                            "element": "string",
-                            "content": "id"
-                        }
-                    }
-                }
-            ]
-        },
-        {
-            "element": "object",
-            "content": [
-                {
-                    "element": "member",
-                    "content": {
-                        "key": {
-                            "element": "string",
-                            "content": "id"
-                        }
-                    }
-                }
-            ]
+  "element": "extend",
+  "meta": {
+    "id": {
+      "element": "string",
+      "content": "Customer"
+    }
+  },
+  "content": [
+    {
+      "element": "object",
+      "meta": {
+        "ref": {
+          "element": "string",
+          "content": "User"
         }
-    ]
+      },
+      "content": [
+        {
+          "element": "member",
+          "content": {
+            "key": {
+              "element": "string",
+              "content": "id"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "element": "object",
+      "content": [
+        {
+          "element": "member",
+          "content": {
+            "key": {
+              "element": "string",
+              "content": "id"
+            }
+          }
+        }
+      ]
+    }
+  ]
 }
 ```
 
@@ -1164,12 +1311,34 @@ Description is here! Properties to follow.
 ##### Data Structure Refract
 
 ```json
-["object", {}, {}, [
-  ["member", {}, {}, {
-    "key": ["string", {}, {}, "p"],
-    "value": ["string", {}, {"samples": [42]}, null]
-  }]
-]]
+{
+  "element": "object",
+  "content": [
+    {
+      "element": "member",
+      "content": {
+        "key": {
+          "element": "string",
+          "content": "p"
+        },
+        "value": {
+          "element": "string",
+          "attributes": {
+            "samples": {
+              "element": "array",
+              "content": [
+                {
+                  "element": "number",
+                  "content": 42
+                }
+              ]
+            }
+          }
+        }
+      }
+    }
+  ]
+}
 ```
 
 #### Variable Property Name
@@ -1183,12 +1352,29 @@ Description is here! Properties to follow.
 ##### Data Structure Refract
 
 ```json
-["object", {}, {}, [
-  ["member", {}, {}, {
-    "key": ["Relation", {}, {"variable": true}, "rel"],
-    "value": ["string", {}, {}, null]
-  }]
-]]
+{
+  "element": "object",
+  "content": [
+    {
+      "element": "member",
+      "content": {
+        "key": {
+          "element": "Relation",
+          "attributes": {
+            "variable": {
+              "element": "boolean",
+              "content": true
+            }
+          },
+          "content": "rel"
+        },
+        "value": {
+          "element": "string"
+        }
+      }
+    }
+  ]
+}
 ```
 
 #### Variable Type Name
@@ -1206,15 +1392,31 @@ Note this needs an introduction of a new Data Structure element for any type - `
 ##### Data Structure Refract
 
 ```json
-["object", {}, {}, [
-  ["member", {}, {}, {
-    "key": ["string", {}, {}, "p"],
-    "value": ["array", {}, {}, [
-        ["generic", {}, {}, "T"]
-    ]]
-  }]
-]]
+{
+  "element": "object",
+  "content": [
+    {
+      "element": "member",
+      "content": {
+        "key": {
+          "element": "string",
+          "content": "p"
+        },
+        "value": {
+          "element": "array",
+          "content": {
+            {
+              "element": "generic",
+              "content": "T"
+            }
+          }
+        }
+      }
+    }
+  ]
+}
 ```
+
 ## Parse Result Elements
 
 ### Parse Result (Base API Element)
@@ -1224,7 +1426,7 @@ A result of parsing of an API description document.
 #### Properties
 
 - `element`: parseResult (string, fixed)
-- `content` (array)
+- `content` (array, fixed-type)
     - (Category)
     - (Annotation)
 
@@ -1239,11 +1441,69 @@ Given following API Blueprint document:
 The parse result is (using null in `category` content for simplicity):
 
 ```json
-["parseResult", {}, {}, [
-    ["category", {"classes": ["api"]}, {"sourceMap": [[0,9]]}, null],
-    ["annotation", {"classes": ["warning"]}, { "code": 6, "sourceMap": [{ "element": "sourceMap", "content": [[0,9]] }] }, "action is missing a response"]
+{
+  "element": "parseResult",
+  "content": [
+    {
+      "element": "category",
+      "meta": {
+        "classes": {
+          "element": "array",
+          "content": [
+            {
+              "element": "string",
+              "content": "api"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "element": "annotation",
+      "meta": {
+        "classes": {
+          "element": "array"
+          "content": [
+            {
+              "element": "string",
+              "content": "warning"
+            }
+          ]
+        }
+      },
+      "attributes": {
+        "code": {
+          "element": "number",
+          "content": 6
+        },
+        "sourceMap": {
+          "element": "array",
+          "content": [
+            {
+              "element": "sourceMap",
+              "content": [
+                {
+                  "element": "array",
+                  "content": [
+                    {
+                      "element": "number",
+                      "content": 0
+                    },
+                    {
+                      "element": "number",
+                      "content": 9
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "content": "action"
+    }
   ]
-]
+}
 ```
 
 ### Annotation (Base API Element)
@@ -1254,16 +1514,19 @@ Annotation for a source file. Usually generated by a parser or adapter.
 
 - `element`: annotation (string, fixed)
 - `meta`
-  - `classes` (array, fixed)
-      - (enum[string])
-          - error - Annotation represents an error
-          - warning - Annotation represents a warning
+  - `classes` (Array Element)
+      - `content` (array, fixed-type)
+          - One of
+              - ([String Element][])
+                  - error - Annotation represents an error
+              - ([String Element][])
+                  - warning - Annotation represents a warning
 
 - `attributes`
-    - `code` (number) - Parser-specific code of the annotation.
+    - `code` ([Number Element][]) - Parser-specific code of the annotation.
     Refer to parser documentation for explanation of the codes.
 
-    - `sourceMap` (array[Source Map]) - Locations of the annotation in the source file.
+    - `sourceMap` (Array Element[Source Map]) - Locations of the annotation in the source file.
 
 - `content` (string) - Textual annotation.
 
@@ -1275,16 +1538,57 @@ Annotation for a source file. Usually generated by a parser or adapter.
 {
   "element": "annotation",
   "meta": {
-    "classes": ["warning"]
+    "classes": {
+      "element": "array",
+      "content": [
+        {
+          "element": "string",
+          "content": "warning"
+        }
+      ]
+    }
   },
   "attributes": {
-    "code": 6,
-    "sourceMap": [
-      {
-        "element": "sourceMap",
-        "content": [[4, 12], [20, 12]]
-      }
-    ]
+    "code": {
+      "element": "number",
+      "content": 6
+    },
+    "sourceMap": {
+      "element": "array",
+      "content": [
+        {
+          "element": "sourceMap",
+          "content": [
+            {
+              "element": "array",
+              "content": [
+                {
+                  "element": "number",
+                  "content": 4
+                },
+                {
+                  "element": "number",
+                  "content": 12
+                }
+              ]
+            },
+            {
+              "element": "array",
+              "content": [
+                {
+                  "element": "number",
+                  "content": 20
+                },
+                {
+                  "element": "number",
+                  "content": 12
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
   },
   "content": "action is missing a response"
 }
@@ -1314,23 +1618,44 @@ series of characters.
 
 - `element`: sourceMap (string, fixed)
 - `content` (array) - Array of character blocks.
-    - (array, fixed) - Continuous characters block. A pair of character index and character count.
-      - (number) - Zero-based index of a character in the source document.
-      - (number) - Count of characters starting from the character index.
+    - (Array Element) - Continuous characters block. A pair of character index and character count.
+        - `content` (array, fixed-type)
+            - ([Number Element][]) - Zero-based index of a character in the source document.
+            - ([Number Element][]) - Count of characters starting from the character index.
 
 #### Example
 
 ```json
 {
-    "element": "...",
-    "attributes": {
-        "sourceMap": [
-            {
-                "element": "sourceMap",
-                "content": [[4, 12], [20, 12]]
-            }
-        ]
+  "element": "sourceMap",
+  "content": [
+    {
+      "element": "array",
+      "content": [
+        {
+          "element": "number",
+          "content": 4
+        },
+        {
+          "element": "number",
+          "content": 12
+        }
+      ]
+    },
+    {
+      "element": "array",
+      "content": [
+        {
+          "element": "number",
+          "content": 4
+        },
+        {
+          "element": "number",
+          "content": 12
+        }
+      ]
     }
+  ]
 }
 ```
 
@@ -1360,7 +1685,7 @@ explanation on how and why it was inferred.
 
 Authentication and authorization schemes MAY be defined within an API Elements document. These schemes are then used within the context of a resource to define which schemes to apply when making a transaction.
 
-### Basic Authentication Scheme (Base API Element)
+### Basic Authentication Scheme (Object Element)
 
 This element may be used to define a basic authentication scheme implementation for an API as described in [RFC 2617](https://tools.ietf.org/html/rfc2617).
 
@@ -1372,7 +1697,6 @@ The element MAY have a username and password defined as member elements within t
 #### Properties
 
 - `element`: Basic Authentication Scheme (string, fixed)
-- `content` (array[Member Element])
 
 #### Example
 
@@ -1382,19 +1706,38 @@ This example shows a custom basic authentication scheme being defined as `Custom
 {
   "element": "category",
   "meta": {
-    "classes": ["api"]
+    "classes": {
+      "element": "array",
+      "content": [
+        {
+          "element": "string",
+          "content": "api"
+        }
+      ]
+    }
   },
   "content": [
     {
       "element": "category",
       "meta": {
-        "classes": ["authSchemes"]
+        "classes": {
+          "element": "array",
+          "content": [
+            {
+              "element": "string",
+              "content": "authSchemes"
+            }
+          ]
+        }
       },
       "content": [
         {
           "element": "Basic Authentication Scheme",
           "meta": {
-            "id": "Custom Basic Auth"
+            "id": {
+              "element": "string",
+              "content": "Custom Basic Auth"
+            }
           },
           "content": [
             {
@@ -1430,7 +1773,10 @@ This example shows a custom basic authentication scheme being defined as `Custom
     {
       "element": "resource",
       "attributes": {
-        "href": "/users"
+        "href": {
+          "element": "string",
+          "content": "/users"
+        }
       },
       "content": [
         {
@@ -1439,11 +1785,14 @@ This example shows a custom basic authentication scheme being defined as `Custom
             {
               "element": "httpTransaction",
               "attributes": {
-                "authSchemes": [
-                  {
-                    "element": "Custom Basic Auth"
-                  }
-                ]
+                "authSchemes": {
+                  "element": "array",
+                  "content": [
+                    {
+                      "element": "Custom Basic Auth"
+                    }
+                  ]
+                }
               }
             }
           ]
@@ -1477,19 +1826,38 @@ This example shows a custom token authentication scheme being defined as `Custom
 {
   "element": "category",
   "meta": {
-    "classes": ["api"]
+    "classes": {
+      "element": "array",
+      "content": [
+        {
+          "element": "string",
+          "content": "api"
+        }
+      ]
+    }
   },
   "content": [
     {
       "element": "category",
       "meta": {
-        "classes": ["authSchemes"]
+        "classes": {
+          "element": "array",
+          "content": [
+            {
+              "element": "string",
+              "content": "authSchemes"
+            }
+          ]
+        }
       },
       "content": [
         {
           "element": "Token Authentication Scheme",
           "meta": {
-            "id": "Custom Token Auth"
+            "id": {
+              "element": "string",
+              "content": "Custom Token Auth"
+            }
           },
           "content": [
             {
@@ -1512,7 +1880,10 @@ This example shows a custom token authentication scheme being defined as `Custom
     {
       "element": "resource",
       "attributes": {
-        "href": "/users"
+        "href": {
+          "element": "string",
+          "content": "/users"
+        }
       },
       "content": [
         {
@@ -1521,11 +1892,14 @@ This example shows a custom token authentication scheme being defined as `Custom
             {
               "element": "httpTransaction",
               "attributes": {
-                "authSchemes": [
-                  {
-                    "element": "Custom Token Auth"
-                  }
-                ]
+                "authSchemes": {
+                  "element": "array",
+                  "content": [
+                    {
+                      "element": "Custom Token Auth"
+                    }
+                  ]
+                }
               }
             }
           ]
@@ -1574,19 +1948,38 @@ Also, please note this example is incomplete for the sake of keeping it short.
 {
   "element": "category",
   "meta": {
-    "classes": ["api"]
+    "classes": {
+      "element": "array",
+      "content": [
+        {
+          "element": "string",
+          "content": "api"
+        }
+      ]
+    }
   },
   "content": [
     {
       "element": "category",
       "meta": {
-        "classes": ["authSchemes"]
+        "classes": {
+          "element": "array",
+          "content": [
+            {
+              "element": "string",
+              "content": "authSchemes"
+            }
+          ]
+        }
       },
       "content": [
         {
           "element": "OAuth2 Scheme",
           "meta": {
-            "id": "Custom OAuth2"
+            "id": {
+              "element": "string",
+              "content": "Custom OAuth2"
+            }
           },
           "content": [
             {
@@ -1627,15 +2020,27 @@ Also, please note this example is incomplete for the sake of keeping it short.
             {
               "element": "transition",
               "attributes": {
-                "relation": "authorize",
-                "href": "/authorize"
+                "relation": {
+                  "element": "string",
+                  "content": "authorize"
+                },
+                "href": {
+                  "element": "string",
+                  "content": "/authorize"
+                }
               }
             },
             {
               "element": "transition",
               "attributes": {
-                "relation": "token",
-                "href": "/token"
+                "relation": {
+                  "element": "string",
+                  "content": "token"
+                },
+                "href": {
+                  "element": "string",
+                  "content": "/token"
+                }
               }
             }
           ]
@@ -1645,7 +2050,10 @@ Also, please note this example is incomplete for the sake of keeping it short.
     {
       "element": "resource",
       "attributes": {
-        "href": "/users"
+        "href": {
+          "element": "string",
+          "content": "/users"
+        }
       },
       "content": [
         {
@@ -1715,21 +2123,30 @@ This `extension` element has a custom content, and the meaning and handling inst
 
 ```json
 {
-    "element": "extension",
-    "meta": {
-        "links": [
-            {
-                "element": "link",
-                "attributes": {
-                  "relation": "profile",
-                  "href": "http://example.com/extensions/info/"
-                }
+  "element": "extension",
+  "meta": {
+    "links": {
+      "element": "array",
+      "content": [
+        {
+          "element": "link",
+          "attributes": {
+            "relation": {
+              "element": "string",
+              "content": "profile"
+            },
+            "href": {
+              "element": "string",
+              "content": "http://example.com/extensions/info/"
             }
-        ]
-    },
-    "content": {
-      "version": "1.0"
+          }
+        }
+      ]
     }
+  },
+  "content": {
+    "version": "1.0"
+  }
 }
 ```
 
@@ -1769,7 +2186,7 @@ These elements and definitions are referenced as part of the base Refract specif
 [Array Element]: https://github.com/refractproject/refract-spec/blob/master/refract-spec.md#array-element-element
 [Object Element]: https://github.com/refractproject/refract-spec/blob/master/refract-spec.md#object-element-element
 [Ref Element]: https://github.com/refractproject/refract-spec/blob/master/refract-spec.md#ref-element-element
-[Element Pointer]: https://github.com/refractproject/refract-spec/blob/master/refract-spec.md#element-pointer-enum
+[Element Pointer]: https://github.com/refractproject/refract-spec/blob/master/refract-spec.md#element-pointer-element
 [Link Element]: https://github.com/refractproject/refract-spec/blob/master/refract-spec.md#link-element-element
 
 [RFC 2119]: https://datatracker.ietf.org/doc/rfc2119/

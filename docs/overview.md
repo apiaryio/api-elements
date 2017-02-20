@@ -73,9 +73,18 @@ Here is an example of what an element MAY look like.
 {
   "element": "string",
   "meta": {
-    "id": "foo",
-    "title": "Foo",
-    "description": "My foo element"
+    "id": {
+      "element": "string",
+      "content": "foo"
+    },
+    "title": {
+      "element": "string",
+      "content": "Foo"
+    },
+    "description": {
+      "element": "string",
+      "content": "My foo element"
+    }
   },
   "content": "bar"
 }
