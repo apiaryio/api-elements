@@ -44,9 +44,11 @@ The Base API Element contains four properties: `element`, `meta`, `attributes`, 
         - (string)
         - (number)
         - (boolean)
-        - (array)
-        - (object)
-        - (Base API Element)
+        - (array[Element])
+        - (Element)
+        - (object) - Key Value Pair
+            - key (Element)
+            - value (Element)
 
 #### Example
 
@@ -149,7 +151,7 @@ The Resource representation with its available transitions and its data.
     "description": {
       "element": "string",
       "content": "A Question object has the following attributes."
-    },
+    }
   },
   "attributes": {
     "href": {
@@ -338,7 +340,7 @@ transitions.
           "content": {
             "key": {
               "element": "string",
-              "content": "HOST",
+              "content": "HOST"
             },
             "value": {
               "element": "string",
@@ -699,7 +701,7 @@ the references from the example above we get:
       "element": "string",
       "meta": {
         "ref": {
-          "element": "string",
+          "element": "ref",
           "content": "A"
         }
       },
@@ -856,7 +858,8 @@ Enumeration type. Exclusive list of possible elements. The elements in content's
       }
     }
   ]
-}```
+}
+```
 
 ### Examples
 
@@ -1070,16 +1073,13 @@ Using the `ref` element to reference an the content of an element.
     },
     {
       "element": "ref",
-      "content": {
-        "href": {
-          "element": "string",
-          "content": "User"
-        },
+      "attributes": {
         "path": {
           "element": "string",
           "content": "content"
         }
-      }
+      },
+      "content": "User"
     }
   ]
 }
@@ -1103,11 +1103,15 @@ Using "Type Reference" (`ref`) element with the `resolved` attribute:
     {
       "element": "ref",
       "attributes": {
+        "path": {
+          "element": "string",
+          "content": "content"
+        },
         "resolved": {
           "element": "object",
           "meta": {
             "ref": {
-              "element": "string",
+              "element": "ref",
               "content": "User"
             }
           },
@@ -1128,16 +1132,7 @@ Using "Type Reference" (`ref`) element with the `resolved` attribute:
           ]
         }
       },
-      "content": {
-        "href": {
-          "element": "string",
-          "content": "User"
-        },
-        "path": {
-          "element": "string",
-          "content": "content"
-        }
-      }
+      "content": "User"
     }
   ]
 }
@@ -1266,7 +1261,7 @@ Description is here! Properties to follow.
       "element": "object",
       "meta": {
         "ref": {
-          "element": "string",
+          "element": "ref",
           "content": "User"
         }
       },
@@ -1404,12 +1399,12 @@ Note this needs an introduction of a new Data Structure element for any type - `
         },
         "value": {
           "element": "array",
-          "content": {
+          "content": [
             {
               "element": "generic",
               "content": "T"
             }
-          }
+          ]
         }
       }
     }
@@ -1462,7 +1457,7 @@ The parse result is (using null in `category` content for simplicity):
       "element": "annotation",
       "meta": {
         "classes": {
-          "element": "array"
+          "element": "array",
           "content": [
             {
               "element": "string",
@@ -2062,31 +2057,34 @@ Also, please note this example is incomplete for the sake of keeping it short.
             {
               "element": "httpTransaction",
               "attributes": {
-                "authSchemes": [
-                  {
-                    "element": "Custom OAuth2",
-                    "content": [
-                      {
-                        "element": "member",
-                        "content": {
-                          "key": {
-                            "element": "string",
-                            "content": "scopes"
-                          },
-                          "value": {
-                            "element": "array",
-                            "content": [
-                              {
-                                "element": "string",
-                                "content": "scope1"
-                              }
-                            ]
+                "authSchemes": {
+                  "element": "array",
+                  "content": [
+                    {
+                      "element": "Custom OAuth2",
+                      "content": [
+                        {
+                          "element": "member",
+                          "content": {
+                            "key": {
+                              "element": "string",
+                              "content": "scopes"
+                            },
+                            "value": {
+                              "element": "array",
+                              "content": [
+                                {
+                                  "element": "string",
+                                  "content": "scope1"
+                                }
+                              ]
+                            }
                           }
                         }
-                      }
-                    ]
-                  }
-                ]
+                      ]
+                    }
+                  ]
+                }
               }
             }
           ]
@@ -2145,7 +2143,22 @@ This `extension` element has a custom content, and the meaning and handling inst
     }
   },
   "content": {
-    "version": "1.0"
+    "element": "object",
+    "content": [
+      {
+        "element": "member",
+        "content": {
+          "key": {
+            "element": "string",
+            "content": "version"
+          },
+          "value": {
+            "element": "string",
+            "content": "1.0"
+          }
+        }
+      }
+    ]
   }
 }
 ```
