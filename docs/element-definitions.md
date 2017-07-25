@@ -817,14 +817,16 @@ Enumeration type. Exclusive list of possible elements. The elements in content's
 #### Properties
 
 - `element`: enum (string, fixed)
-- `content` (array[[Data Structure Element][]])
+- `attributes`
+    - `enumerations` (Array Element[[Data Structure Element][]])
+- `content` ([Data Structure Element][])
 
 #### Examples
 
 ##### MSON
 
 ```
-- tag (enum[string])
+- tag: green (enum[string])
     - red
     - green
 ```
@@ -844,16 +846,21 @@ Enumeration type. Exclusive list of possible elements. The elements in content's
         },
         "value": {
           "element": "enum",
-          "content": [
-            {
-              "element": "string",
-              "content": "red"
-            },
-            {
-              "element": "string",
-              "content": "green"
+          "attributes": {
+            "enumerations": {
+              "element": "array",
+              "content": [
+                {
+                  "element": "string",
+                  "content": "red"
+                },
+                {
+                  "element": "string",
+                  "content": "green"
+                }
+              ]
             }
-          ]
+          }
         }
       }
     }
