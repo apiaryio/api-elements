@@ -16,7 +16,7 @@ The Base API Element contains four properties: `element`, `meta`, `attributes`, 
 
 - `element` (string, required)
 
-    The `element` property defines the name of element. It MUST be a string that references an element, which SHOULD be defined.
+    The `element` property specifies the name of element. It MUST be a string that references an element, which SHOULD be defined.
 
 - `meta`
 
@@ -31,7 +31,7 @@ The Base API Element contains four properties: `element`, `meta`, `attributes`, 
 
 - `attributes`
 
-    The `attributes` property defines attributes about the given instance of the element, as specified by the `element` property. When `attributes` is an object, it MAY contain elements itself. The element definition SHOULD be used when interacting with `attributes` and its properties and values.
+    The `attributes` property defines attributes about the given instance of the element, as specified by the `element` property. It is an object where properties are strings and their values are elements.
 
     The `attributes` are used later in this document for representing data structures.
 
@@ -46,9 +46,7 @@ The Base API Element contains four properties: `element`, `meta`, `attributes`, 
         - (boolean)
         - (array[Element])
         - (Element)
-        - (object) - Key Value Pair
-            - key (Element)
-            - value (Element)
+        - (Key Value Pair)
 
 #### Example
 
@@ -107,11 +105,10 @@ Arbitrary data asset.
 - `meta`
     - `classes` (Array Element)
         - `content` (array, fixed-type)
-            - One Of
-                - ([String Element][])
-                    - `content`: messageBody (string, fixed) - Asset is an example of message-body
-                - ([String Element][])
-                    - `content`: messageBodySchema (string, fixed) - Asset is an schema for message-body
+            - ([String Element][])
+                - `content` (enum)
+                    - messageBody (string) - Asset is an example of message-body
+                    - messageBodySchema (string) - Asset is an schema for message-body
 - `attributes`
     - `contentType` ([String Element][]) - Optional media type of the asset. When this is unset, the content type SHOULD be inherited from the `Content-Type` header of a parent HTTP Message Payload
     - `href` (Href) - Link to the asset
@@ -127,7 +124,7 @@ The Resource representation with its available transitions and its data.
 - `attributes`
     - `href` (Templated Href) - URI Template of this resource.
     - `hrefVariables` (Href Variables) - Definition of URI Template variables used in the `href` property.
-- `content` (array, fixed-type)
+- `content` (array)
     - (Copy) - Resource description's copy text.
     - (Category) - A group of Transition elements
     - (Transition) - State transition available for this resource.
@@ -221,7 +218,7 @@ Note: At the moment only the HTTP protocol is supported.
         Definition of any input message-body attribute for this transition.
 
     - `contentTypes` (Array Element[[String Element][]]) - A collection of content types that MAY be used for the transition.
-- `content` (array, fixed-type)
+- `content` (array)
     - (Copy) - Transition description's copy text.
     - (HTTP Transaction) - An instance of transaction example.
 
@@ -257,11 +254,10 @@ Note: At the moment only the HTTP protocol is supported.
 - `meta`
     - `classes` (Array Element)
         - `content` (array, fixed-type)
-            - One Of
-                - ([String Element][])
-                    - `content`: user (string, fixed) - User-specific metadata. Metadata written in the source.
-                - ([String Element][])
-                    - `content`: adapter (string, fixed) - Serialization-specific metadata. Metadata provided by adapter.
+            - ([String Element][])
+                - `content` (enum)
+                    - user (string) - User-specific metadata. Metadata written in the source.
+                    - adapter (string) - Serialization-specific metadata. Metadata provided by adapter.
 
 ### Category (Base API Element)
 
@@ -283,22 +279,17 @@ transitions.
 - `meta`
     - `classes` (Array Element)
         - `content` (array, fixed-type)
-            - One Of
-                - ([String Element][])
-                    - `content`: api (string, fixed) - Category is a API top-level group.
-                - ([String Element][])
-                    - `content`: resourceGroup (string, fixed) - Category is a set of resource.
-                - ([String Element][])
-                    - `content`: dataStructures (string, fixed) - Category is a set of data structures.
-                - ([String Element][])
-                    - `content`: scenario (string, fixed) - Category is set of steps.
-                - ([String Element][])
-                    - `content`: transitions (string, fixed) - Category is a group of transitions.
-                - ([String Element][])
-                    - `content`: authSchemes (string, fixed) - Category is a group of authentication and authorization scheme definitions
+            - ([String Element][])
+                - `content` (enum)
+                    - api (string) - Category is a API top-level group.
+                    - resourceGroup (string) - Category is a set of resource.
+                    - dataStructures (string) - Category is a set of data structures.
+                    - scenario (string) - Category is set of steps.
+                    - transitions (string) - Category is a group of transitions.
+                    - authSchemes (string) - Category is a group of authentication and authorization scheme definitions
 - `attributes`
     - `metadata` (Array Element[API Metadata]) - Arbitrary metadata
-- `content` (array[Base API Element], fixed-type)
+- `content` (array[Base API Element])
 
 #### Example
 
@@ -441,7 +432,7 @@ message pair. A transaction example MUST contain exactly one HTTP request and on
 - `element`: httpTransaction (string, fixed)
 - `attributes`
     - `authSchemes` (Array Element[Base API Element]) - An array of authentication and authorization schemes that apply to the transaction
-- `content` (array, fixed-type) - Request and response message pair (tuple).
+- `content` (array) - Request and response message pair (tuple).
     - (Copy) - HTTP Transaction description's copy text.
     - (HTTP Request Message)
 
@@ -560,7 +551,7 @@ Payload of an HTTP message including headers, data structures, or assets.
 
 - `attributes`
     - `headers` (HTTP Headers)
-- `content` (array, fixed-type)
+- `content` (array)
     - (Copy) - Payload description's copy text.
     - (Data Structure) - Data structure describing the payload.
 
@@ -753,15 +744,12 @@ Note: In Data Structure Refract _Nested Member Types_ _Type Section_ is the `con
             Note, if `sample` (or `default`) attribute is specified the value SHOULD be stored in the `samples` (or `default`) property instead of the element's `content`.
 
             - Items
-                - One Of
-                    - ([String Element][])
-                        - `content`: required (fixed) - This element is required in parent's content
-                    - ([String Element][])
-                        - `content`: optional (fixed) - This element is optional in parent's content
-                    - ([String Element][])
-                        - `content`: fixed (fixed) - The `content` value is immutable.
-                    - ([String Element][])
-                        - `content`: fixedType (fixed) - The type of `content` value is immutable.
+                - ([String Element][])
+                    - `content` (enum)
+                        - required (string) - This element is required in parent's content
+                        - optional (string) - This element is optional in parent's content
+                        - fixed (string) - The `content` value is immutable.
+                        - fixedType (string) - The type of `content` value is immutable.
 
     - `variable` ([Boolean Element][])
 
@@ -1518,11 +1506,10 @@ Annotation for a source file. Usually generated by a parser or adapter.
 - `meta`
   - `classes` (Array Element)
       - `content` (array, fixed-type)
-          - One of
-              - ([String Element][])
-                  - error - Annotation represents an error
-              - ([String Element][])
-                  - warning - Annotation represents a warning
+          - ([String Element][])
+              - `content` (enum)
+                  - error (string) - Annotation represents an error
+                  - warning (string) - Annotation represents a warning
 
 - `attributes`
     - `code` ([Number Element][]) - Parser-specific code of the annotation.
