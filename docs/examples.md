@@ -20,21 +20,53 @@ When this document is parsed, it returns a serialization of API Elements that lo
     {
       "element": "category",
       "meta": {
-        "classes": ["api"],
-        "title": "My API"
+        "classes": {
+          "element": "array",
+          "content": [
+            {
+              "element": "string",
+              "content": "api"
+            }
+          ]
+        },
+        "title": {
+          "element": "string",
+          "content": "My API"
+        }
       },
       "content": [
         {
           "element": "category",
           "meta": {
-            "classes": ["resourceGroup"],
-            "title": ""
+            "classes": {
+              "element": "array",
+              "content": [
+                {
+                  "element": "string",
+                  "content": "resourceGroup"
+                }
+              ]
+            },
+            "title": {
+              "element": "string",
+              "content": ""
+            }
           },
           "content": [
             {
               "element": "resource",
-              "meta": {"title": "Foo"},
-              "attributes": {"href": "/foo"},
+              "meta": {
+                "title": {
+                  "element": "string",
+                  "content": "Foo"
+                }
+              },
+              "attributes": {
+                "href": {
+                  "element": "string",
+                  "content": "/foo"
+                }
+              },
               "content": []
             }
           ]
@@ -71,15 +103,29 @@ When this document is parsed, it returns a serialization of API Elements that lo
     {
       "element": "category",
       "meta": {
-        "classes": ["api"],
-        "title": "My API"
+        "classes": {
+          "element": "array",
+          "content": [
+            {
+              "element": "string",
+              "content": "api"
+            }
+          ]
+        },
+        "title": {
+          "element": "string",
+          "content": "My API"
+        }
       },
-      "attributes": {},
       "content": [
         {
           "element": "resource",
-          "meta": {},
-          "attributes": {"href": "/foo"},
+          "attributes": {
+            "href": {
+              "element": "string",
+              "content": "/foo"
+            }
+          },
           "content": []
         }
       ]
@@ -109,26 +155,22 @@ When the structure is parsed, it returns a serialization of API Elements that lo
 {
   "element": "array",
   "meta": {
-    "id": "My List"
+    "id": {
+      "element": "string",
+      "content": "My List"
+    }
   },
-  "attributes": {},
   "content": [
     {
       "element": "number",
-      "meta": {},
-      "attributes": {},
       "content": 1
     },
     {
       "element": "number",
-      "meta": {},
-      "attributes": {},
       "content": 2
     },
     {
       "element": "number",
-      "meta": {},
-      "attributes": {},
       "content": 3
     }
   ]
