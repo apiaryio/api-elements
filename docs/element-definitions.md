@@ -1591,26 +1591,26 @@ Every refract element MAY include a `sourceMap` attribute. Its content MUST
 be an array of `Source Map` elements. The Source Map elements represent the
 location(s) in source file(s) from which the element was composed.
 
-If used, it represents the location of characters in the source file.
-This location SHOULD include the characters used to build the parent element.
+If used, it represents the location of bytes in the source file.
+This location SHOULD include the bytes used to build the parent element.
 
 The Source Map element MUST NOT be used in its normal ("unrefracted") form
 unless the particular application clearly implies what is the source file the
 source map is pointing in.
 
-A source map is a series of character-blocks. These
+A source map is a series of byte-blocks. These
 blocks may be non-continuous. For example, a block in the series may not start
 immediately after the previous block. Each block, however, is a continuous
-series of characters.
+series of bytes.
 
 #### Properties
 
 - `element`: sourceMap (string, fixed)
-- `content` (array) - Array of character blocks.
-    - (Array Element) - Continuous characters block. A pair of character index and character count.
+- `content` (array) - Array of byte blocks.
+    - (Array Element) - Continuous bytes block. A pair of byte index and byte count.
         - `content` (array, fixed-type)
-            - ([Number Element][]) - Zero-based index of a character in the source document.
-            - ([Number Element][]) - Count of characters starting from the character index.
+            - ([Number Element][]) - Zero-based index of a byte in the source document.
+            - ([Number Element][]) - Count of bytes starting from the byte index.
 
 #### Example
 
@@ -1648,9 +1648,9 @@ series of characters.
 }
 ```
 
-This reads, "The location starts at the 5th character of the source file. It
-includes the 12 subsequent characters including the starting one. Then it
-continues at the 21st character for another 12 characters."
+This reads, "The location starts at the 5th byte of the source file. It
+includes the 12 subsequent bytes including the starting one. Then it
+continues at the 21st byte for another 12 bytes."
 
 ### Link Relations
 
