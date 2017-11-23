@@ -760,11 +760,11 @@ Note: In Data Structure Refract _Nested Member Types_ _Type Section_ is the `con
 
     - `samples` (Array Element) - Array of alternative sample values for _Member Types_
 
-          The type of items in `samples` array attribute MUST match the type of element's `content`.
+          The type of items in `samples` array attribute MUST match the type of element.
 
     - `default` ([Element][]) - Default value for _Member Types_
 
-          The type of of `default` attribute MUST match the type of element's `content`.
+          The type of of `default` attribute MUST match the type of element.
 
     - `validation` - Not used, reserved for a future use
 
@@ -1295,7 +1295,7 @@ Description is here! Properties to follow.
 ##### MSON
 
 ```markdown
-- p: *42*
+- p: *42* (number)
 ```
 
 ##### Data Structure Refract
@@ -1312,7 +1312,7 @@ Description is here! Properties to follow.
           "content": "p"
         },
         "value": {
-          "element": "string",
+          "element": "number",
           "attributes": {
             "samples": {
               "element": "array",
