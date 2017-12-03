@@ -1610,7 +1610,13 @@ series of bytes.
     - (Array Element) - Continuous bytes block. A pair of byte index and byte count.
         - `content` (array, fixed-type)
             - ([Number Element][]) - Zero-based index of a byte in the source document.
+                - attributes
+                    - line - The line number the source map starts on.
+                    - column - The column number of the line that the source map starts on.
             - ([Number Element][]) - Count of bytes starting from the byte index.
+                - attributes
+                    - line - The line number the source map ends on.
+                    - column - The column number of the line that the source map ends on.
 
 #### Example
 
@@ -1651,6 +1657,53 @@ series of bytes.
 This reads, "The location starts at the 5th byte of the source file. It
 includes the 12 subsequent bytes including the starting one. Then it
 continues at the 21st byte for another 12 bytes."
+
+#### Example
+
+```json
+{
+  "element": "sourceMap",
+  "content": [
+    {
+      "element": "array",
+      "content": [
+        {
+          "element": "number",
+          "attributes": {
+            "line": {
+              "element": "number",
+              "content": 3
+            },
+            "column": {
+              "element": "number",
+              "content": 2
+            }
+          },
+          "content": 4
+        },
+        {
+          "element": "number",
+          "attributes": {
+            "line": {
+              "element": "number",
+              "content": 3
+            },
+            "column": {
+              "element": "number",
+              "content": 10
+            }
+          },
+          "content": 12
+        }
+      ]
+    }
+  ]
+}
+```
+
+This reads, "The location starts at the 5th byte (the 2nd byte of line 3) of the source file. It includes 12 bytes, until column 10 on line 3".
+
+**NOTE** *`line` and `column` are optional and may not always be available*.
 
 ### Link Relations
 
