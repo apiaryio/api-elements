@@ -4,7 +4,7 @@ API Elements is a structure for describing APIs and the complex data structures 
 
 ## Getting Started
 
-To start learning about and using API Elements, please check out the [overview](./overview.md), which includes explanations and examples. If you are interested in finding libraries and tools for building and consuming API Elements, you will find this information on the [tools](./tools.md) page.
+To start learning about and using API Elements, please check out the [overview](./overview.html), which includes explanations and examples. If you are interested in finding libraries and tools for building and consuming API Elements, you will find this information on the [tools](./tools.html) page.
 
 ## Contributing
 
