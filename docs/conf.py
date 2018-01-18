@@ -21,6 +21,8 @@
 # import sys
 # sys.path.insert(0, os.path.abspath('.'))
 
+import recommonmark
+from recommonmark.transform import AutoStructify
 from recommonmark.parser import CommonMarkParser
 
 
@@ -106,8 +108,10 @@ html_static_path = ['_static']
 #
 # This is required for the alabaster theme
 # refs: http://alabaster.readthedocs.io/en/latest/installation.html#sidebars
+
+# Custom sidebar templates, maps document names to template names.
 html_sidebars = {
-    'index': ['sidebar_intro.html', 'searchbox.html'],
+    'index': ['sidebar_intro.html', 'globaltoc.html', 'searchbox.html'],
     '**': ['sidebar_intro.html', 'localtoc.html', 'relations.html', 'searchbox.html'],
 }
 
@@ -172,4 +176,18 @@ texinfo_documents = [
 ]
 
 
+github_doc_root = 'https://github.com/apiaryio/api-elements/tree/master/doc/'
 
+
+def setup_recommonmark(app):
+    app.add_config_value('recommonmark_config', {
+        'url_resolver': lambda url: github_doc_root + url,
+        'enable_eval_rst': True,
+        'auto_toc_tree_section': 'Contents',
+        'enable_auto_doc_ref': False,
+    }, True)
+    app.add_transform(AutoStructify)
+
+
+def setup(app):
+    setup_recommonmark(app)
