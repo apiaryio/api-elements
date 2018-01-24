@@ -65,7 +65,7 @@ Every element defined with API Elements has four primary pieces of data.
 - `attributes` (object) - user-specified attributes for a given element
 - `content` - value of the element based on its type
 
-This structure is based on [Refract][], and is expanded and defined better in the [element definition](./element-definitions.md) file.
+This structure is based on [Refract][], and is expanded and defined better in the [element definition](./element-definitions.html) file.
 
 Here is an example of what an element MAY look like.
 

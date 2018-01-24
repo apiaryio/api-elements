@@ -4,7 +4,7 @@ API Elements is a structure for describing APIs and the complex data structures 
 
 ## Getting Started
 
-To start learning about and using API Elements, please check out the [overview](./overview.md), which includes explanations and examples. If you are interested in finding libraries and tools for building and consuming API Elements, you will find this information on the [tools](./tools.md) page.
+To start learning about and using API Elements, please check out the [overview](overview.html), which includes explanations and examples. If you are interested in finding libraries and tools for building and consuming API Elements, you will find this information on the [tools](tools.html) page.
 
 ## Contributing
 
@@ -18,6 +18,19 @@ This documentation conforms to [RFC 2119][], which says:
 > The key words “MUST”, “MUST NOT”, “REQUIRED”, “SHALL”, “SHALL NOT”, “SHOULD”, “SHOULD NOT”, “RECOMMENDED”, “MAY”, and “OPTIONAL” in this document are to be interpreted as described in RFC 2119.
 
 [MSON][] is used throughout this document to define elements and structures.
+
+## Contents
+
+```eval_rst
+.. toctree::
+   :maxdepth: 1
+
+   overview
+   element-definitions
+   examples
+   tools
+   additional-information
+```
 
 ## License
 
