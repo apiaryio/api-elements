@@ -190,4 +190,5 @@ def setup_recommonmark(app):
 
 
 def setup(app):
+    app.add_stylesheet('css/table.css')
     setup_recommonmark(app)
