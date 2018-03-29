@@ -1,21 +1,189 @@
 # Element Definitions
 
-This document defines all of the elements for use within API Elements.
+An Element is a data structure that MUST define a non-empty `element` property referencing its _type_.
+This implies Elements are _strongly typed_, i. e. every Element refers to a _type_.
 
-## Defining the Base API Element
+## Element properties
+An Element MUST define an `element` property. An Element MAY define `meta`, `attributes` and `content` properties.
 
-The API Elements reference relies on [Refract][] for its definition and structure. To make this reference document more understandable, this base element has been included and used throughout.
+<table>
+  <thead>
+    <tr>
+      <th>Property</th>
+      <th>Description</th>
+      <th>Optional?</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>element</td>
+      <td>type name as character string</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>meta</td>
+      <td>meta information as key value pairs</td>
+      <td>Yes</td>
+    </tr>
+    <tr>
+      <td>attributes</td>
+      <td>semantic information as key value pairs</td>
+      <td>Yes</td>
+    </tr>
+    <tr>
+      <td>content</td>
+      <td>value specific to Element</td>
+      <td>Yes</td>
+    </tr>
+  </tbody>
+</table>
 
-This base element defines the structure of each element in this reference. Elements then extend upon this structure in their own definitions throughout.
+### Element property (string)
 
-### Base API Element (object)
+Specifies the type of an element.
 
-The Base API Element contains four properties: `element`, `meta`, `attributes`, and `content`, as defined below. This Element MAY be used recursively throughout the document, even as a value for each of its own meta or attributes.
+### Attributes property
 
-#### Properties
+### Meta property
+
+### Content property
+
+
+## Base Type Elements
+
+The `element` property of an Element MAY be set to the name of a Type Element.
+A number type represented in API Elements, serialized into JSON looks like this:
+
+```json
+{
+  "element": "number"
+}
+```
+
+Note that the whole data structure above is an Element of type `number`.
+
+### Primitive Base Type Elements
+
+<table>
+  <thead>
+    <tr>
+      <th>Type Element</th>
+      <th>Name</th>
+      <th>Matching JSON value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Null</td>
+      <td>null</td>
+      <td>null</td>
+    </tr>
+    <tr>
+      <td>Boolean</td>
+      <td>boolean</td>
+      <td>true, false</td>
+    </tr>
+    <tr>
+      <td>Number</td>
+      <td>number</td>
+      <td>0, 1, 1.5, -1.5, 6.53e-3, ...</td>
+    </tr>
+    <tr>
+      <td>String</td>
+      <td>string</td>
+      <td>"Hello world", "", "foo-bar", ...</td>
+    </tr>
+  </tbody>
+</table>
+
+#### Null Element (null)
+Type with domain of a single value. Called `null`, `nought`, `nothing` in other programming languages.
+Note that both `nullptr` and `void` from C-like languages are something different altogether.
+
+The example below defines an Element matching only the null value.
+```json
+{
+  "element": "null"
+}
+```
+
+### Structured Base Type Elements
+
+<table>
+  <thead>
+    <tr>
+      <th>Type Element</th>
+      <th>Name</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Array</td>
+      <td>array</td>
+      <td>list of Elements</td>
+    </tr>
+    <tr>
+      <td>Object</td>
+      <td>object</td>
+      <td>data structure</td>
+    </tr>
+    <tr>
+      <td>Enum</td>
+      <td>enum</td>
+      <td>either of the Elements given in the "enumerations" array in attributes; i. e. Σ-type over Elements in "enumerations" attribute</td>
+    </tr>
+  </tbody>
+</table>
+
+Structured types MAY be refined via the _type attributes_ `fixed` and `fixedType`.
+
+<table>
+  <thead>
+    <tr>
+      <th>Type Element</th>
+      <th>Name</th>
+      <th>Type Attribute</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Array</td>
+      <td>array</td>
+      <td>fixed</td>
+      <td>tuple of Elements matching Elements in content; i. e. Π-type over Elements in content</td>
+    </tr>
+    <tr>
+      <td>Array</td>
+      <td>array</td>
+      <td>fixedType</td>
+      <td>list of Elements matching at least one of the Elements in content; i. e. typed list of Σ-type over Elements in content</td>
+    </tr>
+    <tr>
+      <td>Object</td>
+      <td>object</td>
+      <td>fixed</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>Object</td>
+      <td>object</td>
+      <td>fixedType</td>
+      <td>data structure strictly matching properties defined in its content</td>
+    </tr>
+    <tr>
+      <td>Enum</td>
+      <td>enum</td>
+      <td>fixed</td>
+      <td>Elements given in the "enumerations" array are interpreted as fixed/td>
+    </tr>
+  </tbody>
+</table>
+
+### Common properties of Elements
 
 - `element` (string, required)
-
     The `element` property specifies the name of element. It MUST be a string that references an element, which SHOULD be defined.
 
 - `meta`
@@ -48,24 +216,31 @@ The Base API Element contains four properties: `element`, `meta`, `attributes`, 
         - (Element)
         - (Key Value Pair)
 
-#### Example
+## Serialization
 
-An element MAY look like this, where `foo` is the element name, `id` is a meta attribute for the `foo` element, and `content` is a string with a value of `bar`. Here, the `id` is `baz` and MAY be used for referencing.
-
+Because the definition of an Element does not depend on syntax, we might serialize it into JSON:
 ```json
 {
-  "element": "foo",
+  "element": "string",
   "meta": {
     "id": {
       "element": "string",
-      "content": "baz"
+      "content": "foo-bar"
     }
-  },
-  "content": "bar"
+  }
 }
 ```
 
-## Core API Elements
+But we might as well serialize it into YAML:
+```yaml
+element: "string"
+meta:
+  id:
+    element: "string"
+    content: "foo-bar"
+```
+
+## API Element Types
 
 ### Href ([String Element][])
 
@@ -2214,19 +2389,6 @@ This specific extension adds an object for including information about an API th
 
 As a tool comes across this extension element, it would look at the profile URL to see if it understands this particular element. If not, it can ignore it safely, but if so, it can use it as it sees fit.
 
-## Refract Elements
-
-These elements and definitions are referenced as part of the base Refract specification for the purpose of identifying, referencing, and pointing to elements and their respective meta, attributes, or content.
-
-* [String Element][]
-* [Number Element][]
-* [Boolean Element][]
-* [Array Element][]
-* [Object Element][]
-* [Ref Element][]
-* [Element Pointer][]
-* [Link Element][]
-
 ---
 
 
@@ -2239,15 +2401,6 @@ These elements and definitions are referenced as part of the base Refract specif
 [Parse Result Elements]: definitions/parse-result-elements.md
 
 [Data Structure Element]: #data-structure-element-element
-
-[String Element]: https://github.com/refractproject/refract-spec/blob/master/refract-spec.md#string-element-element
-[Number Element]: https://github.com/refractproject/refract-spec/blob/master/refract-spec.md#number-element-element
-[Boolean Element]: https://github.com/refractproject/refract-spec/blob/master/refract-spec.md#boolean-element-element
-[Array Element]: https://github.com/refractproject/refract-spec/blob/master/refract-spec.md#array-element-element
-[Object Element]: https://github.com/refractproject/refract-spec/blob/master/refract-spec.md#object-element-element
-[Ref Element]: https://github.com/refractproject/refract-spec/blob/master/refract-spec.md#ref-element-element
-[Element Pointer]: https://github.com/refractproject/refract-spec/blob/master/refract-spec.md#element-pointer-element
-[Link Element]: https://github.com/refractproject/refract-spec/blob/master/refract-spec.md#link-element-element
 
 [RFC 2119]: https://datatracker.ietf.org/doc/rfc2119/
 [RFC 3986]: https://datatracker.ietf.org/doc/rfc3986/
