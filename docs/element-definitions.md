@@ -74,22 +74,38 @@ A less trivial example is the following `asset` Element. The specific semantic i
 
 ## Data Structure Element types
 
-[API Elements](#api-element-types) and [Parse Result Elements](#parse-result-element-types) are all defined via Data Structure Elements.
+[API Elements](#api-element-types) and [Parse Result Elements](#parse-result-element-types) are all defined via Data Structure Elements. The following table summarizes them very broadly.
 
 <table class="markdown">
   <thead>
     <tr>
       <th>Name</th>
-      <th>JSON value</th>
+      <th>Example Element</th>
+      <th>Example value</th>
+    </tr>
+  </thead>
+  <thead>
+    <tr>
+      <th colspan=3>Primitive Element types</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <td><a href="#null-element">null</a></td>
+      <td>
+        <pre>{
+  "element": "null"
+}</pre>
+      </td>
       <td><pre>null</pre></td>
     </tr>
     <tr>
       <td><a href="#boolean-element">boolean</a></td>
+      <td>
+        <pre>{
+  "element": "bool"
+}</pre>
+      </td>
       <td>
         <pre>true</pre>
         <pre>false</pre>
@@ -97,6 +113,11 @@ A less trivial example is the following `asset` Element. The specific semantic i
     </tr>
     <tr>
       <td><a href="#number-element">number</a></td>
+      <td>
+        <pre>{
+  "element": "number"
+}</pre>
+      </td>
       <td>
         <pre>0</pre>
         <pre>-1.5</pre>
@@ -106,6 +127,11 @@ A less trivial example is the following `asset` Element. The specific semantic i
     <tr>
       <td><a href="#string-element">string</a></td>
       <td>
+        <pre>{
+  "element": "string"
+}</pre>
+      </td>
+      <td>
         <pre>"Hello world"</pre>
         <pre>""</pre>
       </td>
@@ -113,47 +139,129 @@ A less trivial example is the following `asset` Element. The specific semantic i
   </tbody>
   <thead>
     <tr>
-      <th>Structured Type Elements</th>
-      <th>Example JSON value</th>
+      <th colspan=3>Structured Type Elements</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <td><a href="#array-element">array</a></td>
       <td>
+        <pre>{
+  "element": "array"
+}</pre>
+      </td>
+      <td>
         <pre>[]</pre>
-        <pre>[42]</pre>
         <pre>[42, "Hello world!"]</pre>
       </td>
     </tr>
     <tr>
       <td><a href="#object-element">object</a></td>
       <td>
-        <pre>{}</pre>
-        <pre>{"foo": 42, "bar": true}</pre>
+        <pre>{
+  "element": "object"
+}</pre>
+      </td>
+      <td>
+        <pre>{
+}</pre>
+        <pre>{
+  "foo": 42,
+  "bar": true
+}</pre>
+      </td>
+    </tr>
+    <tr>
+      <td><a href="#member-element">member</a></td>
+      <td>
+        <pre>{
+  "element": "object",
+  "content": [
+    {
+      "element": "member",
+      "content": {
+        "key": "foo"
+      }
+    },
+  ]
+}</pre>
+      </td>
+      <td>
+        <pre>{
+  "foo": 42
+}</pre>
+        <pre>{
+  "foo": 42,
+  "bar": true
+}</pre>
       </td>
     </tr>
     <tr>
       <td><a href="#enum-element">enum</a></td>
       <td>
-        depends on <pre>enumerations</pre> attribute content
+        <pre>{
+  "element": "enum",
+  "attributes": {
+    "enumerations": {
+      "element": "array"
+      "content": [
+        {
+          "element": "string"
+        },
+        {
+          "element": "number"
+        }
+      ]
+    }
+  }
+}</pre>
+      </td>
+      <td>
+        <pre>-45.9</pre>
+        <pre>"Hello world!"</pre>
+        <pre>""</pre>
+        <pre>0</pre>
+      </td>
+    </tr>
+    <tr>
+      <td><a href="#select-element">select</a> & <a href="#option-element">option</a></td>
+      <td>
+        <pre>{
+  "element": "select",
+  "content": [
+    {
+      "element": "option",
+      "content": {
+        "element": "string"
+      }
+    },
+    {
+      "element": "option",
+      "content": {
+        "element": "number"
+      }
+    }
+  ]
+}</pre>
+      </td>
+      <td>
+        <pre>-45.9</pre>
+        <pre>"Hello world!"</pre>
+        <pre>""</pre>
+        <pre>0</pre>
       </td>
     </tr>
     <tr>
       <td><a href="#extend-element">extend</a></td>
       <td>
       </td>
-    </tr>
-    <tr>
-      <td><a href="#select-element">select</a></td>
       <td>
       </td>
     </tr>
   </tbody>
   <thead>
     <tr>
-      <th>Contextual Elements</th>
-      <th>Example JSON value</th>
+      <th colspan=3>Contextual Elements</th>
     </tr>
   </thead>
   <tbody>
@@ -161,14 +269,6 @@ A less trivial example is the following `asset` Element. The specific semantic i
       <td><a href="#ref-element">ref</a></td>
       <td>
       </td>
-    </tr>
-    <tr>
-      <td><a href="#member-element">member</a></td>
-      <td>
-      </td>
-    </tr>
-    <tr>
-      <td><a href="#option-element">option</a></td>
       <td>
       </td>
     </tr>
