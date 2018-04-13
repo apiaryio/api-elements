@@ -12,7 +12,7 @@ An _Element_ SHALL be a tuple (`element`, `meta`, `attributes`, `content`) where
 A _property_ is a tuple (`key`, `value`) where
 - `key` SHALL be a non-empty, finite character string
 - `value` SHALL be an _Element_
-- two properties are equal if their keys are.
+- two properties SHALL be are equal if their keys are.
 
 
 Members of `meta` SHOULD NOT be Element type specific; an exception to this MAY be the `classes` property. Members of `attributes` MAY be Element type specific.
@@ -74,7 +74,8 @@ A less trivial example is the following `asset` Element. The specific semantic i
 
 ## Data Structure Element types
 
-[API Elements](#api-element-types) and [Parse Result Elements](#parse-result-element-types) are all defined via Data Structure Elements. The following table summarizes them very broadly.
+[API Elements](#api-element-types) and [Parse Result Elements](#parse-result-element-types) are all defined via Data Structure Elements.
+The following table summarizes them very broadly.
 
 <table class="markdown">
   <thead>
@@ -156,23 +157,7 @@ A less trivial example is the following `asset` Element. The specific semantic i
       </td>
     </tr>
     <tr>
-      <td><a href="#object-element">object</a></td>
-      <td>
-        <pre>{
-  "element": "object"
-}</pre>
-      </td>
-      <td>
-        <pre>{
-}</pre>
-        <pre>{
-  "foo": 42,
-  "bar": true
-}</pre>
-      </td>
-    </tr>
-    <tr>
-      <td><a href="#member-element">member</a></td>
+      <td><a href="#object-element">object</a> & <a href="#member-element">member</a></td>
       <td>
         <pre>{
   "element": "object",
@@ -180,18 +165,21 @@ A less trivial example is the following `asset` Element. The specific semantic i
     {
       "element": "member",
       "content": {
-        "key": "foo"
+        "key": "foo",
+        "value": {
+          "element": "string"
+        }
       }
     },
   ]
 }</pre>
       </td>
       <td>
+        <pre>{}</pre>
         <pre>{
-  "foo": 42
+  "foo": "Hey!"
 }</pre>
         <pre>{
-  "foo": 42,
   "bar": true
 }</pre>
       </td>
@@ -254,19 +242,73 @@ A less trivial example is the following `asset` Element. The specific semantic i
     <tr>
       <td><a href="#extend-element">extend</a></td>
       <td>
+        <pre>{
+  "element": "extend",
+  "content": [
+    {
+      "element": "object",
+      "content": [
+        {
+          "element": "member"
+          "content": {
+            "key": "foo",
+            "value": {
+              "element": "string"
+            }
+          }
+        },
+        {
+          "element": "member"
+          "content": {
+            "key": "bar",
+            "value": {
+              "element": "number"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "element": "object",
+      "content": [
+        {
+          "element": "member"
+          "content": {
+            "key": "baz"
+            "value": {
+              "element": "boolean"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}</pre>
       </td>
       <td>
+        <pre>{}</pre>
+        <pre>{
+  "foo": "Hey!"
+}</pre>
+        <pre>{
+  "bar": 42.3
+}</pre>
+        <pre>{
+  "foo": "Hey!",
+  "bar": 42.3,
+  "baz": true
+}</pre>
       </td>
     </tr>
   </tbody>
   <thead>
     <tr>
-      <th colspan=3>Contextual Elements</th>
+      <th colspan=3>Others</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><a href="#ref-element">ref</a></td>
+      <td colspan=3><a href="#ref-element">ref</a></td>
       <td>
       </td>
       <td>
@@ -275,11 +317,13 @@ A less trivial example is the following `asset` Element. The specific semantic i
   </tbody>
 </table>
 
+---
+
 ### Null Element
 Type with domain of a single value. Called `unit` or `()` in some programming languages.
 Note that both `nullptr` and `void` from C-style languages are unrelated concepts.
 
-#### Properties
+#### Template
 - `element` - `"null"`
 - `content` - MUST hold unit if set
 
@@ -292,16 +336,18 @@ The example below defines an Element matching only the null value.
 }
 ```
 
+---
+
 ### Boolean Element
 
 Type with domain of two values: true and false.
 `content` property MUST contain a boolean value if set.
 
-#### Properties
+#### Template
 - `element` - `"boolean"`
 - `attributes`
     - `typeAttributes` ([Array](#array-element)[[String](#string-element)])
-        - `fixed` ([String](#string-element)) - domain reduces to value given in `content`
+        - `fixed` ([String](#string-element)) - domain restricted to value given in `content`
 - `content` - ⊥ (false) or ⊤ (true)
 
 #### Example
@@ -338,17 +384,18 @@ Type Element matching only boolean "true" (JSON `true`):
 
 ```
 
+---
 
 ### Number Element
 
 Type with domain of all rational numbers, i.e. floating-point numbers with finite precision.
 
 
-#### Properties
+#### Template
 - `element` - `"number"`
 - `attributes`
   - `typeAttributes` ([Array](#array-element)[[String](#string-element)])
-    - `fixed` ([String](#string-element)) - domain reduces to value given in `content`
+    - `fixed` ([String](#string-element)) - domain restricted to value given in `content`
 - `content` - rational number
 
 #### Example
@@ -385,17 +432,18 @@ Type Element matching only the number `42`:
 
 ```
 
+---
+
 ### String Element
 
 Type with domain of all finite character strings.
 
 
-#### Properties
+#### Template
 - `element` - `"string"`
 - `attributes`
   - `typeAttributes` ([Array](#array-element)[[String](#string-element)])
-    - `fixed` ([String](#string-element))
-      <p>Domain reduces to value given in `content`.</p>
+    - `fixed` ([String](#string-element)) - Domain restricted to value given in `content`.
 - `content` - finite character string
 
 #### Example
@@ -433,19 +481,19 @@ Type Element matching only the character string `"rocket science"`.
 
 ```
 
+---
+
 ### Array Element
 
 Type with domain of all finite lists.
 
 
-#### Properties
+#### Template
 - `element` - `"array"`
 - `attributes`
   - `typeAttributes` ([Array](#array-element)[[String](#string-element)])
-    - `fixed` ([String](#string-element))
-      <p>Reduces domain to a positionally typed fixed-length list over types in content. This type class is usually called a <i>tuple</i>, <i>sum type</i> or <i>Π-type</i>.</p>
-    - `fixedType` ([String](#string-element))
-      <p>Reduces domain to a list of types given in `content`.
+    - `fixed` ([String](#string-element)) - Restricts domain to a positionally typed fixed-length list over types in content. This type class is usually called a <i>tuple</i>, <i>sum type</i> or <i>Π-type</i>.
+    - `fixedType` ([String](#string-element)) - Restricts domain to a list of types given in `content`.
 - `content` - finite list of Element
 
 #### Examples
@@ -518,19 +566,171 @@ Type Element matching only lists of one of `string`, `number`.
 
 ```
 
+---
+
+### Member Element
+Type with domain of all _properties_.
+
+Quoting from the [Element section](#element):
+> A _property_ is a tuple (`key`, `value`) where
+> - `key` SHALL be a non-empty, finite character string
+> - `value` SHALL be an _Element_
+> - two properties SHALL be equal if their keys are.
+
+#### Template
+- `element` - `"member"`
+- `attributes`
+  - `typeAttributes` ([Array](#array-element)[[String](#string-element)])
+    - `required` ([String](#string-element)) - Property MUST be present in Object containing it. I.e. restricts the domain of the containing Object Element type to one containing this property.
+    - `optional` ([String](#string-element)) - Property MAY NOT be present in Object containing it. I.e. expands the domain of the containing Object Element type to one not containing this property.</p>
+- `content` - a property
+
+#### Examples
+See [Object Element](#object-element) for examples.
+
+---
+
 ### Object Element
+
+Type with domain of all finite lists of _properties_.
+
+Quoting from the [Element section](#element):
+> A _property_ is a tuple (`key`, `value`) where
+> - `key` SHALL be a non-empty, finite character string
+> - `value` SHALL be an _Element_
+> - two properties SHALL be equal if their keys are.
+
+#### Template
+- `element` - `"object"`
+- `attributes`
+  - `typeAttributes` ([Array](#array-element)[[String](#string-element)])
+    - `fixed` ([String](#string-element)) - SHALL restrict the domain to a specific instance of a property list. Entries in `content` of this Object Element MUST contain at least one of content, default and sample.
+    - `fixedType` ([String](#string-element)) - SHALL restrict the domain to properties listed in `content`.
+- `content` - list of:
+  - [Member](#member-element) - object property
+  - [Extend](#extend-element) - MUST type a property
+  - [Select](#select-element) - MUST type a property
+  - [Ref](#ref-element) - MUST resolve to an Object Element
+
+#### Examples
+
+Type Element matching only property lists (JSON `object`).
+
+```json
+
+{
+  "element": "object"
+}
+
+```
+
+Type Element matching only a specific property list instance (JSON `{"foo": false, "bar": "fun"}`).
+
+```json
+
+{
+  "element": "object",
+  "attributes": {
+    "typeAttributes": {
+      "element": "array",
+      "content": [
+        {
+          "element": "string",
+          "content": "fixed"
+        }
+      ]
+    }
+  },
+  "content": [
+    {
+      "element": "member"
+      "content": {
+        "key": "foo",
+        "content": {
+          "element": "boolean"
+          "content": false
+        }
+      }
+    },
+    {
+      "element": "member"
+      "content": {
+        "key": "bar",
+        "content": {
+          "element": "string"
+          "content": "fun"
+        }
+      }
+    }
+  ]
+}
+
+```
+
+Type Element matching only a property list with key "foo" of value type `boolean` and with the key "bar" of value type `string` (JSON `{"foo": false, "bar": "fun"}`, `{"foo": true, "bar": ""}`).
+
+```json
+
+{
+  "element": "object",
+  "attributes": {
+    "typeAttributes": {
+      "element": "array",
+      "content": [
+        {
+          "element": "string",
+          "content": "fixedType"
+        }
+      ]
+    }
+  },
+  "content": [
+    {
+      "element": "member"
+      "content": {
+        "key": "foo",
+        "content": {
+          "element": "boolean"
+          "content": false
+        }
+      }
+    },
+    {
+      "element": "member"
+      "content": {
+        "key": "bar",
+        "content": {
+          "element": "string"
+          "content": "fun"
+        }
+      }
+    }
+  ]
+}
+
+```
+
+---
 
 ### Enum Element
 
+---
+
 ### Select Element
+
+---
 
 ### Option Element
 
+---
+
 ### Extend Element
+
+---
 
 ### Ref Element
 
-### Member Element
+---
 
 ### Link Element
 
@@ -668,7 +868,7 @@ The Data Structure Element adds attributes representing Data Structure _Type Def
 
 Note: In Data Structure Refract _Nested Member Types_ _Type Section_ is the `content` of the element.
 
-#### Properties
+#### Template
 
 - `attributes`
     - `typeAttributes` ([Array](#array-element)) - _Type Definition_ attributes list, see _Type Attribute_  
@@ -708,7 +908,7 @@ Note: In Data Structure Refract _Nested Member Types_ _Type Section_ is the `con
 
 This elements extends refract `Ref Element` to include optional referenced element.
 
-#### Properties
+#### Template
 
 - `element`: ref (string, fixed)
 - `attributes`
@@ -718,7 +918,7 @@ This elements extends refract `Ref Element` to include optional referenced eleme
 
 Enumeration type. Exclusive list of possible elements. The elements in content's array MUST be interpreted as mutually exclusive.
 
-#### Properties
+#### Template
 
 - `element`: enum (string, fixed)
 - `attributes`
@@ -1342,7 +1542,7 @@ The value of the `Templated Href` type SHOULD be resolved as a URI-Reference per
 
 The definition is a Data Structure element `Object Type` where keys are respective URI Template variables.
 
-#### Properties
+#### Template
 
 - `element`: hrefVariables (string, fixed)
 
@@ -1350,7 +1550,7 @@ The definition is a Data Structure element `Object Type` where keys are respecti
 
 Data structure definition using Data Structure elements.
 
-#### Properties
+#### Template
 
 - `element`: dataStructure (string, fixed)
 - `content` (Data Structure Element)
@@ -1359,7 +1559,7 @@ Data structure definition using Data Structure elements.
 
 Arbitrary data asset.
 
-#### Properties
+#### Template
 
 - `element`: asset (string, fixed)
 - `meta`
@@ -1378,7 +1578,7 @@ Arbitrary data asset.
 
 The Resource representation with its available transitions and its data.
 
-#### Properties
+#### Template
 
 - `element`: resource (string, fixed)
 - `attributes`
@@ -1447,7 +1647,7 @@ The content of this element is array of protocol-specific transactions.
 
 Note: At the moment only the HTTP protocol is supported.
 
-#### Properties
+#### Template
 
 - `element`: transition (string, fixed)
 - `attributes`
@@ -1509,7 +1709,7 @@ Note: At the moment only the HTTP protocol is supported.
 
 ### API Metadata (Member Element)
 
-#### Properties
+#### Template
 
 - `meta`
     - `classes` ([Array](#array-element))
@@ -1533,7 +1733,7 @@ For example a `category` element may be classified both as `resourceGroup` and
 may also include the `transitions` classification to denote it includes
 transitions.
 
-#### Properties
+#### Template
 
 - `element`: category (string, fixed)
 - `meta`
@@ -1641,7 +1841,7 @@ Unless specified otherwise, a copy element's content represents the
 description of its parent element and SHOULD be used instead of parent
 element's description metadata.
 
-#### Properties
+#### Template
 
 - `element`: copy (string, fixed)
 - `attributes`
@@ -1687,7 +1887,7 @@ Given an API description with following layout:
 Example of an HTTP Transaction. The example's content consist of a request-response
 message pair. A transaction example MUST contain exactly one HTTP request and one HTTP response message.
 
-##### Properties
+##### Template
 
 - `element`: httpTransaction (string, fixed)
 - `attributes`
@@ -1776,7 +1976,7 @@ message pair. A transaction example MUST contain exactly one HTTP request and on
 
 Ordered array of HTTP header-fields.
 
-##### Properties
+##### Template
 
 - `element`: httpHeaders (string, fixed)
 
@@ -1807,7 +2007,7 @@ Ordered array of HTTP header-fields.
 
 Payload of an HTTP message including headers, data structures, or assets.
 
-##### Properties
+##### Template
 
 - `attributes`
     - `headers` (HTTP Headers)
@@ -1827,7 +2027,7 @@ Payload of an HTTP message including headers, data structures, or assets.
 
 HTTP request message.
 
-##### Properties
+##### Template
 
 - `element`: httpRequest (string, fixed)
 - `attributes`
@@ -1854,7 +2054,7 @@ HTTP request message.
 
 HTTP response message.
 
-##### Properties
+##### Template
 
 - `element`: httpResponse (string, fixed)
 - `attributes`
@@ -1868,7 +2068,7 @@ HTTP response message.
 
 A result of parsing of an API description document.
 
-#### Properties
+#### Template
 
 - `element`: parseResult (string, fixed)
 - `content` (array, fixed-type)
@@ -1955,7 +2155,7 @@ The parse result is (using null in `category` content for simplicity):
 
 Annotation for a source file. Usually generated by a parser or adapter.
 
-#### Properties
+#### Template
 
 - `element`: annotation (string, fixed)
 - `meta`
@@ -2058,7 +2258,7 @@ blocks may be non-continuous. For example, a block in the series may not start
 immediately after the previous block. Each block, however, is a continuous
 series of bytes.
 
-#### Properties
+#### Template
 
 - `element`: sourceMap (string, fixed)
 - `content` (array) - Array of byte blocks.
@@ -2191,7 +2391,7 @@ The element MAY have a username and password defined as member elements within t
 - `username` (string, optional)
 - `password` (string, optional)
 
-#### Properties
+#### Template
 
 - `element`: Basic Authentication Scheme (string, fixed)
 
@@ -2310,7 +2510,7 @@ This describes an authentication scheme that uses a token as a way to authentica
 
 When used as a query parameter, an HREF Variable is not required to be defined within the scope of the resource or transition, but is rather infered from the used token authentications scheme.
 
-#### Properties
+#### Template
 
 - `element`: Token Authentication Scheme (string, fixed)
 - `content` (array[Member Element])
@@ -2427,7 +2627,7 @@ Transition elements are used to define the URLs for the authorize and token endp
 
 The HREF values for these transitions MAY be either relative or absolute URLs.
 
-#### Properties
+#### Template
 
 - `element`: OAuth2 Scheme (string, fixed)
 - `content` (array[Member Element, Transition])
