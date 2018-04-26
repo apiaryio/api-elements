@@ -320,10 +320,25 @@ The following table summarizes them very broadly.
   </thead>
   <tbody>
     <tr>
-      <td colspan=3><a href="#ref-element">ref</a></td>
+      <td><a href="#ref-element">ref</a></td>
       <td>
+        Given an named type such as
+        <pre>{
+  "element": "string",
+  "meta": {
+    "id": "SpecialString"
+  }
+}</pre>
+A reference:
+<pre>{
+  "element": "ref"
+  "content": "MyString"
+}</pre>
       </td>
       <td>
+        <pre>""</pre>
+        <pre>"abc"</pre>
+        <pre>"Hello world!"</pre>
       </td>
     </tr>
   </tbody>
