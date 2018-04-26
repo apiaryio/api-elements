@@ -38,6 +38,5 @@ MIT License. See the [LICENSE][] file.
 
 [RFC 2119]: https://datatracker.ietf.org/doc/rfc2119/
 [issues]: https://github.com/apiaryio/api-elements/issues
-[Refract]: https://github.com/refractproject/refract-spec
 [MSON]: https://github.com/apiaryio/mson
 [LICENSE]: https://github.com/apiaryio/api-elements/blob/master/LICENSE
