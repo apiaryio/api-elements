@@ -1015,8 +1015,8 @@ Hyperlinking MAY be used to link to other resources, provide links to instructio
 
 - `element`: link (string, fixed)
 - `attributes`
-    - `relation` (string) - Link relation type as specified in [RFC 5988](https://tools.ietf.org/html/rfc5988).
-    - `href` (string) - The URI for the given link
+    - `relation` ([String](#string-element)) - Link relation type as specified in [RFC 5988](https://tools.ietf.org/html/rfc5988).
+    - `href` ([String](#string-element)) - The URI for the given link
     - `validation` - _reserved for future use_
 
 ### Example
@@ -1027,8 +1027,14 @@ The following shows a link with the relation of `foo` and the URL of `/bar`.
 {
   "element": "link",
   "attributes": {
-    "relation": "foo",
-    "href": "/bar"
+    "relation":  {
+      "element": "string",
+      "content": "foo"
+    },
+    "href":  {
+      "element": "string", 
+      "content": "/bar"
+    }
   }
 }
 ```
@@ -1049,8 +1055,14 @@ Below is an example of how a profile link is used as a meta link.
       {
         "element": "link",
         "attributes": {
-          "relation": "profile",
-          "href": "http://example.com/profiles/foo"
+          "relation": {
+            "element": "string",
+            "content": "profile"
+          },
+          "href": {
+            "element": "string",
+            "content": "http://example.com/profiles/foo"
+          }
         }
       }
     ]
