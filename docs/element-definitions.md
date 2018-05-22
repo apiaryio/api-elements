@@ -352,7 +352,6 @@ Note that both `nullptr` and `void` from C-style languages are unrelated concept
 
 #### Template
 - `element` - `"null"`
-- `content` - MUST hold unit if set
 
 #### Example
 
