@@ -65,9 +65,9 @@ Every element defined with API Elements has four primary pieces of data.
 - `attributes` (object) - user-specified attributes for a given element
 - `content` - value of the element based on its type
 
-This structure is based on [Refract][], and is expanded and defined better in the [element definition](./element-definitions.html) file.
+This structure defined in detail in the [Element Definitions](./element-definitions.html) document.
 
-Here is an example of what an element MAY look like.
+Here is an example of what an Element MAY look like serialized into JSON.
 
 ```json
 {
@@ -111,8 +111,7 @@ import query from 'refract-query';
 const transaction = query(apielements, {element: 'httpTransaction'})[0];
 ```
 
-Given that API Elements use [Refract][], the structure of the document is recursive by nature. When looking for specific elements, it is best then to walk the tree to look for a match. Querying the tree means that your code will be decoupled not only from specific API description documents, but it will also be decoupled from the structure of those documents.
+The structure of an API Elements document is recursive by nature. When looking for specific elements, it is best to walk the API Elements tree to look for a match. Querying the API Elements tree will decouple your code from specific API description syntax. Also, it decouples your code from the specific structure of these documents as long as they are semantically equivalent.
 
-[Refract]: https://github.com/refractproject/refract-spec/blob/master/refract-spec.md
 [MSON]: https://github.com/apiaryio/mson
 [RFC 2119]: https://datatracker.ietf.org/doc/rfc2119/

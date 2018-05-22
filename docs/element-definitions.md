@@ -1,78 +1,1087 @@
-# Element Definitions
+# Element Reference
 
-This document defines all of the elements for use within API Elements.
+## Elements
 
-## Defining the Base API Element
+An _Element_ SHALL be a tuple (`element`, `meta`, `attributes`, `content`) where
+ - `element` SHALL be a non-empty, finite character string identifying the _type_ of this Element
+ - `meta` SHALL be a set of _properties_, some of which have [reserved semantics](#reserved-meta-properties)
+ - `attributes` SHALL be a set of _properties_ defined by the _type_ of this Element
+ - `content` SHALL be defined by the _type_ of this Element
 
-The API Elements reference relies on [Refract][] for its definition and structure. To make this reference document more understandable, this base element has been included and used throughout.
 
-This base element defines the structure of each element in this reference. Elements then extend upon this structure in their own definitions throughout.
+A _property_ SHALL be a tuple (`key`, `value`) where
+- `key` SHALL be a non-empty, finite character string
+- `value` SHALL be an _Element_
+- two properties SHALL be equal if their keys are.
 
-### Base API Element (object)
 
-The Base API Element contains four properties: `element`, `meta`, `attributes`, and `content`, as defined below. This Element MAY be used recursively throughout the document, even as a value for each of its own meta or attributes.
+Members of `meta` SHOULD NOT be Element type specific; an exception to this MAY be the `classes` property. Members of `attributes` MAY be Element type specific.
 
-#### Properties
+API Elements predefines two broad categories of Element types:
+1. [Data Structure Element types](#data-structure-element-types) - primitives to define types, e. g. [string](#string-element), [array](#array-element), [object](#object-element)
+2. [API Element types](#api-element-types) - types specific to API documentation
+3. [Parse Result Element types](#parse-result-element-types) - types specific to document parsing, e. g. source map, parse result
 
-- `element` (string, required)
+### Reserved meta properties
 
-    The `element` property specifies the name of element. It MUST be a string that references an element, which SHOULD be defined.
+Any of the following properties MAY be a member of any Element's `meta`:
 
-- `meta`
+- `id` ([String](#string-element)) - unique name of this Element; defines a named type; MUST be unique with respect to other `id`s in a document
+- `ref` ([Ref](#ref-element)) - Pointer to referenced element or type
+- `classes` ([Array](#array-element)[[String](#string-element)]) - classifications for given element
+- `title` ([String](#string-element)) - Human-readable title of element
+- `description` ([String](#string-element)) - Human-readable description of element
+- `links` ([Array](#array-element)[[Link Element](#link-element)]) - meta links for a given element
 
-    The `meta` property is a reserved object for Refract-specific values that MAY contain elements itself. The element definition SHOULD be used when interacting with `meta` and its properties and values.
+### Examples
 
-    - `id` ([String Element][]) - Unique Identifier, MUST be unique throughout the document
-    - `ref` ([Ref Element][]) - Pointer to referenced element or type
-    - `classes` (Array Element[[String Element][]]) - Array of classifications for given element
-    - `title` ([String Element][]) - Human-readable title of element
-    - `description` ([String Element][]) - Human-readable description of element
-    - `links` (Array Element[[Link Element][]]) - Meta links for a given element
+A primitive Element representing finite character strings is [String Element](#string-element), of type id `string`. Serialized into JSON, an Element representing `Hello world!` interpreted as a [String Element](#string-element) value:
 
-- `attributes`
+```json
+{
+  "element": "string",
+  "content": "Hello world!"
+}
+```
 
-    The `attributes` property defines attributes about the given instance of the element, as specified by the `element` property. It is an object where properties are strings and their values are elements.
 
-    The `attributes` are used later in this document for representing data structures.
+A less trivial example is the following `asset` Element. The specific semantic interpretation of an `asset` Element is well defined in the API Elements Reference section. What we essentially describe here is a JSON snippet `{"foo": "bar"}` defined in the message body of documentation.
+```json
+{
+  "element": "asset",
+  "meta": {
+    "classes": {
+      "element": "array",
+      "content": [
+        {
+          "element": "string",
+          "content": "messageBody"
+        }
+      ]
+    }
+  },
+  "attributes": {
+    "contentType": {
+      "element": "string",
+      "content": "application/json"
+    }
+  },
+  "content": "{\"foo\": \"bar\"}"
+}
+```
 
-- `content` (enum)
+---
 
-    The `content` property defines the content of the instance of the specified element. The value MAY be any of the Refract primitive types.
+## Data Structure Element types
 
-    - Members
-        - (null)
-        - (string)
-        - (number)
-        - (boolean)
-        - (array[Element])
-        - (Element)
-        - (Key Value Pair)
+[API Elements](#api-element-types) and [Parse Result Elements](#parse-result-element-types) are all defined via Data Structure Elements.
+The following table summarizes them very broadly.
+
+<table class="markdown">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Example Element</th>
+      <th>Example value</th>
+    </tr>
+  </thead>
+  <thead>
+    <tr>
+      <th colspan=3>Primitive Element types</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a href="#null-element">null</a></td>
+      <td>
+        <pre>{
+  "element": "null"
+}</pre>
+      </td>
+      <td><pre>null</pre></td>
+    </tr>
+    <tr>
+      <td><a href="#boolean-element">boolean</a></td>
+      <td>
+        <pre>{
+  "element": "bool"
+}</pre>
+      </td>
+      <td>
+        <pre>true</pre>
+        <pre>false</pre>
+      </td>
+    </tr>
+    <tr>
+      <td><a href="#number-element">number</a></td>
+      <td>
+        <pre>{
+  "element": "number"
+}</pre>
+      </td>
+      <td>
+        <pre>0</pre>
+        <pre>-1.5</pre>
+        <pre>6.53e-3</pre>
+      </td>
+    </tr>
+    <tr>
+      <td><a href="#string-element">string</a></td>
+      <td>
+        <pre>{
+  "element": "string"
+}</pre>
+      </td>
+      <td>
+        <pre>"Hello world"</pre>
+        <pre>""</pre>
+      </td>
+    </tr>
+  </tbody>
+  <thead>
+    <tr>
+      <th colspan=3>Structured Type Elements</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a href="#array-element">array</a></td>
+      <td>
+        <pre>{
+  "element": "array"
+}</pre>
+      </td>
+      <td>
+        <pre>[]</pre>
+        <pre>[42, "Hello world!"]</pre>
+      </td>
+    </tr>
+    <tr>
+      <td><a href="#object-element">object</a> & <a href="#member-element">member</a></td>
+      <td>
+        <pre>{
+  "element": "object",
+  "content": [
+    {
+      "element": "member",
+      "content": {
+        "key": {
+          "element": "string",
+          "content": "foo"
+        },
+        "value": {
+          "element": "string"
+        }
+      }
+    },
+  ]
+}</pre>
+      </td>
+      <td>
+        <pre>{}</pre>
+        <pre>{
+  "foo": "Hey!"
+}</pre>
+        <pre>{
+  "bar": true
+}</pre>
+      </td>
+    </tr>
+    <tr>
+      <td><a href="#enum-element">enum</a></td>
+      <td>
+        <pre>{
+  "element": "enum",
+  "attributes": {
+    "enumerations": {
+      "element": "array",
+      "content": [
+        {
+          "element": "string"
+        },
+        {
+          "element": "number"
+        }
+      ]
+    }
+  }
+}</pre>
+      </td>
+      <td>
+        <pre>-45.9</pre>
+        <pre>"Hello world!"</pre>
+        <pre>""</pre>
+        <pre>0</pre>
+      </td>
+    </tr>
+    <tr>
+      <td><a href="#select-element">select</a> & <a href="#option-element">option</a></td>
+      <td>
+        <pre>{
+  "element": "select",
+  "content": [
+    {
+      "element": "option",
+      "content": {
+        "element": "string"
+      }
+    },
+    {
+      "element": "option",
+      "content": {
+        "element": "number"
+      }
+    }
+  ]
+}</pre>
+      </td>
+      <td>
+        <pre>-45.9</pre>
+        <pre>"Hello world!"</pre>
+        <pre>""</pre>
+        <pre>0</pre>
+      </td>
+    </tr>
+    <tr>
+      <td><a href="#extend-element">extend</a></td>
+      <td>
+        <pre>{
+  "element": "extend",
+  "content": [
+    {
+      "element": "object",
+      "content": [
+        {
+          "element": "member",
+          "content": {
+            "key": {
+              "element": "string",
+              "content": "foo"
+            },
+            "value": {
+              "element": "string"
+            }
+          }
+        },
+        {
+          "element": "member"
+          "content": {
+            "key": {
+              "element": "string",
+              "content": "bar"
+            },
+            "value": {
+              "element": "number"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "element": "object",
+      "content": [
+        {
+          "element": "member"
+          "content": {
+            "key": {
+              "element": "string",
+              "content": "baz"
+            },
+            "value": {
+              "element": "boolean"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}</pre>
+      </td>
+      <td>
+        <pre>{}</pre>
+        <pre>{
+  "foo": "Hey!"
+}</pre>
+        <pre>{
+  "bar": 42.3
+}</pre>
+        <pre>{
+  "foo": "Hey!",
+  "bar": 42.3,
+  "baz": true
+}</pre>
+      </td>
+    </tr>
+  </tbody>
+  <thead>
+    <tr>
+      <th colspan=3>Others</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a href="#ref-element">ref</a></td>
+      <td>
+        Given an named type such as
+        <pre>{
+  "element": "string",
+  "meta": {
+    "id": "SpecialString"
+  }
+}</pre>
+A reference:
+<pre>{
+  "element": "ref"
+  "content": "MyString"
+}</pre>
+      </td>
+      <td>
+        <pre>""</pre>
+        <pre>"abc"</pre>
+        <pre>"Hello world!"</pre>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+---
+
+### Null Element
+Type with domain of a single value. Called `unit` or `()` in some programming languages.
+Note that both `nullptr` and `void` from C-style languages are unrelated concepts.
+
+#### Template
+- `element` - `"null"`
 
 #### Example
 
-An element MAY look like this, where `foo` is the element name, `id` is a meta attribute for the `foo` element, and `content` is a string with a value of `bar`. Here, the `id` is `baz` and MAY be used for referencing.
+The example below defines an Element matching only the null value.
+```json
+{
+  "element": "null"
+}
+```
+
+---
+
+### Boolean Element
+
+Type with domain of two values: true and false.
+`content` property MUST contain a boolean value if set.
+
+#### Template
+- `element` - `"boolean"`
+- `attributes`
+  - `typeAttributes` ([Array](#array-element)[[String](#string-element)])
+    - `fixed` ([String](#string-element)) - domain restricted to value given in `content`
+  - `validation` - _reserved for future use_
+  - `samples` ([Array[Boolean]](#array-element)) - array of alternative sample values for this Element; type of items in `samples` MUST match the type of this Element
+  - `default` (Boolean Element) - default value for this Element; type of `default` MUST match the type of this Element
+- `content` - ⊥ (false) or ⊤ (true)
+
+#### Example
+
+Type Element matching only boolean values (JSON `true`, `false`):
+
+```json
+
+{
+  "element": "boolean"
+}
+
+```
+
+Type Element matching only boolean "true" (JSON `true`):
+
+```json
+
+{
+  "element": "boolean",
+  "attributes": {
+    "typeAttributes": {
+      "element": "array",
+      "content": [
+        {
+          "element": "string",
+          "content": "fixed"
+        }
+      ]
+    }
+  },
+  "content": true
+}
+
+```
+
+---
+
+### Number Element
+
+Type with domain of all rational numbers, i.e. floating-point numbers with finite precision.
+
+
+#### Template
+- `element` - `"number"`
+- `attributes`
+  - `typeAttributes` ([Array](#array-element)[[String](#string-element)])
+    - `fixed` ([String](#string-element)) - domain restricted to value given in `content`
+  - `validation` - _reserved for future use_
+  - `samples` ([Array[Number]](#array-element)) - array of alternative sample values for this Element; type of items in `samples` MUST match the type of this Element
+  - `default` (Number) - default value for this Element; type of `default` MUST match the type of this Element
+- `content` - rational number
+
+#### Example
+
+Type Element matching only rationals. Matches JSON `number`.
+
+```json
+
+{
+  "element": "number"
+}
+
+```
+
+Type Element matching only the number `42`:
+
+```json
+
+{
+  "element": "number",
+  "attributes": {
+    "typeAttributes": {
+      "element": "array",
+      "content": [
+        {
+          "element": "string",
+          "content": "fixed"
+        }
+      ]
+    }
+  },
+  "content": 42
+}
+
+```
+
+---
+
+### String Element
+
+Type with domain of all finite character strings.
+
+
+#### Template
+- `element` - `"string"`
+- `attributes`
+  - `typeAttributes` ([Array](#array-element)[[String](#string-element)])
+    - `fixed` ([String](#string-element)) - Domain restricted to value given in `content`.
+  - `validation` - _reserved for future use_
+  - `samples` ([Array[String]](#array-element)) - array of alternative sample values for this Element; type of items in `samples` MUST match the type of this Element
+  - `default` (String) - default value for this Element; type of `default` MUST match the type of this Element
+- `content` - finite character string
+
+#### Example
+
+Type Element matching only character strings. Matches a `string` in JSON.
+
+Because the definition of an Element does not depend on syntax, we might serialize it into JSON:
+```json
+
+{
+  "element": "string"
+}
+
+```
+
+Type Element matching only the character string `"rocket science"`.
+
+```json
+
+{
+  "element": "string",
+  "attributes": {
+    "typeAttributes": {
+      "element": "array",
+      "content": [
+        {
+          "element": "string",
+          "content": "fixed"
+        }
+      ]
+    }
+  },
+  "content": "rocket science"
+}
+
+```
+
+---
+
+### Array Element
+
+Type with domain of all finite lists.
+
+
+#### Template
+- `element` - `"array"`
+- `attributes`
+  - `typeAttributes` ([Array](#array-element)[[String](#string-element)])
+    - `fixed` ([String](#string-element)) - Restricts domain to a positionally typed fixed-length list over types in content. This type class is usually called a <i>tuple</i>, <i>sum type</i> or <i>Π-type</i>.
+    - `fixedType` ([String](#string-element)) - Restricts domain to a list of types given in `content`.
+  - `validation` - _reserved for future use_
+  - `samples` ([Array[Array]](#array-element)) - array of alternative sample values for this Element; type of items in `samples` MUST match the type of this Element
+  - `default` (Array) - default value for this Element; type of `default` MUST match the type of this Element
+- `content` - finite list of Elements
+
+#### Examples
+
+Type Element matching only lists (JSON `array`).
+
+```json
+
+{
+  "element": "array"
+}
+
+```
+
+Type Element matching only pairs of (`string`, `number`).
+
+```json
+
+{
+  "element": "array",
+  "attributes": {
+    "typeAttributes": {
+      "element": "array",
+      "content": [
+        {
+          "element": "string",
+          "content": "fixed"
+        }
+      ]
+    }
+  },
+  "content": [
+    {
+      "element": "string"
+    },
+    {
+      "element": "number"
+    }
+  ]
+}
+
+```
+
+Type Element matching only lists of one of `string`, `number`.
+
+```json
+
+{
+  "element": "array",
+  "attributes": {
+    "typeAttributes": {
+      "element": "array",
+      "content": [
+        {
+          "element": "string",
+          "content": "fixedType"
+        }
+      ]
+    }
+  },
+  "content": [
+    {
+      "element": "string"
+    },
+    {
+      "element": "number"
+    }
+  ]
+}
+
+```
+
+---
+
+### Member Element
+Type with domain of all _properties_.
+
+Quoting from the [Element section](#element):
+> A _property_ is a tuple (`key`, `value`) where
+> - `key` SHALL be a non-empty, finite character string
+> - `value` SHALL be an _Element_
+> - two properties SHALL be equal if their keys are.
+
+#### Template
+- `element` - `"member"`
+- `attributes`
+  - `typeAttributes` ([Array](#array-element)[[String](#string-element)])
+    - `required` ([String](#string-element)) - Property MUST be present in Object containing it. I.e. restricts the domain of the containing Object Element type to one containing this property.
+    - `optional` ([String](#string-element)) - Property MAY NOT be present in Object containing it. I.e. expands the domain of the containing Object Element type to one not containing this property.</p>
+  - `variable` - ([Boolean](#boolean-element)) - Property key SHALL be interpreted as a variable name instead of a literal name
+  - `validation` - _reserved for future use_
+- `content`
+  - `key` - an Element representing a key; SHOULD be a [String Element](#string-element)
+  - `value` - an Element representing the value
+
+#### Examples
+See [Object Element](#object-element) for examples.
+
+---
+
+### Object Element
+
+Type with domain of all finite lists of _properties_.
+
+Quoting from the [Element section](#element):
+> A _property_ is a tuple (`key`, `value`) where
+> - `key` SHALL be a non-empty, finite character string
+> - `value` SHALL be an _Element_
+> - two properties SHALL be equal if their keys are.
+
+#### Template
+- `element` - `"object"`
+- `attributes`
+  - `typeAttributes` ([Array](#array-element)[[String](#string-element)])
+    - `fixed` ([String](#string-element)) - SHALL restrict the domain to a specific instance of a property list. Entries in `content` of this Object Element MUST contain at least one of content, default and sample.
+    - `fixedType` ([String](#string-element)) - SHALL restrict the domain to properties listed in `content`.
+  - `validation` - _reserved for future use_
+  - `samples` ([Array[Object]](#array-element)) - array of alternative sample values for this Element; type of items in `samples` MUST match the type of this Element
+  - `default` (Object) - default value for this Element; type of `default` MUST match the type of this Element
+- `content` - list of any of
+  - [Member](#member-element) - object property
+  - [Extend](#extend-element) - MUST type a property
+  - [Select](#select-element) - contained [Option Element](#option-element)s MUST type properties
+  - [Ref](#ref-element) - MUST reference an Object Element
+
+[References](#ref-element) in the `content` of an Object Element [Ref Element](#ref-element) SHALL be semantically equivalent to their substitution by items held in the content of the referenced Object Element. Less formally, Ref Elements in the content of Object Element represent in-place mixins.
+
+#### Examples
+
+Type Element matching only property lists (JSON `object`).
+
+```json
+
+{
+  "element": "object"
+}
+
+```
+
+Type Element matching only a specific property list instance (JSON `{"foo": false, "bar": "fun"}`).
+
+```json
+
+{
+  "element": "object",
+  "attributes": {
+    "typeAttributes": {
+      "element": "array",
+      "content": [
+        {
+          "element": "string",
+          "content": "fixed"
+        }
+      ]
+    }
+  },
+  "content": [
+    {
+      "element": "member",
+      "content": {
+        "key": {
+          "element": "string",
+          "content": "foo"
+        },
+        "value": {
+          "element": "boolean"
+          "content": false
+        }
+      }
+    },
+    {
+      "element": "member",
+      "content": {
+        "key": {
+          "element": "string",
+          "content": "foo"
+        },
+        "value": {
+          "element": "string"
+          "content": "fun"
+        }
+      }
+    }
+  ]
+}
+
+```
+
+Type Element matching only a property list with key "foo" of value type `boolean` and with the key "bar" of value type `string` (JSON `{"foo": false, "bar": "fun"}`, `{"foo": true, "bar": ""}`).
+
+```json
+
+{
+  "element": "object",
+  "attributes": {
+    "typeAttributes": {
+      "element": "array",
+      "content": [
+        {
+          "element": "string",
+          "content": "fixedType"
+        }
+      ]
+    }
+  },
+  "content": [
+    {
+      "element": "member",
+      "content": {
+        "key": {
+          "element": "string",
+          "content": "foo"
+        },
+        "value": {
+          "element": "boolean",
+          "content": false
+        }
+      }
+    },
+    {
+      "element": "member",
+      "content": {
+        "key": {
+          "element": "string",
+          "content": "bar"
+        },
+        "value": {
+          "element": "string",
+          "content": "fun"
+        }
+      }
+    }
+  ]
+}
+
+```
+
+---
+
+### Enum Element
+
+Type with the domain of any of the types listed in the `enumerations` attribute. Also called tagged union or Σ-type.
+
+#### Template
+- `element` - `"enum"`
+- `attributes`
+  - `enumerations` ([Array](#array-element)) - list of Elements which this Element SHALL type
+  - `typeAttributes` ([Array](#array-element)[[String](#string-element)])
+    - `fixed` ([String](#string-element)) - Elements in `enumerations` SHALL be interpreted `fixed`.
+  - `validation` - _reserved for future use_
+  - `samples` ([Array](#array-element)) - array of alternative sample values for this Element; type of items in `samples` MUST match the type of this Element
+  - `default` (Element) - default value for this Element; type of `default` MUST match the type of this Element
+- `content` - an Element matching one of the Elements in the `enumerations` attribute
+
+#### Examples
+
+Type Element matching strings and numbers (JSON `string` or `number`).
+
+```json
+
+{
+  "element": "enum",
+  "attributes": {
+    "enumerations": [
+      {
+        "element": "string"
+      },
+      {
+        "element": "number"
+      }
+    ]
+  }
+}
+
+```
+
+Type Element matching a specific string and numbers (JSON `"Hello world!"` or `number`).
+
+```json
+
+{
+  "element": "enum",
+  "attributes": {
+    "enumerations": [
+      {
+        "element": "string",
+        "attributes": {
+          "typeAttributes": [
+            "fixed"
+          ]
+        },
+        "content": "Hello world!"
+      },
+      {
+        "element": "number"
+      }
+    ]
+  }
+}
+
+```
+
+---
+
+### Select Element
+
+Type with the domain of any of the types contained by [Option Elements](#option-element) in `content`. Also called tagged union or Σ-type.
+In contrast to [Enum Element](#enum-element), Select MAY be used in an [Object Element](#object-element) to denote alternative properties. In this use case the Select MUST type at least one [Member Element](#member-element) option.
+
+#### Template
+- `element` - `"select"`
+- `attributes`
+  - `typeAttributes` ([Array](#array-element)[[String](#string-element)])
+    - `fixed` ([String](#string-element)) - Elements in `content` SHALL be interpreted `fixed`.
+  - `validation` - _reserved for future use_
+  - `samples` ([Array](#array-element)) - array of alternative sample values for this Element; type of items in `samples` MUST match the type of this Element
+  - `default` (Element) - default value for this Element; type of `default` MUST match the type of this Element
+- `content` - list of [Option Elements](#option-element) which this Element SHALL type
+
+#### Examples
+
+---
+
+### Option Element
+
+---
+
+### Extend Element
+
+Type with domain of _merged_ Elements specified in `content`. All entries in `content` MUST type the same data structure type. [Ref Elements](#ref-element) encountered in `content` are dereferenced before merging.
+
+Merging SHALL be defined based on the type of entries in `content` as follows:
+- [Array Element](#array-element) - array concatenation
+- [Object Element](#object-element) - property concatenation; if duplicit property keys are encountered during concatenation, all but the last SHALL be discarded; tooling SHOULD emit a warning in such a case.
+- [Select Element](#select-element) - option concatenation
+- [String Element](#string-element) - last entry in Extend Element SHALL be used, previous are ignored
+- [Bool Element](#bool-element) - last entry in Extend Element SHALL be used, previous are ignored
+- [Number Element](#number-element) - last entry in Extend Element SHALL be used, previous are ignored
+- [Ref Element](#ref-element) - substitute by referenced Element and apply one of the rules above
+
+Extend Element SHOULD NOT be used to encode semantic inheritance; use the `id` meta property to define a named type and reference it through the child's `element` entry.
+
+#### Template
+- `element` - `"extend"`
+- `attributes`
+  - `validation` - _reserved for future use_
+  - `samples` ([Array](#array-element)) - array of alternative sample values for this Element; type of items in `samples` MUST match the type of this Element
+  - `default` (Element) - default value for this Element; type of `default` MUST match the type of this Element
+- `content` - list of [Data Structure Elements](#data-structure-element-types) to be merged
+
+---
+
+### Ref Element
+
+Ref Element MAY be used to reference elements in remote documents or elements in the local document.
+The `ref` element _transcludes_ the contents of the element into the document in which it is referenced.
+
+The following rules apply:
+
+1. When referencing an element in the local document, the `id` of the element MAY be used
+2. When referencing remote elements, an absolute URL or relative URL MAY be used
+3. When a URL fragment exists in the URL given, it references the element with the matching `id` in the given document. The URL fragment MAY need to be URL decoded before making a match.
+4. When a URL fragment does not exist, the URL references the root element
+5. When `path` is used, it references the given property of the referenced element
+6. When `path` is used in an element that includes the data of the pointer (such as with `ref`), the referenced path MAY need to be converted to a refract structure in order to be valid
+
+Transclusion of a Ref Element SHALL be defined as follows:
+1. If the Ref Element is held by an [Array](#array-element) Element and references an Array Element, its content entries SHALL be inserted in place of the Ref Element.
+2. Else, if the Ref Element is held by an [Object](#array-element) Element and references an Object Element, its content entries SHALL be inserted in place of the Ref Element.
+3. Otherwise, the Ref Element is substituted by the Element it references.
+
+#### Template
+
+- `element` - `"ref"`
+- `attributes`
+    - `path` (enum[String Element]) - Path of referenced element to transclude instead of element itself
+        - element (default) - The complete referenced element
+        - meta - The meta data of the referenced element
+        - attributes - The attributes of the referenced element
+        - content - The content of the referenced element
+    - `validation` - _reserved for future use_
+- `content` - URL to an Element in this document as a string
+
+#### Examples
+
+Elements MAY be referenced in remote or local documents.
+
+##### Referencing Remote Element
+
+```json
+{
+  "element": "ref",
+  "content": "http://example.com/document#foo"
+}
+```
+
+##### Referencing Local Elements
+
+```json
+{
+  "element": "ref",
+  "content": "foo"
+}
+```
+
+##### Reference Parts of Elements
+
+Given an element instance of:
+
+```json
+{
+  "element": "array",
+  "meta": {
+    "id": "colors"
+  },
+  "content": [
+    {
+      "element": "string",
+      "content": "red"
+    },
+    {
+      "element": "string",
+      "content": "green"
+    }
+  ]
+}
+```
+
+And given an array where a reference is used as:
+
+```json
+{
+  "element": "array",
+  "content": [
+    {
+      "element": "string",
+      "content": "blue"
+    },
+    {
+      "element": "ref",
+      "attributes": {
+        "path": {
+          "element": "string",
+          "content": "content"
+        }
+      },
+      "content": "colors"
+    }
+  ]
+}
+```
+
+The resulting dereferenced array is:
+
+```json
+{
+  "element": "array",
+  "content": [
+    {
+      "element": "string",
+      "content": "blue"
+    },
+    {
+      "element": "string",
+      "content": "red"
+    },
+    {
+      "element": "string",
+      "content": "green"
+    }
+  ]
+}
+```
+
+## Link Element
+
+Hyperlinking MAY be used to link to other resources, provide links to instructions on how to process a given element (by way of a profile or other means), and may be used to provide meta data about the element in which it's found. The meaning and purpose of the hyperlink is defined by the link relation according to [RFC 5988](https://tools.ietf.org/html/rfc5988).
+
+### Template
+
+- `element`: link (string, fixed)
+- `attributes`
+    - `relation` ([String](#string-element)) - Link relation type as specified in [RFC 5988](https://tools.ietf.org/html/rfc5988).
+    - `href` ([String](#string-element)) - The URI for the given link
+    - `validation` - _reserved for future use_
+
+### Example
+
+The following shows a link with the relation of `foo` and the URL of `/bar`.
+
+```json
+{
+  "element": "link",
+  "attributes": {
+    "relation":  {
+      "element": "string",
+      "content": "foo"
+    },
+    "href":  {
+      "element": "string", 
+      "content": "/bar"
+    }
+  }
+}
+```
+
+## Profiles
+
+The primary means by which users can provide semantic definitions and other meta information is through a profile. A profile MAY provide semantic information about an element and its data, it MAY provide specific instructions about elements such as how inheritance should work or how elements should be processed, and it MAY be used to modify understanding of existing elements in other profiles. The usage of a profile is not limited to these uses here, and SHOULD be left up to the profile author to define its use.
+
+To point to a profile, you MAY use the [profile link relation](https://www.ietf.org/rfc/rfc6906.txt) as a meta link in your root element or in any other element. Profile links may also be found outside of the document itself in places like the [HTTP Link Header](http://www.w3.org/wiki/LinkHeader). Additionally, a profile link is not required in order to use the functionality a profile provides, as a media type MAY define the same things a profile.
+
+Below is an example of how a profile link is used as a meta link.
 
 ```json
 {
   "element": "foo",
   "meta": {
-    "id": {
-      "element": "string",
-      "content": "baz"
-    }
+    "links": [
+      {
+        "element": "link",
+        "attributes": {
+          "relation": {
+            "element": "string",
+            "content": "profile"
+          },
+          "href": {
+            "element": "string",
+            "content": "http://example.com/profiles/foo"
+          }
+        }
+      }
+    ]
   },
   "content": "bar"
 }
 ```
 
-## Core API Elements
+The example shows a `foo` element with a `profile` link. This profile link informs the parser this particular element is defined as part of the linked profile.
 
-### Href ([String Element][])
+---
+
+## API Element Types
+
+### Href ([String](#string-element))
 
 The value of the `Href` type  SHOULD be resolved as a URI-Reference per [RFC 3986][] and MAY be a relative reference to a URI.
 The value of the `Href` type MUST NOT be a URI Template.
 
-### Templated Href ([String Element][])
+### Templated Href ([String](#string-element))
 
 The value of `Templated Href` type is to be used as a URI Template, as defined in [RFC 6570][].
 The value of the `Templated Href` type is a template used to determine the target URI of the related resource or transition.
@@ -82,7 +1091,7 @@ The value of the `Templated Href` type SHOULD be resolved as a URI-Reference per
 
 The definition is a Data Structure element `Object Type` where keys are respective URI Template variables.
 
-#### Properties
+#### Template
 
 - `element`: hrefVariables (string, fixed)
 
@@ -90,27 +1099,27 @@ The definition is a Data Structure element `Object Type` where keys are respecti
 
 Data structure definition using Data Structure elements.
 
-#### Properties
+#### Template
 
 - `element`: dataStructure (string, fixed)
-- `content` (Data Structure Element)
+- `content` ([Data Structure Element](#data-structure-element-types))
 
 ### Asset (Base API Element)
 
 Arbitrary data asset.
 
-#### Properties
+#### Template
 
 - `element`: asset (string, fixed)
 - `meta`
-    - `classes` (Array Element)
+    - `classes` ([Array](#array-element))
         - `content` (array, fixed-type)
-            - ([String Element][])
+            - ([String](#string-element))
                 - `content` (enum)
                     - messageBody (string) - Asset is an example of message-body
                     - messageBodySchema (string) - Asset is an schema for message-body
 - `attributes`
-    - `contentType` ([String Element][]) - Optional media type of the asset. When this is unset, the content type SHOULD be inherited from the `Content-Type` header of a parent HTTP Message Payload
+    - `contentType` ([String](#string-element)) - Optional media type of the asset. When this is unset, the content type SHOULD be inherited from the `Content-Type` header of a parent HTTP Message Payload
     - `href` (Href) - Link to the asset
 - `content` (string) - A textual representation of the asset
 
@@ -118,7 +1127,7 @@ Arbitrary data asset.
 
 The Resource representation with its available transitions and its data.
 
-#### Properties
+#### Template
 
 - `element`: resource (string, fixed)
 - `attributes`
@@ -187,11 +1196,11 @@ The content of this element is array of protocol-specific transactions.
 
 Note: At the moment only the HTTP protocol is supported.
 
-#### Properties
+#### Template
 
 - `element`: transition (string, fixed)
 - `attributes`
-    - `relation` - ([String Element][]) - Link relation type as specified in [RFC 5988][].
+    - `relation` - ([String](#string-element)) - Link relation type as specified in [RFC 5988][].
 
         The value of `relation` attribute SHOULD be interpreted as a link relation
         between transition's parent resource and the transition's target resource
@@ -217,7 +1226,7 @@ Note: At the moment only the HTTP protocol is supported.
 
         Definition of any input message-body attribute for this transition.
 
-    - `contentTypes` (Array Element[[String Element][]]) - A collection of content types that MAY be used for the transition.
+    - `contentTypes` ([Array](#array-element)[[String](#string-element)]) - A collection of content types that MAY be used for the transition.
 - `content` (array)
     - (Copy) - Transition description's copy text.
     - (HTTP Transaction) - An instance of transaction example.
@@ -249,12 +1258,12 @@ Note: At the moment only the HTTP protocol is supported.
 
 ### API Metadata (Member Element)
 
-#### Properties
+#### Template
 
 - `meta`
-    - `classes` (Array Element)
+    - `classes` ([Array](#array-element))
         - `content` (array, fixed-type)
-            - ([String Element][])
+            - ([String](#string-element))
                 - `content` (enum)
                     - user (string) - User-specific metadata. Metadata written in the source.
                     - adapter (string) - Serialization-specific metadata. Metadata provided by adapter.
@@ -273,13 +1282,13 @@ For example a `category` element may be classified both as `resourceGroup` and
 may also include the `transitions` classification to denote it includes
 transitions.
 
-#### Properties
+#### Template
 
 - `element`: category (string, fixed)
 - `meta`
-    - `classes` (Array Element)
+    - `classes` ([Array](#array-element))
         - `content` (array, fixed-type)
-            - ([String Element][])
+            - ([String](#string-element))
                 - `content` (enum)
                     - api (string) - Category is a API top-level group.
                     - resourceGroup (string) - Category is a set of resource.
@@ -288,7 +1297,7 @@ transitions.
                     - transitions (string) - Category is a group of transitions.
                     - authSchemes (string) - Category is a group of authentication and authorization scheme definitions
 - `attributes`
-    - `metadata` (Array Element[API Metadata]) - Arbitrary metadata
+    - `metadata` ([Array](#array-element)[API Metadata]) - Arbitrary metadata
 - `content` (array[Base API Element])
 
 #### Example
@@ -381,11 +1390,11 @@ Unless specified otherwise, a copy element's content represents the
 description of its parent element and SHOULD be used instead of parent
 element's description metadata.
 
-#### Properties
+#### Template
 
 - `element`: copy (string, fixed)
 - `attributes`
-    - `contentType` ([String Element][]) - Optional media type of the content.
+    - `contentType` ([String](#string-element)) - Optional media type of the content.
 - `content` (string)
 
 #### Example
@@ -427,11 +1436,11 @@ Given an API description with following layout:
 Example of an HTTP Transaction. The example's content consist of a request-response
 message pair. A transaction example MUST contain exactly one HTTP request and one HTTP response message.
 
-##### Properties
+##### Template
 
 - `element`: httpTransaction (string, fixed)
 - `attributes`
-    - `authSchemes` (Array Element[Base API Element]) - An array of authentication and authorization schemes that apply to the transaction
+    - `authSchemes` ([Array](#array-element)[Base API Element]) - An array of authentication and authorization schemes that apply to the transaction
 - `content` (array) - Request and response message pair (tuple).
     - (Copy) - HTTP Transaction description's copy text.
     - (HTTP Request Message)
@@ -512,11 +1521,11 @@ message pair. A transaction example MUST contain exactly one HTTP request and on
 }
 ```
 
-#### HTTP Headers (Array Element[Member Element])
+#### HTTP Headers ([Array](#array-element)[Member Element])
 
 Ordered array of HTTP header-fields.
 
-##### Properties
+##### Template
 
 - `element`: httpHeaders (string, fixed)
 
@@ -547,7 +1556,7 @@ Ordered array of HTTP header-fields.
 
 Payload of an HTTP message including headers, data structures, or assets.
 
-##### Properties
+##### Template
 
 - `attributes`
     - `headers` (HTTP Headers)
@@ -567,11 +1576,11 @@ Payload of an HTTP message including headers, data structures, or assets.
 
 HTTP request message.
 
-##### Properties
+##### Template
 
 - `element`: httpRequest (string, fixed)
 - `attributes`
-    - `method` ([String Element][]) - HTTP request method. The method value SHOULD be inherited from a parent transition if it is unset.
+    - `method` ([String](#string-element)) - HTTP request method. The method value SHOULD be inherited from a parent transition if it is unset.
     - `href` (Templated Href) - URI Template for this HTTP request.
 
         If present, the value of the `href` attribute SHOULD be used to resolve
@@ -594,826 +1603,21 @@ HTTP request message.
 
 HTTP response message.
 
-##### Properties
+##### Template
 
 - `element`: httpResponse (string, fixed)
 - `attributes`
-    - `statusCode` (Number Element) - HTTP response status code.
+    - `statusCode` ([Number](#number-element)) - HTTP response status code.
 
-## Data Structure Elements
 
-### Inheritance and Expanded Element
+## Parse Result Element types
 
-This reference document is built around the idea of defining recursive data structures. To provide abstraction, for convenience reasons and to not repeat ourselves, these structures can be named (using an _identifier_) and reused. In this reference document, the reusable data structures are called _Named Types_.
-
-By default, Refract does not enforce inheritance of data, though element definitions are inherited from the defined element types. To inherit data in Refract, the `extend` element is used to merge one or more elements into a final element. In the Data Structure elements, however, when the data is defined, it inherits data from the element definition. Data Structure itself uses inheritance this way, and the Data Structure Refract elements mimics the behavior to provide simplicity and consistency across Data Structure representations.
-
-Often, before an Data Structure Refract can be processed, referenced _Named Types_ have to be resolved. Resolving references to _Named Types_ is tedious and error prone. As such an Data Structure processor can resolve references to produce a complete Data Structure Refract. That is, a Refract that does not include unresolved references to other data structures. This is referred to as _reference expansion_ or simply _expansion_.
-
-In other words, an expanded element is one that does not contain any _Identifier_ (defined below) referencing any other elements than those defined in Data Structure elements.
-
-The expanded Refract MUST, however, keep the track of what data structure was expanded and what from where and it MUST preserve the order of any member elements.
-
-#### Example
-
-Extending the element "A" to form new element "B":
-
-```json
-{
-  "element": "extend",
-  "meta": {
-    "id": {
-      "element": "string",
-      "content": "B"
-    }
-  },
-  "content": [
-    {
-      "element": "string",
-      "meta": {
-        "id": {
-          "element": "string",
-          "content": "A"
-        }
-      },
-      "content": "base element content"
-    },
-    {
-      "element": "string",
-      "content": "derived content"
-    }
-  ]
-}
-```
-
-Because of the implicit inheritance in the Data Structure elements, the
-example above can be written as follows:
-
-```json
-{
-  "element": "string",
-  "meta": {
-    "id": {
-      "element": "string",
-      "content": "A"
-    }
-  },
-  "content": "base element content"
-}
-```
-
-```json
-{
-  "element": "A",
-  "meta": {
-    "id": {
-      "element": "string",
-      "content": "B"
-    }
-  },
-  "content": "derived content"
-}
-```
-
-Resolving the Data Structure elements implicit inheritance and expanding
-the references from the example above we get:
-
-```json
-{
-  "element": "extend",
-  "meta": {
-    "id": {
-      "element": "string",
-      "content": "B"
-    }
-  },
-  "content": [
-    {
-      "element": "string",
-      "meta": {
-        "ref": {
-          "element": "ref",
-          "content": "A"
-        }
-      },
-      "content": "base element content"
-    },
-    {
-      "element": "string",
-      "content": "derived content"
-    }
-  ]
-}
-```
-
-### Base Data Structure Element
-
-In this reference document, every data structure is a sub-type of another data structure, and, therefore, it is directly or indirectly derived from one of the Data Structure _Base Types_. This is expressed as an inheritance of elements in Data Structure Refract, where the predecessor of an element is referred to as element's _Base Element_.
-
-Note: Not every Data Structure _Base Type_ is presented in Refract primitive types and vice versa – see the table below.
-
-#### Type comparison
-
-| JSON primitive |      Refract     | [MSON][] Base Type | Data Structure Elements |
-|:--------------:|:----------------:|:------------------:|:------------------------:|
-|     boolean    |  [Boolean Element][] |     boolean    |  Boolean Type  |
-|     string     |  [String Element][]  |     string     |   String Type  |
-|     number     |  [Number Element][]  |     number     |   Number Type  |
-|      array     |   Array Element  |      array     |   Array Type   |
-|        -       |         -        |      enum      |    Enum Type   |
-|     object     |  Object Element  |     object     |   Object Type  |
-|      null      |   Null Element   |        -       |        -       |
-
-### Data Structure Element (Base API Element)
-
-Base element for every Data Structure element.
-
-The Data Structure Element adds attributes representing Data Structure _Type Definition_ and _Type Sections_.
-
-Note: In Data Structure Refract _Nested Member Types_ _Type Section_ is the `content` of the element.
-
-#### Properties
-
-- `attributes`
-    - `typeAttributes` (Array Element) - _Type Definition_ attributes list, see _Type Attribute_  
-
-        - `content` (array, fixed-type)
-
-            Type attributes of a type definition.
-
-            Note, if `sample` (or `default`) attribute is specified the value SHOULD be stored in the `samples` (or `default`) property instead of the element's `content`.
-
-            - Items
-                - ([String Element][])
-                    - `content` (enum)
-                        - required (string) - This element is required in parent's content
-                        - optional (string) - This element is optional in parent's content
-                        - fixed (string) - The `content` value is immutable.
-                        - fixedType (string) - The type of `content` value is immutable.
-
-    - `variable` ([Boolean Element][])
-
-      The `content` value is either a _Variable Type Name_, or _Variable Property Name_.
-
-      Note, if the `content` is a _Variable Value_ the `sample` type attribute
-      should be used instead (see `typeAttributes`).
-
-    - `samples` (Array Element) - Array of alternative sample values for _Member Types_
-
-          The type of items in `samples` array attribute MUST match the type of element.
-
-    - `default` ([Element][]) - Default value for _Member Types_
-
-          The type of of `default` attribute MUST match the type of element.
-
-    - `validation` - Not used, reserved for a future use
-
-### Type Reference ([Ref Element][])
-
-This elements extends refract `Ref Element` to include optional referenced element.
-
-#### Properties
-
-- `element`: ref (string, fixed)
-- `attributes`
-    -  `resolved` ([Element][], optional) - Resolved element being referenced.
-
-### Boolean Type ([Boolean Element][])
-
-- Include [Data Structure Element][]
-
-### String Type ([String Element][])
-
-- Include [Data Structure Element][]
-
-### Number Type ([Number Element][])
-
-- Include [Data Structure Element][]
-
-### Array Type (Array Element)
-
-- Include [Data Structure Element][]
-
-### Object Type (Object Element)
-
-- Include [Data Structure Element][]
-
-### Enum Type (Data Structure Element)
-
-Enumeration type. Exclusive list of possible elements. The elements in content's array MUST be interpreted as mutually exclusive.
-
-#### Properties
-
-- `element`: enum (string, fixed)
-- `attributes`
-    - `enumerations` (Array Element[[Data Structure Element][]])
-- `content` ([Data Structure Element][])
-
-#### Examples
-
-##### MSON
-
-```
-- tag: green (enum[string])
-    - red
-    - green
-```
-
-##### Data Structure Refract
-
-```json
-{
-  "element": "object",
-  "content": [
-    {
-      "element": "member",
-      "content": {
-        "key": {
-          "element": "string",
-          "content": "tag"
-        },
-        "value": {
-          "element": "enum",
-          "attributes": {
-            "enumerations": {
-              "element": "array",
-              "content": [
-                {
-                  "element": "string",
-                  "content": "red"
-                },
-                {
-                  "element": "string",
-                  "content": "green"
-                }
-              ]
-            }
-          }
-        }
-      }
-    }
-  ]
-}
-```
-
-### Examples
-
-#### Anonymous Object Type
-
-##### MSON
-
-```
-- id: 42
-```
-
-##### Data Structure Refract
-
-```json
-{
-  "element": "object",
-  "content": [
-    {
-      "element": "member",
-      "content": {
-        "key": {
-          "element": "string",
-          "content": "id"
-        },
-        "value": {
-          "element": "string",
-          "content": "42"
-        }
-      }
-    }
-  ]
-}
-```
-
-#### Type Attributes
-
-##### MSON
-
-```
-- id: 42 (required, fixed)
-```
-
-##### Data Structure Refract
-
-```json
-{
-  "element": "object",
-  "content": [
-    {
-      "element": "member",
-      "attributes": {
-        "typeAttributes": {
-          "element": "array",
-          "content": [
-            {
-              "element": "string",
-              "content": "required"
-            },
-            {
-              "element": "string",
-              "content": "fixed"
-            }
-          ]
-        }
-      },
-      "content": {
-        "key": {
-          "element": "string",
-          "content": "id"
-        },
-        "value": {
-          "element": "string",
-          "content": "42"
-        }
-      }
-    }
-  ]
-}
-```
-
-#### Default Value
-
-##### MSON
-
-```
-- id (number)
-    - default: 0
-```
-
-##### Data Structure Refract
-
-```json
-{
-  "element": "object",
-  "content": [
-    {
-      "element": "member",
-      "content": {
-        "key": {
-          "element": "string",
-          "content": "id"
-        },
-        "value": {
-          "element": "number",
-          "attributes": {
-            "default": {
-              "element": "number",
-              "content": 0
-            }
-          }
-        }
-      }
-    }
-  ]
-}
-```
-
-#### One Of
-
-##### MSON
-
-```
-- city
-- One Of
-    - state
-    - province
-```
-
-##### Data Structure Refract
-
-```json
-{
-  "element": "object",
-  "content": [
-    {
-      "element": "member",
-      "content": {
-        "key": {
-          "element": "string",
-          "content": "city"
-        }
-      }
-    },
-    {
-      "element": "select",
-      "content": [
-        {
-          "element": "option",
-          "content": [
-            {
-              "element": "member",
-              "content": {
-                "key": {
-                  "element": "string",
-                  "content": "state"
-                }
-              }
-            }
-          ]
-        },
-        {
-          "element": "option",
-          "content": [
-            {
-              "element": "member",
-              "content": {
-                "key": {
-                  "element": "string",
-                  "content": "province"
-                }
-              }
-            }
-          ]
-        }
-      ]
-    }
-  ]
-}
-```
-
-#### Mixin
-
-##### MSON
-
-```apib
-# User (object)
-- name: John
-```
-
-```apib
-- id
-- Include (User)
-```
-
-##### Data Structure Refract
-
-Using the `ref` element to reference an the content of an element.
-
-```json
-{
-  "element": "object",
-  "content": [
-    {
-      "element": "member",
-      "content": {
-        "key": {
-          "element": "string",
-          "content": "id"
-        }
-      }
-    },
-    {
-      "element": "ref",
-      "attributes": {
-        "path": {
-          "element": "string",
-          "content": "content"
-        }
-      },
-      "content": "User"
-    }
-  ]
-}
-```
-
-Using "Type Reference" (`ref`) element with the `resolved` attribute:
-
-```json
-{
-  "element": "object",
-  "content": [
-    {
-      "element": "member",
-      "content": {
-        "key": {
-          "element": "string",
-          "content": "id"
-        }
-      }
-    },
-    {
-      "element": "ref",
-      "attributes": {
-        "path": {
-          "element": "string",
-          "content": "content"
-        },
-        "resolved": {
-          "element": "object",
-          "meta": {
-            "ref": {
-              "element": "ref",
-              "content": "User"
-            }
-          },
-          "content": [
-            {
-              "element": "member",
-              "content": {
-                "key": {
-                  "element": "string",
-                  "content": "name"
-                },
-                "value": {
-                  "element": "string",
-                  "content": "John"
-                }
-              }
-            }
-          ]
-        }
-      },
-      "content": "User"
-    }
-  ]
-}
-```
-
-#### Named Type
-
-##### MSON
-
-```
-# Address (object)
-
-Description is here! Properties to follow.
-
-## Properties
-
-- street
-```
-
-##### Data Structure Refract
-
-```json
-{
-  "element": "object",
-  "meta": {
-    "id": {
-      "element": "string",
-      "content": "Address"
-    },
-    "title": {
-      "element": "string",
-      "content": "Address"
-    },
-    "description": {
-      "element": "string",
-      "content": "Description is here! Properties to follow."
-    }
-  },
-  "content": [
-    {
-      "element": "member",
-      "content": {
-        "key": {
-          "element": "string",
-          "content": "street"
-        }
-      }
-    }
-  ]
-}
-```
-
-#### Referencing & Expansion
-
-##### MSON
-
-```markdown
-# User (object)
-- name
-
-# Customer (User)
-- id
-```
-
-##### Data Structure Refract
-
-```json
-{
-  "element": "object",
-  "meta": {
-    "id": {
-      "element": "string",
-      "content": "User"
-    }
-  },
-  "content": [
-    {
-      "element": "member",
-      "content": {
-        "key": {
-          "element": "string",
-          "content": "name"
-        }
-      }
-    }
-  ]
-}
-```
-
-```json
-{
-  "element": "User",
-  "meta": {
-    "id": {
-      "element": "string",
-      "content": "Customer"
-    }
-  },
-  "content": [
-    {
-      "element": "member",
-      "content": {
-        "key": {
-          "element": "string",
-          "content": "id"
-        }
-      }
-    }
-  ]
-}
-```
-
-##### Expanded Data Structure Refract
-
-```json
-{
-  "element": "extend",
-  "meta": {
-    "id": {
-      "element": "string",
-      "content": "Customer"
-    }
-  },
-  "content": [
-    {
-      "element": "object",
-      "meta": {
-        "ref": {
-          "element": "ref",
-          "content": "User"
-        }
-      },
-      "content": [
-        {
-          "element": "member",
-          "content": {
-            "key": {
-              "element": "string",
-              "content": "id"
-            }
-          }
-        }
-      ]
-    },
-    {
-      "element": "object",
-      "content": [
-        {
-          "element": "member",
-          "content": {
-            "key": {
-              "element": "string",
-              "content": "id"
-            }
-          }
-        }
-      ]
-    }
-  ]
-}
-```
-
-#### Variable Value
-
-##### MSON
-
-```markdown
-- p: *42* (number)
-```
-
-##### Data Structure Refract
-
-```json
-{
-  "element": "object",
-  "content": [
-    {
-      "element": "member",
-      "content": {
-        "key": {
-          "element": "string",
-          "content": "p"
-        },
-        "value": {
-          "element": "number",
-          "attributes": {
-            "samples": {
-              "element": "array",
-              "content": [
-                {
-                  "element": "number",
-                  "content": 42
-                }
-              ]
-            }
-          }
-        }
-      }
-    }
-  ]
-}
-```
-
-#### Variable Property Name
-
-##### MSON
-
-```markdown
-- *rel (Relation)*
-```
-
-##### Data Structure Refract
-
-```json
-{
-  "element": "object",
-  "content": [
-    {
-      "element": "member",
-      "content": {
-        "key": {
-          "element": "Relation",
-          "attributes": {
-            "variable": {
-              "element": "boolean",
-              "content": true
-            }
-          },
-          "content": "rel"
-        },
-        "value": {
-          "element": "string"
-        }
-      }
-    }
-  ]
-}
-```
-
-#### Variable Type Name
-
-**Proposal – not yet implemented**
-
-Note this needs an introduction of a new Data Structure element for any type - `generic`.
-
-##### MSON
-
-```markdown
-- p (array[*T*])
-```
-
-##### Data Structure Refract
-
-```json
-{
-  "element": "object",
-  "content": [
-    {
-      "element": "member",
-      "content": {
-        "key": {
-          "element": "string",
-          "content": "p"
-        },
-        "value": {
-          "element": "array",
-          "content": [
-            {
-              "element": "generic",
-              "content": "T"
-            }
-          ]
-        }
-      }
-    }
-  ]
-}
-```
-
-## Parse Result Elements
 
 ### Parse Result (Base API Element)
 
 A result of parsing of an API description document.
 
-#### Properties
+#### Template
 
 - `element`: parseResult (string, fixed)
 - `content` (array, fixed-type)
@@ -1500,22 +1704,22 @@ The parse result is (using null in `category` content for simplicity):
 
 Annotation for a source file. Usually generated by a parser or adapter.
 
-#### Properties
+#### Template
 
 - `element`: annotation (string, fixed)
 - `meta`
-  - `classes` (Array Element)
+  - `classes` ([Array](#array-element))
       - `content` (array, fixed-type)
-          - ([String Element][])
+          - ([String](#string-element))
               - `content` (enum)
                   - error (string) - Annotation represents an error
                   - warning (string) - Annotation represents a warning
 
 - `attributes`
-    - `code` ([Number Element][]) - Parser-specific code of the annotation.
+    - `code` ([Number](#number-element)) - Parser-specific code of the annotation.
     Refer to parser documentation for explanation of the codes.
 
-    - `sourceMap` (Array Element[Source Map]) - Locations of the annotation in the source file.
+    - `sourceMap` ([Array](#array-element)[Source Map]) - Locations of the annotation in the source file.
 
 - `content` (string) - Textual annotation.
 
@@ -1587,14 +1791,14 @@ Annotation for a source file. Usually generated by a parser or adapter.
 
 Source map of an Element.
 
-Every refract element MAY include a `sourceMap` attribute. Its content MUST
+Every Element MAY include a `sourceMap` attribute. Its content MUST
 be an array of `Source Map` elements. The Source Map elements represent the
 location(s) in source file(s) from which the element was composed.
 
 If used, it represents the location of bytes in the source file.
 This location SHOULD include the bytes used to build the parent element.
 
-The Source Map element MUST NOT be used in its normal ("unrefracted") form
+The Source Map element MUST NOT be used in its normal form
 unless the particular application clearly implies what is the source file the
 source map is pointing in.
 
@@ -1603,17 +1807,17 @@ blocks may be non-continuous. For example, a block in the series may not start
 immediately after the previous block. Each block, however, is a continuous
 series of bytes.
 
-#### Properties
+#### Template
 
 - `element`: sourceMap (string, fixed)
 - `content` (array) - Array of byte blocks.
-    - (Array Element) - Continuous bytes block. A pair of byte index and byte count.
+    - ([Array](#array-element)) - Continuous bytes block. A pair of byte index and byte count.
         - `content` (array, fixed-type)
-            - ([Number Element][]) - Zero-based index of a byte in the source document.
+            - ([Number](#number-element)) - Zero-based index of a byte in the source document.
                 - attributes
                     - line - The line number the source map starts on.
                     - column - The column number of the line that the source map starts on.
-            - ([Number Element][]) - Count of bytes starting from the byte index.
+            - ([Number](#number-element)) - Count of bytes starting from the byte index.
                 - attributes
                     - line - The line number the source map ends on.
                     - column - The column number of the line that the source map ends on.
@@ -1707,7 +1911,7 @@ This reads, "The location starts at the 5th byte (the 2nd byte of line 3) of the
 
 ### Link Relations
 
-In addition to conforming to [RFC 5988][] for link relations per the [base specification](https://github.com/refractproject/refract-spec/blob/master/refract-spec.md), there are also additional link relations
+In addition to conforming to [RFC 5988][] for link relations, there are also additional link relations
 available for parse results.
 
 #### Origin Link Relation
@@ -1736,7 +1940,7 @@ The element MAY have a username and password defined as member elements within t
 - `username` (string, optional)
 - `password` (string, optional)
 
-#### Properties
+#### Template
 
 - `element`: Basic Authentication Scheme (string, fixed)
 
@@ -1855,7 +2059,7 @@ This describes an authentication scheme that uses a token as a way to authentica
 
 When used as a query parameter, an HREF Variable is not required to be defined within the scope of the resource or transition, but is rather infered from the used token authentications scheme.
 
-#### Properties
+#### Template
 
 - `element`: Token Authentication Scheme (string, fixed)
 - `content` (array[Member Element])
@@ -1972,7 +2176,7 @@ Transition elements are used to define the URLs for the authorize and token endp
 
 The HREF values for these transitions MAY be either relative or absolute URLs.
 
-#### Properties
+#### Template
 
 - `element`: OAuth2 Scheme (string, fixed)
 - `content` (array[Member Element, Transition])
@@ -2214,40 +2418,17 @@ This specific extension adds an object for including information about an API th
 
 As a tool comes across this extension element, it would look at the profile URL to see if it understands this particular element. If not, it can ignore it safely, but if so, it can use it as it sees fit.
 
-## Refract Elements
-
-These elements and definitions are referenced as part of the base Refract specification for the purpose of identifying, referencing, and pointing to elements and their respective meta, attributes, or content.
-
-* [String Element][]
-* [Number Element][]
-* [Boolean Element][]
-* [Array Element][]
-* [Object Element][]
-* [Ref Element][]
-* [Element Pointer][]
-* [Link Element][]
-
 ---
 
 
 [MSON]: https://github.com/apiaryio/mson
 [MSON Reference]: https://github.com/apiaryio/mson/blob/master/MSON%20Reference.md
-[Refract]: https://github.com/refractproject/refract-spec/blob/master/refract-spec.md
 
 [API Description Elements]: definitions/api-description-elements.md
 [Data Structure Elements]: definitions/data-structure-elements.md
 [Parse Result Elements]: definitions/parse-result-elements.md
 
 [Data Structure Element]: #data-structure-element-element
-
-[String Element]: https://github.com/refractproject/refract-spec/blob/master/refract-spec.md#string-element-element
-[Number Element]: https://github.com/refractproject/refract-spec/blob/master/refract-spec.md#number-element-element
-[Boolean Element]: https://github.com/refractproject/refract-spec/blob/master/refract-spec.md#boolean-element-element
-[Array Element]: https://github.com/refractproject/refract-spec/blob/master/refract-spec.md#array-element-element
-[Object Element]: https://github.com/refractproject/refract-spec/blob/master/refract-spec.md#object-element-element
-[Ref Element]: https://github.com/refractproject/refract-spec/blob/master/refract-spec.md#ref-element-element
-[Element Pointer]: https://github.com/refractproject/refract-spec/blob/master/refract-spec.md#element-pointer-element
-[Link Element]: https://github.com/refractproject/refract-spec/blob/master/refract-spec.md#link-element-element
 
 [RFC 2119]: https://datatracker.ietf.org/doc/rfc2119/
 [RFC 3986]: https://datatracker.ietf.org/doc/rfc3986/

@@ -1,0 +1,17 @@
+table.markdown th, table.markdown td {
+    padding: 6px 13px;
+    border: 1px solid #dfe2e5;
+}
+
+table.markdown th {
+    font-weight: 600;
+}
+
+table.markdown tr:nth-child(2n) {
+    background-color: #f6f8fa;
+}
+
+table {
+    border-spacing: 0;
+    border-collapse: collapse;
+}
