@@ -26,7 +26,7 @@ parsing of API Description documents into API Elements.
 
 ### [refract.py](https://github.com/kylef/refract.py)
 
-A Python library for interacting with Refract and API Element in Python.
+A Python library for interacting with Refract and API Elements in Python.
 
 ---
 
