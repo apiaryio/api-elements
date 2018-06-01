@@ -30,6 +30,7 @@ This documentation conforms to [RFC 2119][], which says:
    examples
    tools
    additional-information
+   extensions/index
 ```
 
 ## License
