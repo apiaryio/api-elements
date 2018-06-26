@@ -22,9 +22,9 @@ Entries in `meta` SHOULD be independent of Element type.
 Entries in `attributes` MAY be Element type specific.
 
 API Elements predefines three broad categories of Element types:
-1. [Data Structure Element types](#data-structure-element-types) - Tools to define types, e. g. [string](#string-element), [array](#array-element), [object](#object-element)
+1. [Data Structure Element types](#data-structure-element-types) - Tools to define types, e.g. [string](#string-element), [array](#array-element), [object](#object-element)
 2. [API Element types](#api-element-types) - Types specific to API description
-3. [Parse Result Element types](#parse-result-element-types) - Types specific to document parsing, e. g. source map, parse result
+3. [Parse Result Element types](#parse-result-element-types) - Types specific to document parsing, e.g. source map, parse result
 
 ### Reserved meta properties
 
@@ -80,9 +80,9 @@ A less trivial example is the following `asset` Element. The specific semantic i
 
 ### Values
 Following values can be described in API Elements:
-- null _value_
+- _null_ value
 - boolean values _true_ and _false_
-- rational numbers, i. e. floating point numbers with finite precision
+- rational numbers, i.e. floating point numbers with finite precision
 - finite character strings
 - finite sets of key value pairs
 - finite lists of values
@@ -92,7 +92,7 @@ Types specify value categories. Every Element SHALL describe a type.
 
 Note that because types may be restricted to exactly one value, an Element MAY match only a single value; such an Element still represents a type, not the value itself.
 
-An Element can therefore be thought of as a predicate that holds iff given value is in its value category. Given `Number` is the predicate classifying rational numbers, `Number(42.0)` SHALL hold, whereas `Number("foobar")` SHALL NOT.
+An Element can therefore be thought of as a predicate that holds if, and only if, given value is in its value category. Given `Number` is the predicate classifying rational numbers, `Number(42.0)` SHALL hold, whereas `Number("foobar")` SHALL NOT.
 
 ### Overview
 
@@ -663,7 +663,7 @@ Type with domain of all [_properties_](#property).
 - `attributes`
   - `typeAttributes` ([Array](#array-element)[[String](#string-element)])
     - `required` ([String](#string-element)) - Property MUST be present in value represented by the containing [Object Element](#object-element). I.e. restricts the domain of the containing Object Element type to one containing this property.
-    - `optional` ([String](#string-element)) - Property MAY NOT be present in value represented by the containing [Object Element](#object-element). I.e. expands the domain of the containing Object Element type to one not containing this property.</p>
+    - `optional` ([String](#string-element)) - Property MAY NOT be present in value represented by the containing [Object Element](#object-element). I.e. expands the domain of the containing Object Element type to one not containing this property.
   - `variable` - ([Boolean](#boolean-element)) - Property key SHALL be interpreted as a variable name instead of a literal name
   - `validation` - _reserved for future use_
 - `content`
@@ -758,7 +758,7 @@ Type Element representing only a specific property list instance (JSON `{"foo": 
 
 ```
 
-Type Element representing only a property list with key "foo" of value type `boolean` and with the key "bar" of value type `string` (JSON `{"foo": false, "bar": "fun"}`, `{"foo": true, "bar": ""}` et cetera).
+Type Element representing only a property list with key "foo" of value type `boolean` and with the key "bar" of value type `string` (JSON `{"foo": false, "bar": "fun"}`, `{"foo": true, "bar": ""}` etc.).
 
 ```json
 
