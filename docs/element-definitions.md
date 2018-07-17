@@ -42,7 +42,7 @@ We say the type _S_ is a _subtype_ of type _T_ if, and only if, all values of _S
 ---
 
 API Elements predefines three broad categories of Element types:
-1. [Data Structure Element types](#data-structure-element-types) - Tools to define types, e.g. [string](#string-element), [array](#array-element), [object](#object-element)
+1. [Data Structure Element types](#data-structure-element-types) - Tools to define types, e.g. [string][], [array][], [object][]
 2. [API Element types](#api-element-types) - Types specific to API description
 3. [Parse Result Element types](#parse-result-element-types) - Types specific to document parsing, e.g. source map, parse result
 
@@ -51,16 +51,16 @@ API Elements predefines three broad categories of Element types:
 
 Any of the following properties MAY be an entry of any Element's `meta`:
 
-- `id` ([String](#string-element)) - Unique name of this Element; defines a named type; MUST be unique with respect to other `id`s in a document
+- `id` ([String][]) - Unique name of this Element; defines a named type; MUST be unique with respect to other `id`s in a document
 - `ref` ([Ref](#ref-element)) - Pointer to referenced element or type
-- `classes` ([Array](#array-element)[[String](#string-element)]) - Classifications for given element
-- `title` ([String](#string-element)) - Human-readable title of element
-- `description` ([String](#string-element)) - Human-readable description of element
-- `links` ([Array](#array-element)[[Link Element](#link-element)]) - Meta links for a given element
+- `classes` ([Array][][[String][]]) - Classifications for given element
+- `title` ([String][]) - Human-readable title of element
+- `description` ([String][]) - Human-readable description of element
+- `links` ([Array][][[Link Element](#link-element)]) - Meta links for a given element
 
 ### Examples
 
-A primitive Element representing finite character strings is [String Element](#string-element), of type id `string`. Serialized into JSON, an Element representing `Hello world!` interpreted as a [String Element](#string-element) value:
+A primitive Element representing finite character strings is [String Element][], of type id `string`. Serialized into JSON, an Element representing `Hello world!` interpreted as a [String Element][] value:
 
 ```json
 {
@@ -404,11 +404,11 @@ Type with domain of two values: _true_ and _false_.
 #### Template
 - `element` - `"boolean"`
 - `attributes`
-  - `typeAttributes` ([Array](#array-element)[[String](#string-element)])
-    - `fixed` ([String](#string-element)) - The type this Element describes is restricted to the value given in `content`
+  - `typeAttributes` ([Array][][[String][]])
+    - `fixed` ([String][]) - The type this Element describes is restricted to the value given in `content`
   - `validation` - _reserved for future use_
-  - `samples` ([Array](#array-element)[[Boolean](#boolean-element)]]) - Alternative sample values for this Element; type of items in `samples` MUST match the type this Element describes
-  - `default` ([Boolean](#boolean-element)) - Default value for this Element; type of `default` MUST match the type this Element describes
+  - `samples` ([Array][][[Boolean][]]]) - Alternative sample values for this Element; type of items in `samples` MUST match the type this Element describes
+  - `default` ([Boolean][]) - Default value for this Element; type of `default` MUST match the type this Element describes
 - `content` - _false_ or _true_
 
 #### Example
@@ -455,11 +455,11 @@ Type with domain of all rational numbers, i.e. floating-point numbers with finit
 #### Template
 - `element` - `"number"`
 - `attributes`
-  - `typeAttributes` ([Array](#array-element)[[String](#string-element)])
-    - `fixed` ([String](#string-element)) - The type this Element describes is restricted to the value given in `content`
+  - `typeAttributes` ([Array][][[String][]])
+    - `fixed` ([String][]) - The type this Element describes is restricted to the value given in `content`
   - `validation` - _reserved for future use_
-  - `samples` ([Array](#array-element)[[Number](#number-element)]]) - Alternative sample values for this Element; type of items in `samples` MUST match the type this Element describes
-  - `default` ([Number](#number-element)) - Default value for this Element; type of `default` MUST match the type this Element describes
+  - `samples` ([Array][][[Number][]]]) - Alternative sample values for this Element; type of items in `samples` MUST match the type this Element describes
+  - `default` ([Number][]) - Default value for this Element; type of `default` MUST match the type this Element describes
 - `content` - Rational number
 
 #### Example
@@ -506,11 +506,11 @@ Type with domain of all finite character strings.
 #### Template
 - `element` - `"string"`
 - `attributes`
-  - `typeAttributes` ([Array](#array-element)[[String](#string-element)])
-    - `fixed` ([String](#string-element)) - The type this Element describes is restricted to the value given in `content`.
+  - `typeAttributes` ([Array][][[String][]])
+    - `fixed` ([String][]) - The type this Element describes is restricted to the value given in `content`.
   - `validation` - _reserved for future use_
-  - `samples` ([Array](#array-element)[[String](#string-element)]]) - Alternative sample values for this Element; type of items in `samples` MUST match the type this Element describes
-  - `default` ([String](#string-element)) - Default value for this Element; type of `default` MUST match the type this Element describes
+  - `samples` ([Array][][[String][]]]) - Alternative sample values for this Element; type of items in `samples` MUST match the type this Element describes
+  - `default` ([String][]) - Default value for this Element; type of `default` MUST match the type this Element describes
 - `content` - Finite character string
 
 #### Example
@@ -557,12 +557,12 @@ Type with domain of all finite lists of values.
 #### Template
 - `element` - `"array"`
 - `attributes`
-  - `typeAttributes` ([Array](#array-element)[[String](#string-element)])
-    - `fixed` ([String](#string-element)) - Restricts domain to a positionally typed fixed-length list over types in content.  Further applies the `fixed` type attribute to nested [Array](#array-element)s, [Object](#object-element)s and any other type defining content or default.
-    - `fixedType` ([String](#string-element)) - Restricts domain to a list of types given in `content`.
+  - `typeAttributes` ([Array][][[String][]])
+    - `fixed` ([String][]) - Restricts domain to a positionally typed fixed-length list over types in content.  Further applies the `fixed` type attribute to nested [Array][]s, [Object][]s and any other type defining content or default.
+    - `fixedType` ([String][]) - Restricts domain to a list of types given in `content`.
   - `validation` - _reserved for future use_
-  - `samples` ([Array](#array-element)[[Array](#array-element)]]) - Alternative sample values for this Element; type of items in `samples` MUST match the type this Element describes
-  - `default` ([Array](#array-element)) - Default value for this Element; type of `default` MUST match the type this Element describes
+  - `samples` ([Array][][[Array][]]]) - Alternative sample values for this Element; type of items in `samples` MUST match the type this Element describes
+  - `default` ([Array][]) - Default value for this Element; type of `default` MUST match the type this Element describes
 - `content` - Finite list of Elements
 
 #### Examples
@@ -643,17 +643,17 @@ Type with domain of all [_properties_](#property).
 #### Template
 - `element` - `"member"`
 - `attributes`
-  - `typeAttributes` ([Array](#array-element)[[String](#string-element)])
-    - `required` ([String](#string-element)) - Property MUST be present in value represented by the containing [Object Element](#object-element). I.e. restricts the domain of the containing Object Element type to one containing this property.
-    - `optional` ([String](#string-element)) - Property MAY NOT be present in value represented by the containing [Object Element](#object-element). I.e. expands the domain of the containing Object Element type to one not containing this property.
-  - `variable` - ([Boolean](#boolean-element)) - Property key SHALL be interpreted as a variable name instead of a literal name
+  - `typeAttributes` ([Array][][[String][]])
+    - `required` ([String][]) - Property MUST be present in value represented by the containing [Object Element][]. I.e. restricts the domain of the containing Object Element type to one containing this property.
+    - `optional` ([String][]) - Property MAY NOT be present in value represented by the containing [Object Element][]. I.e. expands the domain of the containing Object Element type to one not containing this property.
+  - `variable` - ([Boolean][]) - Property key SHALL be interpreted as a variable name instead of a literal name
   - `validation` - _reserved for future use_
 - `content`
-  - `key` - An Element representing a key; MUST be set; SHOULD be a [String Element](#string-element)
+  - `key` - An Element representing a key; MUST be set; SHOULD be a [String Element][]
   - `value` - An Element representing the value
 
 #### Examples
-See [Object Element](#object-element) for examples.
+See [Object Element][] for examples.
 
 ---
 
@@ -665,14 +665,14 @@ Type with domain of all finite sets of [_properties_](#property).
 #### Template
 - `element` - `"object"`
 - `attributes`
-  - `typeAttributes` ([Array](#array-element)[[String](#string-element)])
-    - `fixed` ([String](#string-element)) - Restricts domain to a fixed sized set of properties, making them implicitly required. Further applies the `fixed` type attribute to nested [Array](#array-element)s, [Object](#object-element)s and any other type defining content or default.
-    - `fixedType` ([String](#string-element)) - Restricts domain to a fixed sized set of properties, making them implicitly required.
+  - `typeAttributes` ([Array][][[String][]])
+    - `fixed` ([String][]) - Restricts domain to a fixed sized set of properties, making them implicitly required. Further applies the `fixed` type attribute to nested [Array][]s, [Object][]s and any other type defining content or default.
+    - `fixedType` ([String][]) - Restricts domain to a fixed sized set of properties, making them implicitly required.
   - `validation` - _reserved for future use_
-  - `samples` ([Array](#array-element)[[Object](#object-element)]]) - Alternative sample values for this Element; type of items in `samples` MUST match the type this Element describes
-  - `default` ([Object](#object-element)) - Default value for this Element; type of `default` MUST match the type this Element describes
+  - `samples` ([Array][][[Object][]]]) - Alternative sample values for this Element; type of items in `samples` MUST match the type this Element describes
+  - `default` ([Object][]) - Default value for this Element; type of `default` MUST match the type this Element describes
 - `content` - List of any of
-  - [Member](#member-element) - Object property
+  - [Member][] - Object property
   - [Extend](#extend-element) - MUST type a property
   - [Select](#select-element) - Contained [Option Element](#option-element)s MUST type properties
   - [Ref](#ref-element) - MUST reference an Object Element
@@ -798,11 +798,11 @@ Type with domain of the union of values typed by Elements in the `enumerations` 
 #### Template
 - `element` - `"enum"`
 - `attributes`
-  - `enumerations` ([Array](#array-element)) - List of Elements
-  - `typeAttributes` ([Array](#array-element)[[String](#string-element)])
-    - `fixed` ([String](#string-element)) - Elements in `enumerations` SHALL be interpreted `fixed`.
+  - `enumerations` ([Array][]) - List of Elements
+  - `typeAttributes` ([Array][][[String][]])
+    - `fixed` ([String][]) - Elements in `enumerations` SHALL be interpreted `fixed`.
   - `validation` - _reserved for future use_
-  - `samples` ([Array](#array-element)[[Element](#types)]]) - Alternative sample values for this Element; type of items in `samples` MUST match the type this Element describes
+  - `samples` ([Array][][[Element](#types)]]) - Alternative sample values for this Element; type of items in `samples` MUST match the type this Element describes
   - `default` ([Element](#types)) - Default value for this Element; type of `default` MUST match the type this Element describes
 - `content` - An Element matching one of the Elements in the `enumerations` attribute
 
@@ -858,7 +858,7 @@ Type Element representing a specific string and all numbers.
 
 ### Select Element
 
-Type with domain of the union of values typed by [Option Elements](#option-element) in `content`. Select Element SHOULD only be used to denote alternative sets of properties in an [Object Element](#object-element).
+Type with domain of the union of values typed by [Option Elements](#option-element) in `content`. Select Element SHOULD only be used to denote alternative sets of properties in an [Object Element][].
 
 #### Template
 - `element` - `"select"`
@@ -883,12 +883,12 @@ Type with the domain of non-empty finite sets of [properties](#property). An Opt
 Type with domain of _merged_ Elements specified in `content`. All entries in `content` MUST type the same data structure type. [Ref Elements](#ref-element) encountered in `content` are dereferenced before merging.
 
 Merging SHALL be defined based on the type of entries in `content` as follows:
-- [Array Element](#array-element) - List concatenation
-- [Object Element](#object-element) - Set union; if duplicit property keys are encountered during merging, all but the last SHALL be discarded; tooling SHOULD emit a warning in such a case.
+- [Array Element][] - List concatenation
+- [Object Element][] - Set union; if duplicit property keys are encountered during merging, all but the last SHALL be discarded; tooling SHOULD emit a warning in such a case.
 - [Select Element](#select-element) - Option concatenation
-- [String Element](#string-element) - Last entry in Extend Element SHALL be used, previous are ignored
-- [Boolean Element](#boolean-element) - Last entry in Extend Element SHALL be used, previous are ignored
-- [Number Element](#number-element) - Last entry in Extend Element SHALL be used, previous are ignored
+- [String Element][] - Last entry in Extend Element SHALL be used, previous are ignored
+- [Boolean Element][] - Last entry in Extend Element SHALL be used, previous are ignored
+- [Number Element][] - Last entry in Extend Element SHALL be used, previous are ignored
 - [Ref Element](#ref-element) - Substitute by referenced Element and apply one of the rules above
 
 Extend Element SHOULD NOT be used to encode semantic inheritance; use the `id` meta property to define a named type and reference it through the child's `element` entry.
@@ -914,8 +914,8 @@ The following rules apply:
 6. When `path` is used in an element that includes the data of the pointer (such as with `ref`), the referenced path MAY need to be converted to a refract structure in order to be valid
 
 Transclusion of a Ref Element SHALL be defined as follows:
-1. If the Ref Element is held by an [Array](#array-element) Element and references an Array Element, its content entries SHALL be inserted in place of the Ref Element.
-2. Else, if the Ref Element is held by an [Object](#array-element) Element and references an Object Element, its content entries SHALL be inserted in place of the Ref Element.
+1. If the Ref Element is held by an [Array][] Element and references an Array Element, its content entries SHALL be inserted in place of the Ref Element.
+2. Else, if the Ref Element is held by an [Object][] Element and references an Object Element, its content entries SHALL be inserted in place of the Ref Element.
 3. Otherwise, the Ref Element is substituted by the Element it references.
 
 #### Template
@@ -1029,8 +1029,8 @@ Hyperlinking MAY be used to link to other resources, provide links to instructio
 
 - `element`: link (string, fixed)
 - `attributes`
-    - `relation` ([String](#string-element)) - Link relation type as specified in [RFC 5988](https://tools.ietf.org/html/rfc5988).
-    - `href` ([String](#string-element)) - The URI for the given link
+    - `relation` ([String][]) - Link relation type as specified in [RFC 5988](https://tools.ietf.org/html/rfc5988).
+    - `href` ([String][]) - The URI for the given link
     - `validation` - _reserved for future use_
 
 #### Example
@@ -1057,12 +1057,12 @@ The following shows a link with the relation of `foo` and the URL of `/bar`.
 
 ## API Element Types
 
-### Href ([String](#string-element))
+### Href ([String][])
 
 The value of the `Href` type  SHOULD be resolved as a URI-Reference per [RFC 3986][] and MAY be a relative reference to a URI.
 The value of the `Href` type MUST NOT be a URI Template.
 
-### Templated Href ([String](#string-element))
+### Templated Href ([String][])
 
 The value of `Templated Href` type is to be used as a URI Template, as defined in [RFC 6570][].
 The value of the `Templated Href` type is a template used to determine the target URI of the related resource or transition.
@@ -1093,14 +1093,14 @@ Arbitrary data asset.
 
 - `element`: asset (string, fixed)
 - `meta`
-    - `classes` ([Array](#array-element))
+    - `classes` ([Array][])
         - `content` (array, fixed-type)
-            - ([String](#string-element))
+            - ([String][])
                 - `content` (enum)
                     - messageBody (string) - Asset is an example of message-body
                     - messageBodySchema (string) - Asset is an schema for message-body
 - `attributes`
-    - `contentType` ([String](#string-element)) - Optional media type of the asset. When this is unset, the content type SHOULD be inherited from the `Content-Type` header of a parent HTTP Message Payload
+    - `contentType` ([String][]) - Optional media type of the asset. When this is unset, the content type SHOULD be inherited from the `Content-Type` header of a parent HTTP Message Payload
     - `href` (Href) - Link to the asset
 - `content` (string) - A textual representation of the asset
 
@@ -1181,7 +1181,7 @@ Note: At the moment only the HTTP protocol is supported.
 
 - `element`: transition (string, fixed)
 - `attributes`
-    - `relation` - ([String](#string-element)) - Link relation type as specified in [RFC 5988][].
+    - `relation` - ([String][]) - Link relation type as specified in [RFC 5988][].
 
         The value of `relation` attribute SHOULD be interpreted as a link relation
         between transition's parent resource and the transition's target resource
@@ -1207,7 +1207,7 @@ Note: At the moment only the HTTP protocol is supported.
 
         Definition of any input message-body attribute for this transition.
 
-    - `contentTypes` ([Array](#array-element)[[String](#string-element)]) - A collection of content types that MAY be used for the transition.
+    - `contentTypes` ([Array][][[String][]]) - A collection of content types that MAY be used for the transition.
 - `content` (array)
     - (Copy) - Transition description's copy text.
     - (HTTP Transaction) - An instance of transaction example.
@@ -1242,9 +1242,9 @@ Note: At the moment only the HTTP protocol is supported.
 #### Template
 
 - `meta`
-    - `classes` ([Array](#array-element))
+    - `classes` ([Array][])
         - `content` (array, fixed-type)
-            - ([String](#string-element))
+            - ([String][])
                 - `content` (enum)
                     - user (string) - User-specific metadata. Metadata written in the source.
                     - adapter (string) - Serialization-specific metadata. Metadata provided by adapter.
@@ -1267,9 +1267,9 @@ transitions.
 
 - `element`: category (string, fixed)
 - `meta`
-    - `classes` ([Array](#array-element))
+    - `classes` ([Array][])
         - `content` (array, fixed-type)
-            - ([String](#string-element))
+            - ([String][])
                 - `content` (enum)
                     - api (string) - Category is a API top-level group.
                     - resourceGroup (string) - Category is a set of resource.
@@ -1278,7 +1278,7 @@ transitions.
                     - transitions (string) - Category is a group of transitions.
                     - authSchemes (string) - Category is a group of authentication and authorization scheme definitions
 - `attributes`
-    - `metadata` ([Array](#array-element)[API Metadata]) - Arbitrary metadata
+    - `metadata` ([Array][][API Metadata]) - Arbitrary metadata
 - `content` (array[Base API Element])
 
 #### Example
@@ -1375,7 +1375,7 @@ element's description metadata.
 
 - `element`: copy (string, fixed)
 - `attributes`
-    - `contentType` ([String](#string-element)) - Optional media type of the content.
+    - `contentType` ([String][]) - Optional media type of the content.
 - `content` (string)
 
 #### Example
@@ -1421,7 +1421,7 @@ message pair. A transaction example MUST contain exactly one HTTP request and on
 
 - `element`: httpTransaction (string, fixed)
 - `attributes`
-    - `authSchemes` ([Array](#array-element)[Base API Element]) - An array of authentication and authorization schemes that apply to the transaction
+    - `authSchemes` ([Array][][Base API Element]) - An array of authentication and authorization schemes that apply to the transaction
 - `content` (array) - Request and response message pair (tuple).
     - (Copy) - HTTP Transaction description's copy text.
     - (HTTP Request Message)
@@ -1502,7 +1502,7 @@ message pair. A transaction example MUST contain exactly one HTTP request and on
 }
 ```
 
-#### HTTP Headers ([Array](#array-element)[Member Element])
+#### HTTP Headers ([Array][][Member Element])
 
 Ordered array of HTTP header-fields.
 
@@ -1561,7 +1561,7 @@ HTTP request message.
 
 - `element`: httpRequest (string, fixed)
 - `attributes`
-    - `method` ([String](#string-element)) - HTTP request method. The method value SHOULD be inherited from a parent transition if it is unset.
+    - `method` ([String][]) - HTTP request method. The method value SHOULD be inherited from a parent transition if it is unset.
     - `href` (Templated Href) - URI Template for this HTTP request.
 
         If present, the value of the `href` attribute SHOULD be used to resolve
@@ -1588,7 +1588,7 @@ HTTP response message.
 
 - `element`: httpResponse (string, fixed)
 - `attributes`
-    - `statusCode` ([Number](#number-element)) - HTTP response status code.
+    - `statusCode` ([Number][]) - HTTP response status code.
 
 
 ## Parse Result Element types
@@ -1689,18 +1689,18 @@ Annotation for a source file. Usually generated by a parser or adapter.
 
 - `element`: annotation (string, fixed)
 - `meta`
-  - `classes` ([Array](#array-element))
+  - `classes` ([Array][])
       - `content` (array, fixed-type)
-          - ([String](#string-element))
+          - ([String][])
               - `content` (enum)
                   - error (string) - Annotation represents an error
                   - warning (string) - Annotation represents a warning
 
 - `attributes`
-    - `code` ([Number](#number-element)) - Parser-specific code of the annotation.
+    - `code` ([Number][]) - Parser-specific code of the annotation.
     Refer to parser documentation for explanation of the codes.
 
-    - `sourceMap` ([Array](#array-element)[Source Map]) - Locations of the annotation in the source file.
+    - `sourceMap` ([Array][][Source Map]) - Locations of the annotation in the source file.
 
 - `content` (string) - Textual annotation.
 
@@ -1792,13 +1792,13 @@ series of bytes.
 
 - `element`: sourceMap (string, fixed)
 - `content` (array) - Array of byte blocks.
-    - ([Array](#array-element)) - Continuous bytes block. A pair of byte index and byte count.
+    - ([Array][]) - Continuous bytes block. A pair of byte index and byte count.
         - `content` (array, fixed-type)
-            - ([Number](#number-element)) - Zero-based index of a byte in the source document.
+            - ([Number][]) - Zero-based index of a byte in the source document.
                 - attributes
                     - line - The line number the source map starts on.
                     - column - The column number of the line that the source map starts on.
-            - ([Number](#number-element)) - Count of bytes starting from the byte index.
+            - ([Number][]) - Count of bytes starting from the byte index.
                 - attributes
                     - line - The line number the source map ends on.
                     - column - The column number of the line that the source map ends on.
@@ -2455,3 +2455,10 @@ As a tool comes across this extension element, it would look at the profile URL 
 [RFC 5988]: http://datatracker.ietf.org/doc/rfc5988/
 [RFC 6570]: https://datatracker.ietf.org/doc/rfc6570/
 [RFC 7230]: http://datatracker.ietf.org/doc/rfc7230/
+
+[String]: #string-element
+[Number]: #number-element
+[Boolean]: #boolean-element
+[Array]: #array-element
+[Object]: #object-element
+[Member]: #member-element
