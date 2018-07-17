@@ -1,6 +1,6 @@
 # Element Reference
 
-## Elements
+## Element
 
 An _Element_ SHALL be a tuple (`element`, `meta`, `attributes`, `content`) where
  - `element` SHALL be a non-empty, finite character string identifying the _type_ of this Element
@@ -8,30 +8,55 @@ An _Element_ SHALL be a tuple (`element`, `meta`, `attributes`, `content`) where
  - `attributes` SHALL be a set of _properties_ defined by the _type_ of this Element
  - `content` SHALL be defined by the _type_ of this Element
 
+Entries in `meta` SHOULD be independent of Element.
+Entries in `attributes` MAY be Element specific.
+
+### Property
 
 A _property_ SHALL be a tuple (`key`, `value`) where
 - `key` SHALL be a non-empty, finite character string
 - `value` SHALL be an _Element_
-- two properties SHALL be equal if their keys are.
+- Two properties SHALL be equal if their keys are.
 
+> The last statement defining equality on properties through their keys allows definition of _objects_ as _sets_ of properties.
 
-Members of `meta` SHOULD NOT be Element type specific; an exception to this MAY be the `classes` property. Members of `attributes` MAY be Element type specific.
+### Values
+Following values can be described in API Elements:
+- _null_ value
+- boolean values _true_ and _false_
+- rational numbers, i.e. floating point numbers with finite precision
+- finite character strings
+- finite sets of properties
+- finite lists of values
 
-API Elements predefines two broad categories of Element types:
-1. [Data Structure Element types](#data-structure-element-types) - primitives to define types, e. g. [string](#string-element), [array](#array-element), [object](#object-element)
-2. [API Element types](#api-element-types) - types specific to API documentation
-3. [Parse Result Element types](#parse-result-element-types) - types specific to document parsing, e. g. source map, parse result
+### Types
+Types specify value categories. Every Element SHALL describe a type.
+
+Note that because types may be restricted to exactly one value, an Element MAY match only a single value; such an Element still represents a type, not the value itself.
+
+An Element can therefore be thought of as a predicate that holds if, and only if, given value is in its value category. Given `Number` is the predicate classifying rational numbers, `Number(42.0)` SHALL hold, whereas `Number("foobar")` SHALL NOT.
+
+#### Subtypes
+We say the type _S_ is a _subtype_ of type _T_ if, and only if, all values of _S_ are also values of _T_.
+
+---
+
+API Elements predefines three broad categories of Element types:
+1. [Data Structure Element types](#data-structure-element-types) - Tools to define types, e.g. [string](#string-element), [array](#array-element), [object](#object-element)
+2. [API Element types](#api-element-types) - Types specific to API description
+3. [Parse Result Element types](#parse-result-element-types) - Types specific to document parsing, e.g. source map, parse result
+
 
 ### Reserved meta properties
 
-Any of the following properties MAY be a member of any Element's `meta`:
+Any of the following properties MAY be an entry of any Element's `meta`:
 
-- `id` ([String](#string-element)) - unique name of this Element; defines a named type; MUST be unique with respect to other `id`s in a document
+- `id` ([String](#string-element)) - Unique name of this Element; defines a named type; MUST be unique with respect to other `id`s in a document
 - `ref` ([Ref](#ref-element)) - Pointer to referenced element or type
-- `classes` ([Array](#array-element)[[String](#string-element)]) - classifications for given element
+- `classes` ([Array](#array-element)[[String](#string-element)]) - Classifications for given element
 - `title` ([String](#string-element)) - Human-readable title of element
 - `description` ([String](#string-element)) - Human-readable description of element
-- `links` ([Array](#array-element)[[Link Element](#link-element)]) - meta links for a given element
+- `links` ([Array](#array-element)[[Link Element](#link-element)]) - Meta links for a given element
 
 ### Examples
 
@@ -74,6 +99,8 @@ A less trivial example is the following `asset` Element. The specific semantic i
 
 ## Data Structure Element types
 
+### Overview
+
 [API Elements](#api-element-types) and [Parse Result Elements](#parse-result-element-types) are all defined via Data Structure Elements.
 The following table summarizes them very broadly.
 
@@ -81,13 +108,8 @@ The following table summarizes them very broadly.
   <thead>
     <tr>
       <th>Name</th>
-      <th>Example Element</th>
-      <th>Example value</th>
-    </tr>
-  </thead>
-  <thead>
-    <tr>
-      <th colspan=3>Primitive Element types</th>
+      <th>Type (JSON serialized)</th>
+      <th>Value (JSON serialized)</th>
     </tr>
   </thead>
   <tbody>
@@ -104,7 +126,7 @@ The following table summarizes them very broadly.
       <td><a href="#boolean-element">boolean</a></td>
       <td>
         <pre>{
-  "element": "bool"
+  "element": "boolean"
 }</pre>
       </td>
       <td>
@@ -138,11 +160,6 @@ The following table summarizes them very broadly.
       </td>
     </tr>
   </tbody>
-  <thead>
-    <tr>
-      <th colspan=3>Structured Type Elements</th>
-    </tr>
-  </thead>
   <tbody>
     <tr>
       <td><a href="#array-element">array</a></td>
@@ -157,24 +174,32 @@ The following table summarizes them very broadly.
       </td>
     </tr>
     <tr>
-      <td><a href="#object-element">object</a> & <a href="#member-element">member</a></td>
+      <td><a href="#member-element">member</a></td>
       <td>
         <pre>{
-  "element": "object",
-  "content": [
-    {
-      "element": "member",
-      "content": {
-        "key": {
-          "element": "string",
-          "content": "foo"
-        },
-        "value": {
-          "element": "string"
-        }
-      }
+  "element": "member",
+  "content": {
+    "key": {
+      "element": "string",
+      "content": "foo"
     },
-  ]
+    "value": {
+      "element": "string"
+    }
+  }
+}</pre>
+      </td>
+      <td>
+        Properties in JSON cannot be represented as standalone values. However, they exist as fragments of a JSON objects:
+        <pre>"foo": ""</pre>
+        <pre>"foo": "Hey!"</pre>
+      </td>
+    </tr>
+    <tr>
+      <td><a href="#object-element">object</a></td>
+      <td>
+        <pre>{
+  "element": "object"
 }</pre>
       </td>
       <td>
@@ -306,18 +331,13 @@ The following table summarizes them very broadly.
   "bar": 42.3
 }</pre>
         <pre>{
-  "foo": "Hey!",
-  "bar": 42.3,
+  "foo": "Hello",
+  "bar": 3.14,
   "baz": true
 }</pre>
       </td>
     </tr>
   </tbody>
-  <thead>
-    <tr>
-      <th colspan=3>Others</th>
-    </tr>
-  </thead>
   <tbody>
     <tr>
       <td><a href="#ref-element">ref</a></td>
@@ -326,7 +346,11 @@ The following table summarizes them very broadly.
         <pre>{
   "element": "string",
   "meta": {
-    "id": "SpecialString"
+    "id": {
+      "element": "string",
+      "content": "SpecialString"
+      }
+    }
   }
 }</pre>
 A reference:
@@ -346,16 +370,25 @@ A reference:
 
 ---
 
+### Fail Element
+Type with empty domain. Attempts at instantiation of this Element SHALL fail.
+
+#### Template
+- `element` - `"fail"`
+
+> Reserved for future use.
+
+---
+
 ### Null Element
-Type with domain of a single value. Called `unit` or `()` in some programming languages.
-Note that both `nullptr` and `void` from C-style languages are unrelated concepts.
+Type with domain of a single value.
 
 #### Template
 - `element` - `"null"`
 
 #### Example
 
-The example below defines an Element matching only the null value.
+The example below defines an Element representing only the null value.
 ```json
 {
   "element": "null"
@@ -366,22 +399,21 @@ The example below defines an Element matching only the null value.
 
 ### Boolean Element
 
-Type with domain of two values: true and false.
-`content` property MUST contain a boolean value if set.
+Type with domain of two values: _true_ and _false_.
 
 #### Template
 - `element` - `"boolean"`
 - `attributes`
   - `typeAttributes` ([Array](#array-element)[[String](#string-element)])
-    - `fixed` ([String](#string-element)) - domain restricted to value given in `content`
+    - `fixed` ([String](#string-element)) - The type this Element describes is restricted to the value given in `content`
   - `validation` - _reserved for future use_
-  - `samples` ([Array[Boolean]](#array-element)) - array of alternative sample values for this Element; type of items in `samples` MUST match the type of this Element
-  - `default` (Boolean Element) - default value for this Element; type of `default` MUST match the type of this Element
-- `content` - ⊥ (false) or ⊤ (true)
+  - `samples` ([Array](#array-element)[[Boolean](#boolean-element)]]) - Alternative sample values for this Element; type of items in `samples` MUST match the type this Element describes
+  - `default` ([Boolean](#boolean-element)) - Default value for this Element; type of `default` MUST match the type this Element describes
+- `content` - _false_ or _true_
 
 #### Example
 
-Type Element matching only boolean values (JSON `true`, `false`):
+Type Element representing only boolean values (JSON `true`, `false`):
 
 ```json
 
@@ -391,7 +423,7 @@ Type Element matching only boolean values (JSON `true`, `false`):
 
 ```
 
-Type Element matching only boolean "true" (JSON `true`):
+Type Element representing only boolean "true" (JSON `true`):
 
 ```json
 
@@ -424,15 +456,15 @@ Type with domain of all rational numbers, i.e. floating-point numbers with finit
 - `element` - `"number"`
 - `attributes`
   - `typeAttributes` ([Array](#array-element)[[String](#string-element)])
-    - `fixed` ([String](#string-element)) - domain restricted to value given in `content`
+    - `fixed` ([String](#string-element)) - The type this Element describes is restricted to the value given in `content`
   - `validation` - _reserved for future use_
-  - `samples` ([Array[Number]](#array-element)) - array of alternative sample values for this Element; type of items in `samples` MUST match the type of this Element
-  - `default` (Number) - default value for this Element; type of `default` MUST match the type of this Element
-- `content` - rational number
+  - `samples` ([Array](#array-element)[[Number](#number-element)]]) - Alternative sample values for this Element; type of items in `samples` MUST match the type this Element describes
+  - `default` ([Number](#number-element)) - Default value for this Element; type of `default` MUST match the type this Element describes
+- `content` - Rational number
 
 #### Example
 
-Type Element matching only rationals. Matches JSON `number`.
+Type Element representing only rationals. Matches JSON number values.
 
 ```json
 
@@ -442,7 +474,7 @@ Type Element matching only rationals. Matches JSON `number`.
 
 ```
 
-Type Element matching only the number `42`:
+Type Element representing only the number `42`:
 
 ```json
 
@@ -475,17 +507,16 @@ Type with domain of all finite character strings.
 - `element` - `"string"`
 - `attributes`
   - `typeAttributes` ([Array](#array-element)[[String](#string-element)])
-    - `fixed` ([String](#string-element)) - Domain restricted to value given in `content`.
+    - `fixed` ([String](#string-element)) - The type this Element describes is restricted to the value given in `content`.
   - `validation` - _reserved for future use_
-  - `samples` ([Array[String]](#array-element)) - array of alternative sample values for this Element; type of items in `samples` MUST match the type of this Element
-  - `default` (String) - default value for this Element; type of `default` MUST match the type of this Element
-- `content` - finite character string
+  - `samples` ([Array](#array-element)[[String](#string-element)]]) - Alternative sample values for this Element; type of items in `samples` MUST match the type this Element describes
+  - `default` ([String](#string-element)) - Default value for this Element; type of `default` MUST match the type this Element describes
+- `content` - Finite character string
 
 #### Example
 
-Type Element matching only character strings. Matches a `string` in JSON.
+Type Element representing only finite character strings. Matches JSON string values.
 
-Because the definition of an Element does not depend on syntax, we might serialize it into JSON:
 ```json
 
 {
@@ -494,7 +525,7 @@ Because the definition of an Element does not depend on syntax, we might seriali
 
 ```
 
-Type Element matching only the character string `"rocket science"`.
+Type Element representing only the character string `"rocket science"`.
 
 ```json
 
@@ -520,23 +551,23 @@ Type Element matching only the character string `"rocket science"`.
 
 ### Array Element
 
-Type with domain of all finite lists.
+Type with domain of all finite lists of values.
 
 
 #### Template
 - `element` - `"array"`
 - `attributes`
   - `typeAttributes` ([Array](#array-element)[[String](#string-element)])
-    - `fixed` ([String](#string-element)) - Restricts domain to a positionally typed fixed-length list over types in content. This type class is usually called a <i>tuple</i>, <i>sum type</i> or <i>Π-type</i>.
+    - `fixed` ([String](#string-element)) - Restricts domain to a positionally typed fixed-length list over types in content.  Further applies the `fixed` type attribute to nested [Array](#array-element)s, [Object](#object-element)s and any other type defining content or default.
     - `fixedType` ([String](#string-element)) - Restricts domain to a list of types given in `content`.
   - `validation` - _reserved for future use_
-  - `samples` ([Array[Array]](#array-element)) - array of alternative sample values for this Element; type of items in `samples` MUST match the type of this Element
-  - `default` (Array) - default value for this Element; type of `default` MUST match the type of this Element
-- `content` - finite list of Elements
+  - `samples` ([Array](#array-element)[[Array](#array-element)]]) - Alternative sample values for this Element; type of items in `samples` MUST match the type this Element describes
+  - `default` ([Array](#array-element)) - Default value for this Element; type of `default` MUST match the type this Element describes
+- `content` - Finite list of Elements
 
 #### Examples
 
-Type Element matching only lists (JSON `array`).
+Type Element representing only lists (JSON `array`).
 
 ```json
 
@@ -546,7 +577,7 @@ Type Element matching only lists (JSON `array`).
 
 ```
 
-Type Element matching only pairs of (`string`, `number`).
+Type Element representing only pairs of (`string`, `number`).
 
 ```json
 
@@ -575,7 +606,7 @@ Type Element matching only pairs of (`string`, `number`).
 
 ```
 
-Type Element matching only lists of one of `string`, `number`.
+Type Element representing only lists where items are either a JSON `string` or a JSON `number`.
 
 ```json
 
@@ -607,25 +638,19 @@ Type Element matching only lists of one of `string`, `number`.
 ---
 
 ### Member Element
-Type with domain of all _properties_.
-
-Quoting from the [Element section](#element):
-> A _property_ is a tuple (`key`, `value`) where
-> - `key` SHALL be a non-empty, finite character string
-> - `value` SHALL be an _Element_
-> - two properties SHALL be equal if their keys are.
+Type with domain of all [_properties_](#property).
 
 #### Template
 - `element` - `"member"`
 - `attributes`
   - `typeAttributes` ([Array](#array-element)[[String](#string-element)])
-    - `required` ([String](#string-element)) - Property MUST be present in Object containing it. I.e. restricts the domain of the containing Object Element type to one containing this property.
-    - `optional` ([String](#string-element)) - Property MAY NOT be present in Object containing it. I.e. expands the domain of the containing Object Element type to one not containing this property.</p>
+    - `required` ([String](#string-element)) - Property MUST be present in value represented by the containing [Object Element](#object-element). I.e. restricts the domain of the containing Object Element type to one containing this property.
+    - `optional` ([String](#string-element)) - Property MAY NOT be present in value represented by the containing [Object Element](#object-element). I.e. expands the domain of the containing Object Element type to one not containing this property.
   - `variable` - ([Boolean](#boolean-element)) - Property key SHALL be interpreted as a variable name instead of a literal name
   - `validation` - _reserved for future use_
 - `content`
-  - `key` - an Element representing a key; SHOULD be a [String Element](#string-element)
-  - `value` - an Element representing the value
+  - `key` - An Element representing a key; MUST be set; SHOULD be a [String Element](#string-element)
+  - `value` - An Element representing the value
 
 #### Examples
 See [Object Element](#object-element) for examples.
@@ -634,34 +659,29 @@ See [Object Element](#object-element) for examples.
 
 ### Object Element
 
-Type with domain of all finite lists of _properties_.
+Type with domain of all finite sets of [_properties_](#property).
 
-Quoting from the [Element section](#element):
-> A _property_ is a tuple (`key`, `value`) where
-> - `key` SHALL be a non-empty, finite character string
-> - `value` SHALL be an _Element_
-> - two properties SHALL be equal if their keys are.
 
 #### Template
 - `element` - `"object"`
 - `attributes`
   - `typeAttributes` ([Array](#array-element)[[String](#string-element)])
-    - `fixed` ([String](#string-element)) - SHALL restrict the domain to a specific instance of a property list. Entries in `content` of this Object Element MUST contain at least one of content, default and sample.
-    - `fixedType` ([String](#string-element)) - SHALL restrict the domain to properties listed in `content`.
+    - `fixed` ([String](#string-element)) - Restricts domain to a fixed sized set of properties, making them implicitly required. Further applies the `fixed` type attribute to nested [Array](#array-element)s, [Object](#object-element)s and any other type defining content or default.
+    - `fixedType` ([String](#string-element)) - Restricts domain to a fixed sized set of properties, making them implicitly required.
   - `validation` - _reserved for future use_
-  - `samples` ([Array[Object]](#array-element)) - array of alternative sample values for this Element; type of items in `samples` MUST match the type of this Element
-  - `default` (Object) - default value for this Element; type of `default` MUST match the type of this Element
-- `content` - list of any of
-  - [Member](#member-element) - object property
+  - `samples` ([Array](#array-element)[[Object](#object-element)]]) - Alternative sample values for this Element; type of items in `samples` MUST match the type this Element describes
+  - `default` ([Object](#object-element)) - Default value for this Element; type of `default` MUST match the type this Element describes
+- `content` - List of any of
+  - [Member](#member-element) - Object property
   - [Extend](#extend-element) - MUST type a property
-  - [Select](#select-element) - contained [Option Element](#option-element)s MUST type properties
+  - [Select](#select-element) - Contained [Option Element](#option-element)s MUST type properties
   - [Ref](#ref-element) - MUST reference an Object Element
 
-[References](#ref-element) in the `content` of an Object Element [Ref Element](#ref-element) SHALL be semantically equivalent to their substitution by items held in the content of the referenced Object Element. Less formally, Ref Elements in the content of Object Element represent in-place mixins.
+[References](#ref-element) in the `content` of an Object Element SHALL be semantically equivalent to their substitution by items held in the content of the referenced Object Element. Less formally, Ref Elements in the content of Object Element represent in-place mixins.
 
 #### Examples
 
-Type Element matching only property lists (JSON `object`).
+Type Element representing only property lists (JSON `object`).
 
 ```json
 
@@ -671,7 +691,7 @@ Type Element matching only property lists (JSON `object`).
 
 ```
 
-Type Element matching only a specific property list instance (JSON `{"foo": false, "bar": "fun"}`).
+Type Element representing only a specific property list instance (JSON `{"foo": false, "bar": "fun"}`).
 
 ```json
 
@@ -697,7 +717,7 @@ Type Element matching only a specific property list instance (JSON `{"foo": fals
           "content": "foo"
         },
         "value": {
-          "element": "boolean"
+          "element": "boolean",
           "content": false
         }
       }
@@ -710,7 +730,7 @@ Type Element matching only a specific property list instance (JSON `{"foo": fals
           "content": "foo"
         },
         "value": {
-          "element": "string"
+          "element": "string",
           "content": "fun"
         }
       }
@@ -720,7 +740,7 @@ Type Element matching only a specific property list instance (JSON `{"foo": fals
 
 ```
 
-Type Element matching only a property list with key "foo" of value type `boolean` and with the key "bar" of value type `string` (JSON `{"foo": false, "bar": "fun"}`, `{"foo": true, "bar": ""}`).
+Type Element representing only a property list with key "foo" of value type `boolean` and with the key "bar" of value type `string` (JSON `{"foo": false, "bar": "fun"}`, `{"foo": true, "bar": ""}` etc.).
 
 ```json
 
@@ -773,22 +793,22 @@ Type Element matching only a property list with key "foo" of value type `boolean
 
 ### Enum Element
 
-Type with the domain of any of the types listed in the `enumerations` attribute. Also called tagged union or Σ-type.
+Type with domain of the union of values typed by Elements in the `enumerations` attribute. Also called tagged union or Σ-type.
 
 #### Template
 - `element` - `"enum"`
 - `attributes`
-  - `enumerations` ([Array](#array-element)) - list of Elements which this Element SHALL type
+  - `enumerations` ([Array](#array-element)) - List of Elements
   - `typeAttributes` ([Array](#array-element)[[String](#string-element)])
     - `fixed` ([String](#string-element)) - Elements in `enumerations` SHALL be interpreted `fixed`.
   - `validation` - _reserved for future use_
-  - `samples` ([Array](#array-element)) - array of alternative sample values for this Element; type of items in `samples` MUST match the type of this Element
-  - `default` (Element) - default value for this Element; type of `default` MUST match the type of this Element
-- `content` - an Element matching one of the Elements in the `enumerations` attribute
+  - `samples` ([Array](#array-element)[[Element](#types)]]) - Alternative sample values for this Element; type of items in `samples` MUST match the type this Element describes
+  - `default` ([Element](#types)) - Default value for this Element; type of `default` MUST match the type this Element describes
+- `content` - An Element matching one of the Elements in the `enumerations` attribute
 
 #### Examples
 
-Type Element matching strings and numbers (JSON `string` or `number`).
+Type Element representing strings and numbers.
 
 ```json
 
@@ -808,7 +828,7 @@ Type Element matching strings and numbers (JSON `string` or `number`).
 
 ```
 
-Type Element matching a specific string and numbers (JSON `"Hello world!"` or `number`).
+Type Element representing a specific string and all numbers.
 
 ```json
 
@@ -838,24 +858,23 @@ Type Element matching a specific string and numbers (JSON `"Hello world!"` or `n
 
 ### Select Element
 
-Type with the domain of any of the types contained by [Option Elements](#option-element) in `content`. Also called tagged union or Σ-type.
-In contrast to [Enum Element](#enum-element), Select MAY be used in an [Object Element](#object-element) to denote alternative properties. In this use case the Select MUST type at least one [Member Element](#member-element) option.
+Type with domain of the union of values typed by [Option Elements](#option-element) in `content`. Select Element SHOULD only be used to denote alternative sets of properties in an [Object Element](#object-element).
 
 #### Template
 - `element` - `"select"`
 - `attributes`
-  - `typeAttributes` ([Array](#array-element)[[String](#string-element)])
-    - `fixed` ([String](#string-element)) - Elements in `content` SHALL be interpreted `fixed`.
-  - `validation` - _reserved for future use_
-  - `samples` ([Array](#array-element)) - array of alternative sample values for this Element; type of items in `samples` MUST match the type of this Element
-  - `default` (Element) - default value for this Element; type of `default` MUST match the type of this Element
-- `content` - list of [Option Elements](#option-element) which this Element SHALL type
-
-#### Examples
+- `content` - Finite list of [Option Elements](#option-element)
 
 ---
 
 ### Option Element
+
+Type with the domain of non-empty finite sets of [properties](#property). An Option Element MUST be contained in a [Select Element](#select-element) and its items MUST type [properties](#property).
+
+#### Template
+- `element` - `"option"`
+- `attributes`
+- `content` - Non-empty list of [Elements](#types) typing properties
 
 ---
 
@@ -864,23 +883,19 @@ In contrast to [Enum Element](#enum-element), Select MAY be used in an [Object E
 Type with domain of _merged_ Elements specified in `content`. All entries in `content` MUST type the same data structure type. [Ref Elements](#ref-element) encountered in `content` are dereferenced before merging.
 
 Merging SHALL be defined based on the type of entries in `content` as follows:
-- [Array Element](#array-element) - array concatenation
-- [Object Element](#object-element) - property concatenation; if duplicit property keys are encountered during concatenation, all but the last SHALL be discarded; tooling SHOULD emit a warning in such a case.
-- [Select Element](#select-element) - option concatenation
-- [String Element](#string-element) - last entry in Extend Element SHALL be used, previous are ignored
-- [Bool Element](#bool-element) - last entry in Extend Element SHALL be used, previous are ignored
-- [Number Element](#number-element) - last entry in Extend Element SHALL be used, previous are ignored
-- [Ref Element](#ref-element) - substitute by referenced Element and apply one of the rules above
+- [Array Element](#array-element) - List concatenation
+- [Object Element](#object-element) - Set union; if duplicit property keys are encountered during merging, all but the last SHALL be discarded; tooling SHOULD emit a warning in such a case.
+- [Select Element](#select-element) - Option concatenation
+- [String Element](#string-element) - Last entry in Extend Element SHALL be used, previous are ignored
+- [Boolean Element](#boolean-element) - Last entry in Extend Element SHALL be used, previous are ignored
+- [Number Element](#number-element) - Last entry in Extend Element SHALL be used, previous are ignored
+- [Ref Element](#ref-element) - Substitute by referenced Element and apply one of the rules above
 
 Extend Element SHOULD NOT be used to encode semantic inheritance; use the `id` meta property to define a named type and reference it through the child's `element` entry.
 
 #### Template
 - `element` - `"extend"`
-- `attributes`
-  - `validation` - _reserved for future use_
-  - `samples` ([Array](#array-element)) - array of alternative sample values for this Element; type of items in `samples` MUST match the type of this Element
-  - `default` (Element) - default value for this Element; type of `default` MUST match the type of this Element
-- `content` - list of [Data Structure Elements](#data-structure-element-types) to be merged
+- `content` - List of [Data Structure Elements](#data-structure-element-types) to be merged
 
 ---
 
@@ -1006,11 +1021,11 @@ The resulting dereferenced array is:
 }
 ```
 
-## Link Element
+### Link Element
 
-Hyperlinking MAY be used to link to other resources, provide links to instructions on how to process a given element (by way of a profile or other means), and may be used to provide meta data about the element in which it's found. The meaning and purpose of the hyperlink is defined by the link relation according to [RFC 5988](https://tools.ietf.org/html/rfc5988).
+Hyperlinking MAY be used to link to other resources, provide links to instructions on how to process a given element (by way of a [profile](#profiles) or other means), and may be used to provide meta data about the element in which it's found. The meaning and purpose of the hyperlink is defined by the link relation according to [RFC 5988](https://tools.ietf.org/html/rfc5988).
 
-### Template
+#### Template
 
 - `element`: link (string, fixed)
 - `attributes`
@@ -1018,7 +1033,7 @@ Hyperlinking MAY be used to link to other resources, provide links to instructio
     - `href` ([String](#string-element)) - The URI for the given link
     - `validation` - _reserved for future use_
 
-### Example
+#### Example
 
 The following shows a link with the relation of `foo` and the URL of `/bar`.
 
@@ -1037,40 +1052,6 @@ The following shows a link with the relation of `foo` and the URL of `/bar`.
   }
 }
 ```
-
-## Profiles
-
-The primary means by which users can provide semantic definitions and other meta information is through a profile. A profile MAY provide semantic information about an element and its data, it MAY provide specific instructions about elements such as how inheritance should work or how elements should be processed, and it MAY be used to modify understanding of existing elements in other profiles. The usage of a profile is not limited to these uses here, and SHOULD be left up to the profile author to define its use.
-
-To point to a profile, you MAY use the [profile link relation](https://www.ietf.org/rfc/rfc6906.txt) as a meta link in your root element or in any other element. Profile links may also be found outside of the document itself in places like the [HTTP Link Header](http://www.w3.org/wiki/LinkHeader). Additionally, a profile link is not required in order to use the functionality a profile provides, as a media type MAY define the same things a profile.
-
-Below is an example of how a profile link is used as a meta link.
-
-```json
-{
-  "element": "foo",
-  "meta": {
-    "links": [
-      {
-        "element": "link",
-        "attributes": {
-          "relation": {
-            "element": "string",
-            "content": "profile"
-          },
-          "href": {
-            "element": "string",
-            "content": "http://example.com/profiles/foo"
-          }
-        }
-      }
-    ]
-  },
-  "content": "bar"
-}
-```
-
-The example shows a `foo` element with a `profile` link. This profile link informs the parser this particular element is defined as part of the linked profile.
 
 ---
 
@@ -2345,6 +2326,45 @@ Also, please note this example is incomplete for the sake of keeping it short.
   ]
 }
 ```
+
+---
+
+## Profiles
+
+The primary means by which users can provide semantic definitions and other meta information is through a profile. A profile MAY provide semantic information about an element and its data, it MAY provide specific instructions about elements such as how inheritance should work or how elements should be processed, and it MAY be used to modify understanding of existing elements in other profiles. The usage of a profile is not limited to these uses here, and SHOULD be left up to the profile author to define its use.
+
+To point to a profile, you MAY use the [profile link relation](https://www.ietf.org/rfc/rfc6906.txt) as a meta link in your root element or in any other element. Profile links may also be found outside of the document itself in places like the [HTTP Link Header](http://www.w3.org/wiki/LinkHeader). Additionally, a profile link is not required in order to use the functionality a profile provides, as a media type MAY define the same things a profile.
+
+Below is an example of how a profile link is used as a meta link.
+
+```json
+{
+  "element": "foo",
+  "meta": {
+    "links": [
+      {
+        "element": "link",
+        "attributes": {
+          "relation": {
+            "element": "string",
+            "content": "profile"
+          },
+          "href": {
+            "element": "string",
+            "content": "http://example.com/profiles/foo"
+          }
+        }
+      }
+    ]
+  },
+  "content": "bar"
+}
+```
+
+The example shows a `foo` element with a `profile` link. This profile link informs the parser this particular element is defined as part of the linked profile.
+
+---
+
 
 ## Extending API Elements
 
