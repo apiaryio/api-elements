@@ -26,7 +26,7 @@ Following values can be described in API Elements:
 - boolean values _true_ and _false_
 - rational numbers, i.e. floating point numbers with finite precision
 - finite character strings
-- finite sets of key value pairs
+- finite sets of properties
 - finite lists of values
 
 ### Types
@@ -376,14 +376,7 @@ Type with empty domain. Attempts at instantiation of this Element SHALL fail.
 #### Template
 - `element` - `"fail"`
 
-#### Example
-
-The example below defines an Element representing no value.
-```json
-{
-  "element": "fail"
-}
-```
+> Reserved for future use.
 
 ---
 
