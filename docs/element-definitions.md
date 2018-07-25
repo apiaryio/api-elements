@@ -60,7 +60,7 @@ Any of the following properties MAY be an entry of any Element's `meta`:
 
 ### Examples
 
-A primitive Element representing finite character strings is [String Element][], of type id `string`. Serialized into JSON, an Element representing `Hello world!` interpreted as a [String Element][] value:
+A primitive Element representing finite character strings is [String][], of type id `string`. Serialized into JSON, an Element representing `Hello world!` interpreted as a [String][] value:
 
 ```json
 {
@@ -644,16 +644,16 @@ Type with domain of all [_properties_](#property).
 - `element` - `"member"`
 - `attributes`
   - `typeAttributes` ([Array][][[String][]])
-    - `required` ([String][]) - Property MUST be present in value represented by the containing [Object Element][]. I.e. restricts the domain of the containing Object Element type to one containing this property.
-    - `optional` ([String][]) - Property MAY NOT be present in value represented by the containing [Object Element][]. I.e. expands the domain of the containing Object Element type to one not containing this property.
+    - `required` ([String][]) - Property MUST be present in value represented by the containing [Object][]. I.e. restricts the domain of the containing Object Element type to one containing this property.
+    - `optional` ([String][]) - Property MAY NOT be present in value represented by the containing [Object][]. I.e. expands the domain of the containing Object Element type to one not containing this property.
   - `variable` - ([Boolean][]) - Property key SHALL be interpreted as a variable name instead of a literal name
   - `validation` - _reserved for future use_
 - `content`
-  - `key` - An Element representing a key; MUST be set; SHOULD be a [String Element][]
+  - `key` - An Element representing a key; MUST be set; SHOULD be a [String][]
   - `value` - An Element representing the value
 
 #### Examples
-See [Object Element][] for examples.
+See [Object][] for examples.
 
 ---
 
@@ -883,12 +883,12 @@ Type with the domain of non-empty finite sets of [properties](#property). An Opt
 Type with domain of _merged_ Elements specified in `content`. All entries in `content` MUST type the same data structure type. [Ref Elements](#ref-element) encountered in `content` are dereferenced before merging.
 
 Merging SHALL be defined based on the type of entries in `content` as follows:
-- [Array Element][] - List concatenation
-- [Object Element][] - Set union; if duplicit property keys are encountered during merging, all but the last SHALL be discarded; tooling SHOULD emit a warning in such a case.
+- [Array][] - List concatenation
+- [Object][] - Set union; if duplicit property keys are encountered during merging, all but the last SHALL be discarded; tooling SHOULD emit a warning in such a case.
 - [Select Element](#select-element) - Option concatenation
-- [String Element][] - Last entry in Extend Element SHALL be used, previous are ignored
-- [Boolean Element][] - Last entry in Extend Element SHALL be used, previous are ignored
-- [Number Element][] - Last entry in Extend Element SHALL be used, previous are ignored
+- [String][] - Last entry in Extend Element SHALL be used, previous are ignored
+- [Boolean][] - Last entry in Extend Element SHALL be used, previous are ignored
+- [Number][] - Last entry in Extend Element SHALL be used, previous are ignored
 - [Ref Element](#ref-element) - Substitute by referenced Element and apply one of the rules above
 
 Extend Element SHOULD NOT be used to encode semantic inheritance; use the `id` meta property to define a named type and reference it through the child's `element` entry.
@@ -922,7 +922,7 @@ Transclusion of a Ref Element SHALL be defined as follows:
 
 - `element` - `"ref"`
 - `attributes`
-    - `path` (enum[String Element]) - Path of referenced element to transclude instead of element itself
+    - `path` (enum[[String][]]) - Path of referenced element to transclude instead of element itself
         - element (default) - The complete referenced element
         - meta - The meta data of the referenced element
         - attributes - The attributes of the referenced element
@@ -1027,7 +1027,7 @@ Hyperlinking MAY be used to link to other resources, provide links to instructio
 
 #### Template
 
-- `element`: link (string, fixed)
+- `element`: `"link"`
 - `attributes`
     - `relation` ([String][]) - Link relation type as specified in [RFC 5988](https://tools.ietf.org/html/rfc5988).
     - `href` ([String][]) - The URI for the given link
@@ -1059,69 +1059,72 @@ The following shows a link with the relation of `foo` and the URL of `/bar`.
 
 ### Href ([String][])
 
-The value of the `Href` type  SHOULD be resolved as a URI-Reference per [RFC 3986][] and MAY be a relative reference to a URI.
-The value of the `Href` type MUST NOT be a URI Template.
-
-### Templated Href ([String][])
-
-The value of `Templated Href` type is to be used as a URI Template, as defined in [RFC 6570][].
-The value of the `Templated Href` type is a template used to determine the target URI of the related resource or transition.
-The value of the `Templated Href` type SHOULD be resolved as a URI-Reference per [RFC 3986][] and MAY be a relative reference to a URI.
-
-### Href Variables (Object Type)
-
-The definition is a Data Structure element `Object Type` where keys are respective URI Template variables.
+Subtype of [String][] with domain of all URI-References per [RFC 3986][].
 
 #### Template
 
-- `element`: hrefVariables (string, fixed)
+- `element` - `"href"`
 
-### Data Structure (Base API Element)
+### Templated Href ([String][])
+
+Subtype of [String][] with domain of all URI-Templates per [RFC 6570][].
+
+#### Template
+
+- `element` - `"templatedHref"`
+
+### Href Variables ([Object][])
+
+Subtype of [Object][] representing an object where each property's key is a `varname` (Commonly described as URI Template variable) per [RFC 6570][].
+
+#### Template
+
+- `element` - `"hrefVariables"`
+
+### Data Structure
 
 Data structure definition using Data Structure elements.
 
 #### Template
 
-- `element`: dataStructure (string, fixed)
-- `content` ([Data Structure Element](#data-structure-element-types))
+- `element` - `"dataStructure"`
+- `content` - [Data Structure Element](#data-structure-element-types)
 
-### Asset (Base API Element)
+### Asset ([String][])
 
-Arbitrary data asset.
+Subtype of [String][] with domain of all `message-body` as per [RFC 2616][].
 
 #### Template
 
-- `element`: asset (string, fixed)
-- `meta`
-    - `classes` ([Array][])
-        - `content` (array, fixed-type)
-            - ([String][])
-                - `content` (enum)
-                    - messageBody (string) - Asset is an example of message-body
-                    - messageBodySchema (string) - Asset is an schema for message-body
+- `element` - `"asset"`
 - `attributes`
     - `contentType` ([String][]) - Optional media type of the asset. When this is unset, the content type SHOULD be inherited from the `Content-Type` header of a parent HTTP Message Payload
-    - `href` (Href) - Link to the asset
-- `content` (string) - A textual representation of the asset
+    - `href` ([Href][]) - Link to the asset
+- `content` - A textual representation of the asset
 
-### Resource (Base API Element)
+#### Classifications
+
+- `"messageBody"` - Asset is an example of message-body
+- `"messageBodySchema"` - Asset is a schema for message-body
+
+### Resource
 
 The Resource representation with its available transitions and its data.
 
 #### Template
 
-- `element`: resource (string, fixed)
+- `element` - `"resource"`
 - `attributes`
-    - `href` (Templated Href) - URI Template of this resource.
-    - `hrefVariables` (Href Variables) - Definition of URI Template variables used in the `href` property.
+    - `href` ([Templated Href][]) - URI Template for this resource.
+    - `hrefVariables` ([Href Variables][]) - URI Template variables.
 - `content` (array)
-    - (Copy) - Resource description's copy text.
-    - (Category) - A group of Transition elements
-    - (Transition) - State transition available for this resource.
+    - ([Copy][]) - Textual information of this resource in API Description.
+    - ([Category][]) - A group of Transition elements
+    - ([Transition][]) - State transitions available for this resource.
 
         The `content` MAY include multiple `Transition` elements.
 
-    - (Data Structure) - Data structure representing the resource.
+    - ([Data Structure][]) - Data structure representing the resource.
 
         The `content` MUST NOT include more than one `Data Structure`.
 
@@ -1168,7 +1171,7 @@ The Resource representation with its available transitions and its data.
 }
 ```
 
-### Transition (Base API Element)
+### Transition
 
 A transition is an available progression from one state to another state.
 Exercising a transition initiates a transaction.
@@ -1179,7 +1182,7 @@ Note: At the moment only the HTTP protocol is supported.
 
 #### Template
 
-- `element`: transition (string, fixed)
+- `element` - `"transition"`
 - `attributes`
     - `relation` - ([String][]) - Link relation type as specified in [RFC 5988][].
 
@@ -1187,7 +1190,7 @@ Note: At the moment only the HTTP protocol is supported.
         between transition's parent resource and the transition's target resource
         as specified in the `href` attribute.
 
-    - `href` (Templated Href) - The URI template for this transition.
+    - `href` ([Templated Href][]) - URI template for this transition.
 
         If present, the value of the `href` attribute SHOULD be used to resolve
         the target URI of the transition.
@@ -1195,7 +1198,7 @@ Note: At the moment only the HTTP protocol is supported.
         If not set, the parent `resource` element `href` attribute SHOULD be
         used to resolve the target URI of the transition.
 
-    - `hrefVariables` (Href Variables) - Input parameters.
+    - `hrefVariables` ([Href Variables][]) - URI Template variables.
 
         Definition of any input URI path segments or URI query parameters for this transition.
 
@@ -1203,14 +1206,14 @@ Note: At the moment only the HTTP protocol is supported.
         element `hrefVariables` SHOULD be used to resolve the transition input
         parameters.
 
-    - `data` (Data Structure) - Input attributes.
+    - `data` ([Data Structure][]) - Data structure describing the transition's `Request` `message-body` unless overridden.
 
         Definition of any input message-body attribute for this transition.
 
     - `contentTypes` ([Array][][[String][]]) - A collection of content types that MAY be used for the transition.
 - `content` (array)
-    - (Copy) - Transition description's copy text.
-    - (HTTP Transaction) - An instance of transaction example.
+    - ([Copy][]) - Textual information of this transition in API Description.
+    - ([HTTP Transaction](#http-transaction-array))
 
         Transaction examples are protocol-specific examples of a REST transaction
         that was initialized by exercising a transition.
@@ -1237,19 +1240,16 @@ Note: At the moment only the HTTP protocol is supported.
 }
 ```
 
-### API Metadata (Member Element)
+### API Metadata ([Member][])
 
-#### Template
+Subtype of [Member][] representing a property whose key and value are strings.
 
-- `meta`
-    - `classes` ([Array][])
-        - `content` (array, fixed-type)
-            - ([String][])
-                - `content` (enum)
-                    - user (string) - User-specific metadata. Metadata written in the source.
-                    - adapter (string) - Serialization-specific metadata. Metadata provided by adapter.
+#### Classifications
 
-### Category (Base API Element)
+- `"user"` - User-specific metadata. Metadata written in the source.
+- `"adapter"` - Serialization-specific metadata. Metadata provided by adapter.
+
+### Category
 
 Grouping element – a set of elements forming a logical unit of an API such as
 group of related resources or data structures.
@@ -1265,21 +1265,19 @@ transitions.
 
 #### Template
 
-- `element`: category (string, fixed)
-- `meta`
-    - `classes` ([Array][])
-        - `content` (array, fixed-type)
-            - ([String][])
-                - `content` (enum)
-                    - api (string) - Category is a API top-level group.
-                    - resourceGroup (string) - Category is a set of resource.
-                    - dataStructures (string) - Category is a set of data structures.
-                    - scenario (string) - Category is set of steps.
-                    - transitions (string) - Category is a group of transitions.
-                    - authSchemes (string) - Category is a group of authentication and authorization scheme definitions
+- `element` - `"category"`
 - `attributes`
-    - `metadata` ([Array][][API Metadata]) - Arbitrary metadata
-- `content` (array[Base API Element])
+    - `metadata` ([Array][][[API Metadata](#api-metadata-member)]) - Arbitrary metadata
+- `content` (array)
+
+#### Classifications
+
+- `"api"` - Category is a API top-level group.
+- `"resourceGroup"` - Category is a set of resources.
+- `"dataStructures"` - Category is a set of data structures.
+- `"scenario"` - Category is set of steps.
+- `"transitions"` - Category is a group of transitions.
+- `"authSchemes"` - Category is a group of authentication and authorization scheme definitions
 
 #### Example
 
@@ -1361,9 +1359,10 @@ transitions.
 }
 ```
 
-### Copy (Base API Element)
+### Copy ([String][])
 
-Copy element represents a copy text—a textual information in API description.
+Subtype of [String][] which represents a textual information in API description.
+
 Its content is a string and it MAY include information about the media type
 of the copy's content.
 
@@ -1373,10 +1372,10 @@ element's description metadata.
 
 #### Template
 
-- `element`: copy (string, fixed)
+- `element` - `"copy"`
 - `attributes`
     - `contentType` ([String][]) - Optional media type of the content.
-- `content` (string)
+- `content` - Text
 
 #### Example
 
@@ -1412,23 +1411,22 @@ Given an API description with following layout:
 
 ### Protocol-specific Elements
 
-#### HTTP Transaction (Base API Element)
+#### HTTP Transaction ([Array][])
 
-Example of an HTTP Transaction. The example's content consist of a request-response
-message pair. A transaction example MUST contain exactly one HTTP request and one HTTP response message.
+Example of an HTTP Transaction.
 
 ##### Template
 
-- `element`: httpTransaction (string, fixed)
+- `element` - `"httpTransaction"`
 - `attributes`
-    - `authSchemes` ([Array][][Base API Element]) - An array of authentication and authorization schemes that apply to the transaction
+    - `authSchemes` ([Array][]) - An array of authentication and authorization schemes that apply to the transaction
 - `content` (array) - Request and response message pair (tuple).
-    - (Copy) - HTTP Transaction description's copy text.
-    - (HTTP Request Message)
+    - ([Copy][]) - Textual information of this transaction in API Description.
+    - ([HTTP Request Message](#http-request-message-http-message-payload))
 
         The `content` MUST include exactly one `HTTP Request Message` element.
 
-    - (HTTP Response Message)
+    - ([HTTP Response Message](#http-response-message-http-message-payload))
 
         The `content` MUST include exactly one `HTTP Response Message` element.
 
@@ -1502,13 +1500,13 @@ message pair. A transaction example MUST contain exactly one HTTP request and on
 }
 ```
 
-#### HTTP Headers ([Array][][Member Element])
+#### HTTP Headers ([Object][])
 
-Ordered array of HTTP header-fields.
+Subtype of [Object][] representing an object where each property's key is a `field-name` (Commonly known as HTTP Header name) per [RFC 822][] and the property's key is a `field-value` (Commonly known as HTTP Header value) per [RFC 2616][].
 
 ##### Template
 
-- `element`: httpHeaders (string, fixed)
+- `element` - `"httpHeaders"`
 
 ##### Example
 
@@ -1533,36 +1531,39 @@ Ordered array of HTTP header-fields.
 }
 ```
 
-#### HTTP Message Payload (Base API Element)
+#### HTTP Message Payload ([Array][])
 
-Payload of an HTTP message including headers, data structures, or assets.
+Subtype of [Array][] representing a `HTTP-message` (Commonly known as Payload) per [RFC 2616][].
 
 ##### Template
 
 - `attributes`
-    - `headers` (HTTP Headers)
+    - `headers` ([HTTP Headers][])
 - `content` (array)
-    - (Copy) - Payload description's copy text.
-    - (Data Structure) - Data structure describing the payload.
+    - ([Copy][]) - Textual information of this payload in API Description.
+    - ([Data Structure][]) - Data structure describing the payload's `message-body`.
 
         The `content` MUST NOT contain more than one `Data Structure`.
 
-    - (Asset) - A data asset associated with the payload's body.
+    - ([Asset][]) - An asset associated with the payload's `message-body`.
 
         This asset MAY represent payload body or body's schema.
 
         The `content` SHOULD NOT contain more than one asset of its respective type.
 
-#### HTTP Request Message (HTTP Message Payload)
+#### HTTP Request Message ([HTTP Message Payload][])
 
-HTTP request message.
+Subtype of [HTTP Message Payload][] representing a `Request` (Commonly known as HTTP Request) per [RFC 2616][].
 
 ##### Template
 
-- `element`: httpRequest (string, fixed)
+- `element` - `"httpRequest"`
 - `attributes`
-    - `method` ([String][]) - HTTP request method. The method value SHOULD be inherited from a parent transition if it is unset.
-    - `href` (Templated Href) - URI Template for this HTTP request.
+    - `method` ([String][]) - `Method` part of HTTP Request per [RFC 2616][].
+
+    	The method value SHOULD be inherited from a parent transition if it is unset.
+
+    - `href` ([Templated Href][]) - URI Template for this HTTP request. Combined with `hrefVariables` forms the `Request-URI` part of HTTP Request per [RFC 2616][].
 
         If present, the value of the `href` attribute SHOULD be used to resolve
         the target URI of the http request.
@@ -1571,7 +1572,7 @@ HTTP request message.
         URI of the parent transition SHOULD be used to resolve the URI of
         the http request.
 
-    - `hrefVariables` (Href Variables) - Input parameters
+    - `hrefVariables` ([Href Variables][]) - URI Template variables.
 
         Definition of any input URI path segments or URI query parameters for this transition.
 
@@ -1580,30 +1581,30 @@ HTTP request message.
         be used to resolve the http request input parameters.
 
 
-#### HTTP Response Message (HTTP Message Payload)
+#### HTTP Response Message ([HTTP Message Payload][])
 
-HTTP response message.
+Subtype of [HTTP Message Payload][] representing a `Response` (Commonly known as HTTP Response) per [RFC 2616][].
 
 ##### Template
 
-- `element`: httpResponse (string, fixed)
+- `element` - `"httpResponse"`
 - `attributes`
-    - `statusCode` ([Number][]) - HTTP response status code.
+    - `statusCode` ([Number][]) - `Status-Code` part of HTTP Response per [RFC 2616][].
 
 
 ## Parse Result Element types
 
 
-### Parse Result (Base API Element)
+### Parse Result ([Array][])
 
 A result of parsing of an API description document.
 
 #### Template
 
-- `element`: parseResult (string, fixed)
-- `content` (array, fixed-type)
-    - (Category)
-    - (Annotation)
+- `element` - `"parseResult"`
+- `content` (array)
+    - ([Category][])
+    - ([Annotation](#annotation-string))
 
 #### Example
 
@@ -1681,30 +1682,24 @@ The parse result is (using null in `category` content for simplicity):
 }
 ```
 
-### Annotation (Base API Element)
+### Annotation ([String][])
 
 Annotation for a source file. Usually generated by a parser or adapter.
 
 #### Template
 
-- `element`: annotation (string, fixed)
-- `meta`
-  - `classes` ([Array][])
-      - `content` (array, fixed-type)
-          - ([String][])
-              - `content` (enum)
-                  - error (string) - Annotation represents an error
-                  - warning (string) - Annotation represents a warning
-
+- `element` - `"annotation"`
 - `attributes`
-    - `code` ([Number][]) - Parser-specific code of the annotation.
-    Refer to parser documentation for explanation of the codes.
-
+    - `code` ([Number][]) - Parser-specific code of the annotation. Refer to parser documentation for explanation of the codes.
     - `sourceMap` ([Array][][Source Map]) - Locations of the annotation in the source file.
-
-- `content` (string) - Textual annotation.
+- `content` - Textual annotation.
 
     This is – in most cases – a human-readable message to be displayed to user.
+
+#### Classifications
+
+- `"error"` - Annotation is an error
+- `"warning"` - Annotation is a warning
 
 #### Example
 
@@ -1768,7 +1763,7 @@ Annotation for a source file. Usually generated by a parser or adapter.
 }
 ```
 
-### Source Map (Base API Element)
+### Source Map
 
 Source map of an Element.
 
@@ -1790,10 +1785,10 @@ series of bytes.
 
 #### Template
 
-- `element`: sourceMap (string, fixed)
+- `element` - `"sourceMap"`
 - `content` (array) - Array of byte blocks.
     - ([Array][]) - Continuous bytes block. A pair of byte index and byte count.
-        - `content` (array, fixed-type)
+        - `content` (array)
             - ([Number][]) - Zero-based index of a byte in the source document.
                 - attributes
                     - line - The line number the source map starts on.
@@ -1912,7 +1907,7 @@ explanation on how and why it was inferred.
 
 Authentication and authorization schemes MAY be defined within an API Elements document. These schemes are then used within the context of a resource to define which schemes to apply when making a transaction.
 
-### Basic Authentication Scheme (Object Element)
+### Basic Authentication Scheme ([Object][])
 
 This element may be used to define a basic authentication scheme implementation for an API as described in [RFC 2617](https://tools.ietf.org/html/rfc2617).
 
@@ -1923,7 +1918,7 @@ The element MAY have a username and password defined as member elements within t
 
 #### Template
 
-- `element`: Basic Authentication Scheme (string, fixed)
+- `element` - `"Basic Authentication Scheme"`
 
 #### Example
 
@@ -2030,7 +2025,7 @@ This example shows a custom basic authentication scheme being defined as `Custom
 }
 ```
 
-### Token Authentication Scheme (Base API Element)
+### Token Authentication Scheme ([Object][])
 
 This describes an authentication scheme that uses a token as a way to authenticate and authorize. The token MAY exist as an HTTP header field or a query parameter.
 
@@ -2042,8 +2037,7 @@ When used as a query parameter, an HREF Variable is not required to be defined w
 
 #### Template
 
-- `element`: Token Authentication Scheme (string, fixed)
-- `content` (array[Member Element])
+- `element` - `"Token Authentication Scheme"`
 
 #### Example
 
@@ -2137,7 +2131,7 @@ This example shows a custom token authentication scheme being defined as `Custom
 }
 ```
 
-### OAuth2 Scheme (Base API Element)
+### OAuth2 Scheme
 
 This describes an authentication scheme that uses OAuth2 as defined in [RFC 6749](https://tools.ietf.org/html/rfc6749).
 
@@ -2159,8 +2153,10 @@ The HREF values for these transitions MAY be either relative or absolute URLs.
 
 #### Template
 
-- `element`: OAuth2 Scheme (string, fixed)
-- `content` (array[Member Element, Transition])
+- `element` - `"OAuth2 Scheme"`
+- `content` (array)
+	- ([Member][])
+	- ([Transition][])
 
 #### Example
 
@@ -2376,9 +2372,9 @@ When the `extension` element is used, it SHOULD include a profile link that prov
 
 For changes that need to make unsafe changes, a custom media type or profile SHOULD be used.
 
-### Extension (Base API Element)
+### Extension
 
-- `element`: extension (string, fixed)
+- `element` - `"extension"`
 - `content` (enum) - Custom content of extension element
     - (string)
     - (number)
@@ -2444,13 +2440,10 @@ As a tool comes across this extension element, it would look at the profile URL 
 [MSON]: https://github.com/apiaryio/mson
 [MSON Reference]: https://github.com/apiaryio/mson/blob/master/MSON%20Reference.md
 
-[API Description Elements]: definitions/api-description-elements.md
-[Data Structure Elements]: definitions/data-structure-elements.md
-[Parse Result Elements]: definitions/parse-result-elements.md
 
-[Data Structure Element]: #data-structure-element-element
-
+[RFC 822]: https://datatracker.ietf.org/doc/rfc822/
 [RFC 2119]: https://datatracker.ietf.org/doc/rfc2119/
+[RFC 2616]: https://datatracker.ietf.org/doc/rfc2616/
 [RFC 3986]: https://datatracker.ietf.org/doc/rfc3986/
 [RFC 5988]: http://datatracker.ietf.org/doc/rfc5988/
 [RFC 6570]: https://datatracker.ietf.org/doc/rfc6570/
@@ -2462,3 +2455,13 @@ As a tool comes across this extension element, it would look at the profile URL 
 [Array]: #array-element
 [Object]: #object-element
 [Member]: #member-element
+[Href]: #href-string
+[Templated Href]: #templated-href-string
+[Href Variables]: #href-variables-object
+[Data Structure]: #data-structure
+[Copy]: #copy-string
+[Asset]: #asset-string
+[Transition]: #transition
+[Category]: #category
+[HTTP Headers]: #http-headers-array-member
+[HTTP Message Payload]: #http-message-payload-array
