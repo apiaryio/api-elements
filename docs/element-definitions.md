@@ -1046,7 +1046,7 @@ The following shows a link with the relation of `foo` and the URL of `/bar`.
       "content": "foo"
     },
     "href":  {
-      "element": "string", 
+      "element": "string",
       "content": "/bar"
     }
   }
@@ -1059,7 +1059,7 @@ The following shows a link with the relation of `foo` and the URL of `/bar`.
 
 ### Href ([String][])
 
-Subtype of [String][] with domain of all URI-References per [RFC 3986][].
+[Subtype][] of [String][] with domain of all URI-References per [RFC 3986][].
 
 #### Template
 
@@ -1067,7 +1067,7 @@ Subtype of [String][] with domain of all URI-References per [RFC 3986][].
 
 ### Templated Href ([String][])
 
-Subtype of [String][] with domain of all URI-Templates per [RFC 6570][].
+[Subtype][] of [String][] with domain of all URI-Templates per [RFC 6570][].
 
 #### Template
 
@@ -1092,7 +1092,7 @@ Data structure definition using Data Structure elements.
 
 ### Asset ([String][])
 
-Subtype of [String][] with domain of all `message-body` as per [RFC 2616][].
+[Subtype][] of [String][] with domain of all `message-body` as per [RFC 2616][].
 
 #### Template
 
@@ -1242,7 +1242,7 @@ Note: At the moment only the HTTP protocol is supported.
 
 ### API Metadata ([Member][])
 
-Subtype of [Member][] representing a property whose key and value are strings.
+[Subtype][] of [Member][] representing a property whose key and value are strings.
 
 #### Classifications
 
@@ -1361,7 +1361,7 @@ transitions.
 
 ### Copy ([String][])
 
-Subtype of [String][] which represents a textual information in API description.
+[Subtype][] of [String][] which represents a textual information in API description.
 
 Its content is a string and it MAY include information about the media type
 of the copy's content.
@@ -1502,7 +1502,7 @@ Example of an HTTP Transaction.
 
 #### HTTP Headers ([Object][])
 
-Subtype of [Object][] representing an object where each property's key is a `field-name` (Commonly known as HTTP Header name) per [RFC 822][] and the property's key is a `field-value` (Commonly known as HTTP Header value) per [RFC 2616][].
+[Subtype][] of [Object][] representing an object where each property's key is a `field-name` (Commonly known as HTTP Header name) per [RFC 822][] and the property's key is a `field-value` (Commonly known as HTTP Header value) per [RFC 2616][].
 
 ##### Template
 
@@ -1533,7 +1533,7 @@ Subtype of [Object][] representing an object where each property's key is a `fie
 
 #### HTTP Message Payload ([Array][])
 
-Subtype of [Array][] representing a `HTTP-message` (Commonly known as Payload) per [RFC 2616][].
+[Subtype][] of [Array][] representing a `HTTP-message` (Commonly known as Payload) per [RFC 2616][].
 
 ##### Template
 
@@ -1553,7 +1553,7 @@ Subtype of [Array][] representing a `HTTP-message` (Commonly known as Payload) p
 
 #### HTTP Request Message ([HTTP Message Payload][])
 
-Subtype of [HTTP Message Payload][] representing a `Request` (Commonly known as HTTP Request) per [RFC 2616][].
+[Subtype][] of [HTTP Message Payload][] representing a `Request` (Commonly known as HTTP Request) per [RFC 2616][].
 
 ##### Template
 
@@ -1583,7 +1583,7 @@ Subtype of [HTTP Message Payload][] representing a `Request` (Commonly known as 
 
 #### HTTP Response Message ([HTTP Message Payload][])
 
-Subtype of [HTTP Message Payload][] representing a `Response` (Commonly known as HTTP Response) per [RFC 2616][].
+[Subtype][] of [HTTP Message Payload][] representing a `Response` (Commonly known as HTTP Response) per [RFC 2616][].
 
 ##### Template
 
@@ -2449,6 +2449,7 @@ As a tool comes across this extension element, it would look at the profile URL 
 [RFC 6570]: https://datatracker.ietf.org/doc/rfc6570/
 [RFC 7230]: http://datatracker.ietf.org/doc/rfc7230/
 
+[Subtype]: #subtypes
 [String]: #string-element
 [Number]: #number-element
 [Boolean]: #boolean-element
