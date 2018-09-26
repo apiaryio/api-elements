@@ -43,7 +43,7 @@ It is also helpful to know the relationship between elements. The list below sho
         - Category (Group of Transition Elements)
         - Transition
             - Copy
-            - Transaction
+            - HTTP Transaction
                 - Copy
                 - HTTP Request
                     - Copy
