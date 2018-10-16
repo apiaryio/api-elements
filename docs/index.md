@@ -31,6 +31,7 @@ This documentation conforms to [RFC 2119][], which says:
    tools
    additional-information
    extensions/index
+   migration
 ```
 
 ## License
