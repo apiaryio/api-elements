@@ -6,9 +6,9 @@ Elements 1.0.
 ## JSON Serialisation
 
 In prior versions of API Elements, an Element (i.e. a type) could be
-occasionally serialized as a value. This behaviour has since been dropped, so
-that Elements are always serialized in full form (i.e. as a type, not as a
-value). For example:
+occasionally serialized as a [value](/element-definitions.html#values). This
+behaviour has since been dropped, so that Elements are always serialized in
+full form (i.e. as a type, not as a value). For example:
 
 ```json
 {
@@ -42,7 +42,8 @@ and could break when different forms were used.
 
 ### Category Element
 
-The `meta` attribute has been renamed to `metadata` in a category element for
+The `meta` attribute has been renamed to `metadata` in a [Category
+Element](/element-definitions.html#category) for
 clarity.
 
 Before
@@ -103,12 +104,12 @@ After
 
 ### Source Map Element
 
-A source map element may contain an optional line and column number to make it
-easier to handle source map information. Computing the line and column number
-can often be expensive so it may be provided by a parser. Note however that it
-is optional and it is down the each individual tooling on whether it is
-present, some tools only provide line and column number for source maps
-contained within Annotation Elements.
+A [Source Map Element](/element-definitions.html#source-map) may contain an
+optional line and column number to make it easier to handle source map
+information. Computing the line and column number can often be expensive so it
+may be provided by a parser. Note however that it is optional and it is down
+the each individual tooling on whether it is present, some tools only provide
+line and column number for source maps contained within Annotation Elements.
 
 ```json
 {
@@ -155,9 +156,9 @@ contained within Annotation Elements.
 
 #### Enumeration Element
 
-The layout of the enum element has been altered. The enumerations have been
-moved to an enumerations attribute of the element and the content now
-represents the given value.
+The layout of the [Enum Element](/element-definitions.html#enum-element) has
+been altered. The enumerations have been moved to an enumerations attribute of
+the element and the content now represents the given value.
 
 Enumerations themselves are an array of the possible enumerations.
 
