@@ -36,7 +36,7 @@ would be valid in API Elements 1.0:
 ```
 
 In previous versions of API Elements, both forms were valid so this is not a
-breaking change. However, we found multiple implementation that were fragile
+breaking change. However, we found multiple implementations that were fragile
 and could break when different forms were used.
 
 ## Changes to Elements
@@ -105,8 +105,8 @@ After
 ### Source Map Element
 
 A source map element may contain an optional line and column number to make it
-easier to handle source map information, computing the line and column number
-can often be expensive so it may be provider by a parser. Note however that it
+easier to handle source map information. Computing the line and column number
+can often be expensive so it may be provided by a parser. Note however that it
 is optional and it is down the each individual tooling on whether it is
 present, some tools only provide line and column number for source maps
 contained within Annotation Elements.
@@ -157,8 +157,8 @@ contained within Annotation Elements.
 #### Enumeration Element
 
 The layout of the enum element has been altered. The enumerations have been
-moved to an enumerations attribute of the element and the content represented
-the given value, like in other elements.
+moved to an enumerations attribute of the element and the content now
+represents the given value.
 
 Enumerations themselves are an array of the possible enumerations.
 
@@ -219,9 +219,9 @@ After
 }
 ```
 
-The intent of the structure was that it represents an enumeration of north,
-east, south and west. As the enumerations do not include a `fixed` type
-attribute it represents an enumerations where any string is valid and not just
+The intent of the structure was that it represents an enumeration of `north`,
+`east`, `south` and `west`. As the enumerations do not include a `fixed` type
+attribute it represents an enumeration where any string is valid and not just
 the fixed values. This created a limitation that tooling cannot determine the
 difference between one of the fixed element enumerations, or a type with a
 value. Thus, when the values are fixed they will now include a `fixed` type
