@@ -5,11 +5,10 @@ Elements 1.0.
 
 ## JSON Serialisation
 
-In prior versions of API Element, an element could be serialised in JSON as a
-JSON type, or an API Element.
-
-For example, the string element in the title of the following element is a JSON
-value `"empty"` which is not longer valid in API Elements 1.0.
+In prior versions of API Elements, an Element (i.e. a type) could be
+occasionally serialized as a value. This behaviour has since been dropped, so
+that Elements are always serialized in full form (i.e. as a type, not as a
+value). For example:
 
 ```json
 {
