@@ -159,6 +159,17 @@ The following table summarizes them very broadly.
         <pre>""</pre>
       </td>
     </tr>
+    <tr>
+      <td><a href="#binary-element">binary</a></td>
+      <td>
+        <pre>{
+  "element": "binary"
+}</pre>
+      </td>
+      <td>
+        <pre>"bG9yZW0gaXBzdW0="</pre>
+      </td>
+    </tr>
   </tbody>
   <tbody>
     <tr>
@@ -543,6 +554,57 @@ Type Element representing only the character string `"rocket science"`.
     }
   },
   "content": "rocket science"
+}
+
+```
+
+---
+
+### Binary Element
+
+Type with domain of all finite octet sequences.
+
+
+#### Template
+- `element` - `"binary"`
+- `attributes`
+  - `typeAttributes` ([Array][][[String][]])
+    - `fixed` ([String][]) - The type this Element describes is restricted to the value given in `content`.
+  - `validation` - _reserved for future use_
+  - `samples` ([Array][][[String][]]]) - Alternative sample values for this Element; type of items in `samples` MUST match the type this Element describes
+  - `default` ([String][]) - Default value for this Element; type of `default` MUST match the type this Element describes
+- `content` - Finite octet sequence
+
+#### Example
+
+Type Element representing only finite octet sequences. Matches JSON string values encoding base64 as defined by [RFC 2045].
+
+```json
+
+{
+  "element": "binary"
+}
+
+```
+
+Type Element representing only the binary sequence `00110100 00110010`.
+
+```json
+
+{
+  "element": "binary",
+  "attributes": {
+    "typeAttributes": {
+      "element": "array",
+      "content": [
+        {
+          "element": "string",
+          "content": "fixed"
+        }
+      ]
+    }
+  },
+  "content": "NDIK"
 }
 
 ```
@@ -2460,6 +2522,7 @@ As a tool comes across this extension element, it would look at the profile URL 
 [RFC 5988]: http://datatracker.ietf.org/doc/rfc5988/
 [RFC 6570]: https://datatracker.ietf.org/doc/rfc6570/
 [RFC 7230]: http://datatracker.ietf.org/doc/rfc7230/
+[RFC 2045]: http://datatracker.ietf.org/doc/rfc2045/
 
 [Subtype]: #subtypes
 [String]: #string-element
