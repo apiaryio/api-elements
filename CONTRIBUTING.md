@@ -1,12 +1,12 @@
 # Contributing to API Elements Documentation
 
 The documentation is built using Sphinx, a Python tool. Assuming you have
-Python 3 installed, the following steps can be used to build the site.
+Python 3 and
+[pipenv](https://pipenv.readthedocs.io/en/latest/install/#installing-pipenv)
+installed, the following steps can be used to build the site.
 
 ```shell
-$ python3 -m venv venv
-$ source venv/bin/activate
-$ pip install -r requirements.txt
+$ pipenv install --dev
 ```
 
 ## Running the Development Server
@@ -14,5 +14,5 @@ $ pip install -r requirements.txt
 You can run a local development server to preview changes using the following:
 
 ```shell
-$ make watch
+$ pipenv run serve
 ```
