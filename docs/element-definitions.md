@@ -2157,10 +2157,11 @@ The element MAY have the following members to define additional information abou
     - `resource owner password credentials`
     - `client credentials`
 
-Transition elements are used to define the URLs for the authorize and token endpoints for the OAuth2 schemes. When including these endpoints, the following link relations SHOULD be used.
+Transition elements are used to define the URLs for the authorize, token and refresh endpoints for the OAuth2 schemes. When including these endpoints, the following link relations SHOULD be used.
 
 - `authorize` - URL for the authorization endpoint
 - `token` - URL for the token endpoint
+- `refresh` - URL for the refresh endpoint
 
 The HREF values for these transitions MAY be either relative or absolute URLs.
 
