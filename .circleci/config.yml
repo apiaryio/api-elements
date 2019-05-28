@@ -1,0 +1,17 @@
+version: 2
+
+jobs:
+  test:
+    working_directory: ~/repo
+    docker:
+      - image: circleci/python:3.6
+    steps:
+      - checkout
+      - run: pipenv install --dev
+      - run: pipenv run pytest
+
+workflows:
+  version: 2
+  test:
+    jobs:
+      - test
