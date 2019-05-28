@@ -1271,17 +1271,6 @@ transitions.
     - `version` (string) - reserved for API documentation version info, if presented MUST be placed on API Category (top-level group)
 - `content` (array)
 
-API Version mapping info:
-
-| Language      | API Description Version |
-|---------------|-------------------------|
-| API Blueprint | Unsupported |
-| Swagger 2     | `info.version` |
-| OAS 3         | `info.version` |
-| RAML          | `version` |
-| Google Discovery | `version` |
-
-
 #### Classifications
 
 - `"api"` - Category is a API top-level group.
