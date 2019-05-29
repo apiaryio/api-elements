@@ -811,47 +811,55 @@ Type with domain of the union of values typed by Elements in the `enumerations` 
 Type Element representing strings and numbers.
 
 ```json
-
 {
   "element": "enum",
   "attributes": {
-    "enumerations": [
-      {
-        "element": "string"
-      },
-      {
-        "element": "number"
-      }
-    ]
+    "enumerations": {
+      "element": "array",
+      "content": [
+        {
+          "element": "string"
+        },
+        {
+          "element": "number"
+        }
+      ]
+    }
   }
 }
-
 ```
 
 Type Element representing a specific string and all numbers.
 
 ```json
-
 {
   "element": "enum",
   "attributes": {
-    "enumerations": [
-      {
-        "element": "string",
-        "attributes": {
-          "typeAttributes": [
-            "fixed"
-          ]
+    "enumerations": {
+      "element": "array",
+      "content": [
+        {
+          "element": "string",
+          "attributes": {
+            "typeAttributes": {
+              "element": "array",
+              "content": [
+                {
+                  "element": "string",
+                  "content": "fixed"
+                }
+              ]
+            }
+          },
+          "content": "Hello world!"
         },
-        "content": "Hello world!"
-      },
-      {
-        "element": "number"
-      }
-    ]
+        {
+          "element": "number"
+        }
+      ]
+    }
   }
 }
-
 ```
 
 ---
@@ -960,7 +968,10 @@ Given an element instance of:
 {
   "element": "array",
   "meta": {
-    "id": "colors"
+    "id": {
+      "element": "string",
+      "content": "colors"
+    }
   },
   "content": [
     {
@@ -2338,21 +2349,24 @@ Below is an example of how a profile link is used as a meta link.
 {
   "element": "foo",
   "meta": {
-    "links": [
-      {
-        "element": "link",
-        "attributes": {
-          "relation": {
-            "element": "string",
-            "content": "profile"
-          },
-          "href": {
-            "element": "string",
-            "content": "http://example.com/profiles/foo"
+    "links": {
+      "element": "array",
+      "content": [
+        {
+          "element": "link",
+          "attributes": {
+            "relation": {
+              "element": "string",
+              "content": "profile"
+            },
+            "href": {
+              "element": "string",
+              "content": "http://example.com/profiles/foo"
+            }
           }
         }
-      }
-    ]
+      ]
+    }
   },
   "content": "bar"
 }
