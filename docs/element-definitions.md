@@ -1573,7 +1573,7 @@ Example of an HTTP Transaction.
 - `attributes`
     - `method` ([String][]) - `Method` part of HTTP Request per [RFC 2616][].
 
-    	The method value SHOULD be inherited from a parent transition if it is unset.
+        The method value SHOULD be inherited from a parent transition if it is unset.
 
     - `href` ([Templated Href][]) - URI Template for this HTTP request. Combined with `hrefVariables` forms the `Request-URI` part of HTTP Request per [RFC 2616][].
 
@@ -2039,11 +2039,12 @@ This example shows a custom basic authentication scheme being defined as `Custom
 
 ### Token Authentication Scheme ([Object][])
 
-This describes an authentication scheme that uses a token as a way to authenticate and authorize. The token MAY exist as an HTTP header field or a query parameter.
+This describes an authentication scheme that uses a token as a way to authenticate and authorize. The token MAY exist as an HTTP header field, query parameter or as a cookie.
 
 - One of
     - `httpHeaderName` (string)
     - `queryParameterName` (string)
+    - `cookieName` (string)
 
 When used as a query parameter, an HREF Variable is not required to be defined within the scope of the resource or transition, but is rather infered from the used token authentications scheme.
 
@@ -2156,10 +2157,11 @@ The element MAY have the following members to define additional information abou
     - `resource owner password credentials`
     - `client credentials`
 
-Transition elements are used to define the URLs for the authorize and token endpoints for the OAuth2 schemes. When including these endpoints, the following link relations SHOULD be used.
+Transition elements are used to define the URLs for the authorize, token and refresh endpoints for the OAuth2 schemes. When including these endpoints, the following link relations SHOULD be used.
 
 - `authorize` - URL for the authorization endpoint
 - `token` - URL for the token endpoint
+- `refresh` - URL for the refresh endpoint
 
 The HREF values for these transitions MAY be either relative or absolute URLs.
 
