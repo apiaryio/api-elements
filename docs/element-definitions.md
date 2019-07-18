@@ -1431,7 +1431,7 @@ Example of an HTTP Transaction.
 
 - `element` - `"httpTransaction"`
 - `attributes`
-    - `authSchemes` ([Array][]) - An array of authentication and authorization schemes that apply to the transaction
+    - `authSchemes` ([Array][]\[[Auth Scheme][], [Auth Scheme Requirement][]]) - An array of authentication and authorization schemes out of which at least one SHOULD apply to the transaction.
 - `content` (array) - Request and response message pair (tuple).
     - ([Copy][]) - Textual information of this transaction in API Description.
     - ([HTTP Request Message](#http-request-message-http-message-payload))
@@ -2337,6 +2337,44 @@ Also, please note this example is incomplete for the sake of keeping it short.
 }
 ```
 
+## Authentication and Authorization Scheme Requirement ([Array][])
+
+This represents a group of schemes where each of them MUST be satisfied when making a transaction
+
+#### Template
+
+- `element`: `authSchemeRequirement`
+- `content`
+    - ([Auth Scheme][])
+
+#### Example
+
+Assuming we have a custom basic authentication scheme defined as `Custom Basic Auth` and a custom token authentication scheme defined as `Custom Token Auth`, the following when used on an HTTP transaction within a resource implies that both of them MUST be satisfied. Please note this example is incomplete for the sake of keeping it short.
+
+```json
+{
+  "element": "httpTransaction",
+  "attributes": {
+    "authSchemes": {
+      "element": "array",
+      "content": [
+        {
+          "element": "authSchemeRequirement",
+          "content": [
+            {
+              "element": "Custom Basic Auth"
+            },
+            {
+              "element": "Custom Token Auth"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
+```
+
 ---
 
 ## Profiles
@@ -2484,3 +2522,5 @@ As a tool comes across this extension element, it would look at the profile URL 
 [HTTP Headers]: #http-headers-array-member
 [HTTP Message Payload]: #http-message-payload-array
 [Source Map]: #source-map
+[Auth Scheme]: #authentication-and-authorization-schemes
+[Auth Scheme Requirement]: #authentication-and-authorization-scheme-requirement-array
