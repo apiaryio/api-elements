@@ -2339,7 +2339,7 @@ Also, please note this example is incomplete for the sake of keeping it short.
 
 ## Authentication and Authorization Scheme Requirement ([Array][])
 
-This represents a group of schemes where each of them MUST be satisfied when making a transaction
+This represents a group of schemes where each of them MUST be satisfied when making a transaction.
 
 #### Template
 
@@ -2349,7 +2349,7 @@ This represents a group of schemes where each of them MUST be satisfied when mak
 
 #### Example
 
-Assuming we have a custom basic authentication scheme defined as `Custom Basic Auth` and a custom token authentication scheme defined as `Custom Token Auth`, the following when used on an HTTP transaction within a resource implies that both of them MUST be satisfied. Please note this example is incomplete for the sake of keeping it short.
+Assuming we have a custom basic authentication scheme defined as `Custom Basic Auth` and a custom token authentication scheme defined as `Custom Token Auth`, the following when used on an HTTP transaction within a resource implies that both authentication schemes MUST be satisfied. Please note this example is incomplete for the sake of keeping it short.
 
 ```json
 {
