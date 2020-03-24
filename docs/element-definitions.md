@@ -1118,53 +1118,6 @@ Data structure definition using Data Structure elements.
 - `"messageBody"` - Asset is an example of message-body
 - `"messageBodySchema"` - Asset is a schema for message-body
 
-### Server ([Object][])
-
-Subtype of [Object][] representing a server.
-
-#### Template
-
-- `element` - `"server"`
-- `attributes`
-    - `href` ([Templated Href][]) - URI Template for this server.
-    - `hrefVariables` ([Href Variables][]) - URI Template variables.
-
-#### Example
-
-```json
-{
-  "element": "server",
-  "meta": {
-    "description": {
-      "element": "string",
-      "content": "Description of the server."
-    }
-  },
-  "attributes": {
-    "href": {
-      "element": "string",
-      "content": "{basePath}://example.com/"
-    },
-    "hrefVariables": {
-      "element": "hrefVariables",
-      "content": [
-        {
-          "element": "member",
-          "content": {
-            "key": {
-              "element": "string",
-              "content": "basePath"
-            }
-          }
-        }
-      ]
-    }
-  },
-  "content": [
-  ]
-}
-```
-
 ### Resource
 
 The Resource representation with its available transitions and its data.
@@ -1185,6 +1138,10 @@ The Resource representation with its available transitions and its data.
     - ([Data Structure][]) - Data structure representing the resource.
 
         The `content` MUST NOT include more than one `Data Structure`.
+
+#### Classifications
+
+- `"hosts"` - Resource is a set of servers.
 
 #### Example
 
@@ -1332,12 +1289,12 @@ transitions.
 #### Classifications
 
 - `"api"` - Category is a API top-level group.
-- `"resourceGroup"` - Category is a set of resources.
+- `"authSchemes"` - Category is a group of authentication and authorization scheme definitions.
 - `"dataStructures"` - Category is a set of data structures.
+- `"hosts"` - Category is a set of servers.
+- `"resourceGroup"` - Category is a set of resources.
 - `"scenario"` - Category is set of steps.
 - `"transitions"` - Category is a group of transitions.
-- `"authSchemes"` - Category is a group of authentication and authorization scheme definitions.
-- `"servers"` - Category is a group of servers.
 
 #### Example
 
