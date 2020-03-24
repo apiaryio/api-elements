@@ -1141,7 +1141,7 @@ The Resource representation with its available transitions and its data.
 
 #### Classifications
 
-- `"hosts"` - Resource is a set of servers.
+- `"host"` - Resource is a server.
 
 #### Example
 
