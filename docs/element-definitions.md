@@ -1311,7 +1311,9 @@ transitions.
 - `"api"` - Category is a API top-level group.
 - `"authSchemes"` - Category is a group of authentication and authorization scheme definitions.
 - `"dataStructures"` - Category is a set of data structures.
-- `"hosts"` - Category is a set of servers.
+- `"hosts"` - Category of [Resource][] or [Transition][] which implicitly contain the respective `host` classification.
+  _See the classifications in [Resource][] and [Transition][] for further semantics._
+
 - `"resourceGroup"` - Category is a set of resources.
 - `"scenario"` - Category is set of steps.
 - `"transitions"` - Category is a group of transitions.
