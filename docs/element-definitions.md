@@ -1126,11 +1126,17 @@ The Resource representation with its available transitions and its data.
 
 - `element` - `"resource"`
 - `attributes`
+    - `hosts` ([Array][][[Resource][]]).
+    
+        Resources in the hosts attribute SHOULD implicitly be treated as they have the `host` resource classification.
+        If `hosts` attribute is specified at the Root, Resource, or Transition level, it will be overidden by this value.
+        _See `host` classification in [Resource][] for further semantics._
+
     - `href` ([Templated Href][]) - URI Template for this resource.
     - `hrefVariables` ([Href Variables][]) - URI Template variables.
 - `content` (array)
     - ([Copy][]) - Textual information of this resource in API Description.
-    - ([Category][]) - A group of Transition elements
+    - ([Category][]) - A group of Transition elements.
     - ([Transition][]) - State transitions available for this resource.
 
         The `content` MAY include multiple `Transition` elements.
@@ -1141,7 +1147,9 @@ The Resource representation with its available transitions and its data.
 
 #### Classifications
 
-- `"host"` - Resource is a server.
+- `"host"` - A host resource represents the "root" of the API resource.
+    The resource href MAY be append to the host href to create a absolute URI.
+    A resource that has a `host` classification MUST be a root component of a URI.
 
 #### Example
 
@@ -1199,11 +1207,17 @@ Note: At the moment only the HTTP protocol is supported.
 
 - `element` - `"transition"`
 - `attributes`
-    - `relation` - ([String][]) - Link relation type as specified in [RFC 5988][].
+    - `contentTypes` ([Array][][[String][]]) - A collection of content types that MAY be used for the transition.
 
-        The value of `relation` attribute SHOULD be interpreted as a link relation
-        between transition's parent resource and the transition's target resource
-        as specified in the `href` attribute.
+    - `data` ([Data Structure][]) - Data structure describing the transition's `Request` `message-body` unless overridden.
+
+        Definition of any input message-body attribute for this transition.
+
+    - `hosts` ([Array][][[Transition][]]).
+    
+        Transitions in the hosts attribute SHOULD implicitly be treated as they have the `host` transition classification.
+        If `hosts` attribute is specified at the Root, Resource, or Transition level, it will be overidden by this value.
+        _See `host` classification in [Transition][] for further semantics._
 
     - `href` ([Templated Href][]) - URI template for this transition.
 
@@ -1220,12 +1234,12 @@ Note: At the moment only the HTTP protocol is supported.
         If `href` and `hrefVariables` attributes aren't set, the parent `resource`
         element `hrefVariables` SHOULD be used to resolve the transition input
         parameters.
+    
+    - `relation` - ([String][]) - Link relation type as specified in [RFC 5988][].
 
-    - `data` ([Data Structure][]) - Data structure describing the transition's `Request` `message-body` unless overridden.
-
-        Definition of any input message-body attribute for this transition.
-
-    - `contentTypes` ([Array][][[String][]]) - A collection of content types that MAY be used for the transition.
+        The value of `relation` attribute SHOULD be interpreted as a link relation
+        between transition's parent resource and the transition's target resource
+        as specified in the `href` attribute.
 - `content` (array)
     - ([Copy][]) - Textual information of this transition in API Description.
     - ([HTTP Transaction](#http-transaction-array))
@@ -1235,6 +1249,12 @@ Note: At the moment only the HTTP protocol is supported.
 
         For the time being this reference document defines only HTTP-specific transaction
         data structures.
+
+#### Classifications
+
+- `"host"` - A host transition represents the "root" of the API transition. 
+    The transition href MAY be append to the host href to create a absolute URI.
+    A transition that has a `host` classification MUST be a root component of a URI.
 
 #### Example
 
