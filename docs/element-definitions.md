@@ -1126,11 +1126,12 @@ The Resource representation with its available transitions and its data.
 
 - `element` - `"resource"`
 - `attributes`
-    - `hosts` ([Array][][[Resource][]]).
-    
-        Resources in the hosts attribute SHOULD implicitly be treated as they have the `host` resource classification.
-        If `hosts` attribute is specified at the Root, Resource, or Transition level, it will be overidden by this value.
-        _See `host` classification in [Resource][] for further semantics._
+    - `hosts` ([Array][][[Resource](#Resource)]).
+
+        Optional list of host resources. Every entry SHALL be interpreted as if classified as `host`.
+        _See `host` classification in [Resource](#Resource) for further semantics._
+
+        Overrides any otherwise relevant `hosts` definitions.
 
     - `href` ([Templated Href][]) - URI Template for this resource.
     - `hrefVariables` ([Href Variables][]) - URI Template variables.
@@ -1213,11 +1214,13 @@ Note: At the moment only the HTTP protocol is supported.
 
         Definition of any input message-body attribute for this transition.
 
-    - `hosts` ([Array][][[Transition][]]).
+    - `hosts` ([Array][][[Resource](#Resource)]).
     
-        Transitions in the hosts attribute SHOULD implicitly be treated as they have the `host` transition classification.
-        If `hosts` attribute is specified at the Root, Resource, or Transition level, it will be overidden by this value.
-        _See `host` classification in [Transition][] for further semantics._
+        Optional list of host resources. Every entry SHALL be interpreted as if classified as `host`.
+
+        _See `host` classification in [Resource](#Resource) for further semantics._
+
+        All [Resource](#Resource)s nested under the [Transition][]'s `content` SHALL interpret this `hosts` definition as their own, unless it is overridden by another `hosts` definition on the path to the [Resource](#Resource) element.
 
     - `href` ([Templated Href][]) - URI template for this transition.
 
@@ -1249,12 +1252,6 @@ Note: At the moment only the HTTP protocol is supported.
 
         For the time being this reference document defines only HTTP-specific transaction
         data structures.
-
-#### Classifications
-
-- `"host"` - A host transition represents the "root" of the API transition. 
-    The transition href MAY be append to the host href to create a absolute URI.
-    A transition that has a `host` classification MUST be a root component of a URI.
 
 #### Example
 
@@ -1311,8 +1308,9 @@ transitions.
 - `"api"` - Category is a API top-level group.
 - `"authSchemes"` - Category is a group of authentication and authorization scheme definitions.
 - `"dataStructures"` - Category is a set of data structures.
-- `"hosts"` - Category of [Resource][] or [Transition][] which implicitly contain the respective `host` classification.
-  _See the classifications in [Resource][] and [Transition][] for further semantics._
+- `"hosts"` - Category of [Resource][]s interpreted as a list of host resources of an API. Every entry SHALL be interpreted as if classified as `host`.
+
+_See `host` classification in [Resource][] for further semantics._
 
 - `"resourceGroup"` - Category is a set of resources.
 - `"scenario"` - Category is set of steps.
