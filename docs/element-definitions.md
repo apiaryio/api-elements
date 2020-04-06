@@ -1126,11 +1126,18 @@ The Resource representation with its available transitions and its data.
 
 - `element` - `"resource"`
 - `attributes`
+    - `hosts` ([Array][][[Resource](#Resource)]).
+
+        Optional list of host resources. Every entry SHALL be interpreted as if classified as `host`.
+        _See `host` classification in [Resource](#Resource) for further semantics._
+
+        Overrides any otherwise relevant `hosts` definitions.
+
     - `href` ([Templated Href][]) - URI Template for this resource.
     - `hrefVariables` ([Href Variables][]) - URI Template variables.
 - `content` (array)
     - ([Copy][]) - Textual information of this resource in API Description.
-    - ([Category][]) - A group of Transition elements
+    - ([Category][]) - A group of Transition elements.
     - ([Transition][]) - State transitions available for this resource.
 
         The `content` MAY include multiple `Transition` elements.
@@ -1138,6 +1145,12 @@ The Resource representation with its available transitions and its data.
     - ([Data Structure][]) - Data structure representing the resource.
 
         The `content` MUST NOT include more than one `Data Structure`.
+
+#### Classifications
+
+- `"host"` - A host resource represents the "root" of the API resource.
+    The resource href MAY be append to the host href to create a absolute URI.
+    A resource that has a `host` classification MUST be a root component of a URI.
 
 #### Example
 
@@ -1195,11 +1208,19 @@ Note: At the moment only the HTTP protocol is supported.
 
 - `element` - `"transition"`
 - `attributes`
-    - `relation` - ([String][]) - Link relation type as specified in [RFC 5988][].
+    - `contentTypes` ([Array][][[String][]]) - A collection of content types that MAY be used for the transition.
 
-        The value of `relation` attribute SHOULD be interpreted as a link relation
-        between transition's parent resource and the transition's target resource
-        as specified in the `href` attribute.
+    - `data` ([Data Structure][]) - Data structure describing the transition's `Request` `message-body` unless overridden.
+
+        Definition of any input message-body attribute for this transition.
+
+    - `hosts` ([Array][][[Resource](#Resource)]).
+    
+        Optional list of host resources. Every entry SHALL be interpreted as if classified as `host`.
+
+        _See `host` classification in [Resource](#Resource) for further semantics._
+
+        All [Resource](#Resource)s nested under the [Transition][]'s `content` SHALL interpret this `hosts` definition as their own, unless it is overridden by another `hosts` definition on the path to the [Resource](#Resource) element.
 
     - `href` ([Templated Href][]) - URI template for this transition.
 
@@ -1216,12 +1237,12 @@ Note: At the moment only the HTTP protocol is supported.
         If `href` and `hrefVariables` attributes aren't set, the parent `resource`
         element `hrefVariables` SHOULD be used to resolve the transition input
         parameters.
+    
+    - `relation` - ([String][]) - Link relation type as specified in [RFC 5988][].
 
-    - `data` ([Data Structure][]) - Data structure describing the transition's `Request` `message-body` unless overridden.
-
-        Definition of any input message-body attribute for this transition.
-
-    - `contentTypes` ([Array][][[String][]]) - A collection of content types that MAY be used for the transition.
+        The value of `relation` attribute SHOULD be interpreted as a link relation
+        between transition's parent resource and the transition's target resource
+        as specified in the `href` attribute.
 - `content` (array)
     - ([Copy][]) - Textual information of this transition in API Description.
     - ([HTTP Transaction](#http-transaction-array))
@@ -1285,11 +1306,15 @@ transitions.
 #### Classifications
 
 - `"api"` - Category is a API top-level group.
-- `"resourceGroup"` - Category is a set of resources.
+- `"authSchemes"` - Category is a group of authentication and authorization scheme definitions.
 - `"dataStructures"` - Category is a set of data structures.
+- `"hosts"` - Category of [Resource][]s interpreted as a list of host resources of an API. Every entry SHALL be interpreted as if classified as `host`.
+
+_See `host` classification in [Resource][] for further semantics._
+
+- `"resourceGroup"` - Category is a set of resources.
 - `"scenario"` - Category is set of steps.
 - `"transitions"` - Category is a group of transitions.
-- `"authSchemes"` - Category is a group of authentication and authorization scheme definitions
 
 #### Example
 
