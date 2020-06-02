@@ -1126,10 +1126,10 @@ The Resource representation with its available transitions and its data.
 
 - `element` - `"resource"`
 - `attributes`
-    - `hosts` ([Array][][[Resource](#Resource)]).
+    - `hosts` ([Array][][[Resource][]]).
 
         Optional list of host resources. Every entry SHALL be interpreted as if classified as `host`.
-        _See `host` classification in [Resource](#Resource) for further semantics._
+        _See `host` classification in [Resource][] for further semantics._
 
         Overrides any otherwise relevant `hosts` definitions.
 
@@ -1214,13 +1214,13 @@ Note: At the moment only the HTTP protocol is supported.
 
         Definition of any input message-body attribute for this transition.
 
-    - `hosts` ([Array][][[Resource](#Resource)]).
+    - `hosts` ([Array][][[Resource][]]).
     
         Optional list of host resources. Every entry SHALL be interpreted as if classified as `host`.
 
-        _See `host` classification in [Resource](#Resource) for further semantics._
+        _See `host` classification in [Resource][] for further semantics._
 
-        All [Resource](#Resource)s nested under the [Transition][]'s `content` SHALL interpret this `hosts` definition as their own, unless it is overridden by another `hosts` definition on the path to the [Resource](#Resource) element.
+        All [Resource][]s nested under the [Transition][]'s `content` SHALL interpret this `hosts` definition as their own, unless it is overridden by another `hosts` definition on the path to the [Resource][] element.
 
     - `href` ([Templated Href][]) - URI template for this transition.
 
@@ -2504,6 +2504,7 @@ As a tool comes across this extension element, it would look at the profile URL 
 [Data Structure]: #data-structure
 [Copy]: #copy-string
 [Asset]: #asset-string
+[Resource]: #resource
 [Transition]: #transition
 [Category]: #category
 [HTTP Headers]: #http-headers-array-member
