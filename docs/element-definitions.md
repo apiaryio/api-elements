@@ -407,7 +407,7 @@ Type with domain of two values: _true_ and _false_.
   - `typeAttributes` ([Array][][[String][]])
     - `fixed` ([String][]) - The type this Element describes is restricted to the value given in `content`
   - `validation` - _reserved for future use_
-  - `samples` ([Array][][[Boolean][]]]) - Alternative sample values for this Element; type of items in `samples` MUST match the type this Element describes
+  - `samples` ([Array][][[Boolean][]]) - Alternative sample values for this Element; type of items in `samples` MUST match the type this Element describes
   - `default` ([Boolean][]) - Default value for this Element; type of `default` MUST match the type this Element describes
 - `content` - _false_ or _true_
 
@@ -458,7 +458,7 @@ Type with domain of all rational numbers, i.e. floating-point numbers with finit
   - `typeAttributes` ([Array][][[String][]])
     - `fixed` ([String][]) - The type this Element describes is restricted to the value given in `content`
   - `validation` - _reserved for future use_
-  - `samples` ([Array][][[Number][]]]) - Alternative sample values for this Element; type of items in `samples` MUST match the type this Element describes
+  - `samples` ([Array][][[Number][]]) - Alternative sample values for this Element; type of items in `samples` MUST match the type this Element describes
   - `default` ([Number][]) - Default value for this Element; type of `default` MUST match the type this Element describes
 - `content` - Rational number
 
@@ -509,7 +509,7 @@ Type with domain of all finite character strings.
   - `typeAttributes` ([Array][][[String][]])
     - `fixed` ([String][]) - The type this Element describes is restricted to the value given in `content`.
   - `validation` - _reserved for future use_
-  - `samples` ([Array][][[String][]]]) - Alternative sample values for this Element; type of items in `samples` MUST match the type this Element describes
+  - `samples` ([Array][][[String][]]) - Alternative sample values for this Element; type of items in `samples` MUST match the type this Element describes
   - `default` ([String][]) - Default value for this Element; type of `default` MUST match the type this Element describes
 - `content` - Finite character string
 
@@ -561,7 +561,7 @@ Type with domain of all finite lists of values.
     - `fixed` ([String][]) - Restricts domain to a positionally typed fixed-length list over types in content.  Further applies the `fixed` type attribute to nested [Array][]s, [Object][]s and any other type defining content or default.
     - `fixedType` ([String][]) - Restricts domain to a list of types given in `content`.
   - `validation` - _reserved for future use_
-  - `samples` ([Array][][[Array][]]]) - Alternative sample values for this Element; type of items in `samples` MUST match the type this Element describes
+  - `samples` ([Array][][[Array][]]) - Alternative sample values for this Element; type of items in `samples` MUST match the type this Element describes
   - `default` ([Array][]) - Default value for this Element; type of `default` MUST match the type this Element describes
 - `content` - Finite list of Elements
 
@@ -669,7 +669,7 @@ Type with domain of all finite sets of [_properties_](#property).
     - `fixed` ([String][]) - Restricts domain to a fixed sized set of properties, making them implicitly required. Further applies the `fixed` type attribute to nested [Array][]s, [Object][]s and any other type defining content or default.
     - `fixedType` ([String][]) - Restricts domain to a fixed sized set of properties, making them implicitly required.
   - `validation` - _reserved for future use_
-  - `samples` ([Array][][[Object][]]]) - Alternative sample values for this Element; type of items in `samples` MUST match the type this Element describes
+  - `samples` ([Array][][[Object][]]) - Alternative sample values for this Element; type of items in `samples` MUST match the type this Element describes
   - `default` ([Object][]) - Default value for this Element; type of `default` MUST match the type this Element describes
 - `content` - List of any of
   - [Member][] - Object property
@@ -1126,10 +1126,10 @@ The Resource representation with its available transitions and its data.
 
 - `element` - `"resource"`
 - `attributes`
-    - `hosts` ([Array][][[Resource](#Resource)]).
+    - `hosts` ([Array][][[Resource][]]).
 
         Optional list of host resources. Every entry SHALL be interpreted as if classified as `host`.
-        _See `host` classification in [Resource](#Resource) for further semantics._
+        _See `host` classification in [Resource][] for further semantics._
 
         Overrides any otherwise relevant `hosts` definitions.
 
@@ -1214,13 +1214,13 @@ Note: At the moment only the HTTP protocol is supported.
 
         Definition of any input message-body attribute for this transition.
 
-    - `hosts` ([Array][][[Resource](#Resource)]).
+    - `hosts` ([Array][][[Resource][]]).
     
         Optional list of host resources. Every entry SHALL be interpreted as if classified as `host`.
 
-        _See `host` classification in [Resource](#Resource) for further semantics._
+        _See `host` classification in [Resource][] for further semantics._
 
-        All [Resource](#Resource)s nested under the [Transition][]'s `content` SHALL interpret this `hosts` definition as their own, unless it is overridden by another `hosts` definition on the path to the [Resource](#Resource) element.
+        All [Resource][]s nested under the [Transition][]'s `content` SHALL interpret this `hosts` definition as their own, unless it is overridden by another `hosts` definition on the path to the [Resource][] element.
 
     - `href` ([Templated Href][]) - URI template for this transition.
 
@@ -2504,6 +2504,7 @@ As a tool comes across this extension element, it would look at the profile URL 
 [Data Structure]: #data-structure
 [Copy]: #copy-string
 [Asset]: #asset-string
+[Resource]: #resource
 [Transition]: #transition
 [Category]: #category
 [HTTP Headers]: #http-headers-array-member
