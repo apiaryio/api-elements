@@ -2,7 +2,7 @@
 alabaster==0.7.12
 argh==0.26.2
 babel==2.6.0
-certifi==2018.11.29
+certifi==2022.12.7
 chardet==3.0.4
 commonmark==0.8.1
 docutils==0.14
