@@ -20,7 +20,7 @@ pygments-markdown-lexer==0.1.0.dev39
 pygments==2.3.1
 pyparsing==2.3.1
 pytz==2018.9
-pyyaml==4.2b4
+pyyaml==5.4
 recommonmark==0.5.0
 requests==2.21.0
 six==1.12.0
